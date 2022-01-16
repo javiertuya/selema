@@ -71,6 +71,7 @@ public class TestLifecycle4 implements IAfterEachCallback {
 		sm.getLogger().info("INSIDE TEST BODY");
 		assertEquals("result",sm.driver().findElement(By.id("spanAlert")).getText());
 		lfas.assertAfterPass();
+		sm.visualAssertEquals("abc", "abc def");
 	}
 	
 }
