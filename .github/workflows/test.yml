@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        platform: [java]
+        platform: [java, net]
         mode: [headless]
       fail-fast: false
     defaults:
