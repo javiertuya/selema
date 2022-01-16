@@ -26,6 +26,11 @@ and integration with CI platforms and Browser services.
 
 # Getting started
 
+On Java, include the `selema` dependency as indicated in
+[Maven Central](https://search.maven.org/artifact/io.github.javiertuya/selema).
+On .NET, include the `Selema` package in you project as indicated in
+[NuGet](https://www.nuget.org/packages/Selema/)
+
 Selema works around two main components: 
 A `Lifecycle*` class that detects the events during the test lifecycle 
 and calls the `SeleniumManager` to perform the required actions.
