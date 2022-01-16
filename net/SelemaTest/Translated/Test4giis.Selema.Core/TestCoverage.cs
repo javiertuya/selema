@@ -1,0 +1,93 @@
+/////////////////////////////////////////////////////////////////////////////////////////////
+/////// THIS FILE HAS BEEN AUTOMATICALLY CONVERTED FROM THE JAVA SOURCES. DO NOT EDIT ///////
+/////////////////////////////////////////////////////////////////////////////////////////////
+using Giis.Selema.Framework.Nunit3;
+using Giis.Selema.Manager;
+using Giis.Selema.Portable;
+using Giis.Selema.Services;
+using Giis.Selema.Services.Impl;
+using NUnit.Framework;
+using OpenQA.Selenium;
+using Sharpen;
+
+namespace Test4giis.Selema.Core
+{
+	public class TestCoverage
+	{
+		private IWebDriver driver;
+
+		private static IJsCoverageService recorder = JsCoverService.GetInstance(new Config4test().GetCoverageRoot());
+
+		protected internal SeleniumManager sm = new SeleniumManager(Config4test.GetConfig()).SetManagerDelegate(new Config4test()).SetManageNone().Add(recorder);
+
+		
+		//public LifecycleNunit3Class cw = new LifecycleNunit3Class(sm);
+
+		
+		//public LifecycleNunit3Test tw = new LifecycleNunit3Test(sm);
+
+		internal readonly string TestBmkFolder = FileUtil.GetPath(new SelemaConfig().GetProjectRoot(), "..", "java", "src", "test", "resources", "bmk");
+
+		//interface only to generate compatible NUnit3 translation
+		//Comparara los resultados de cobertura en los siguientes lugares comun para todas las plataformas)
+		[Test]
+		public virtual void TestCoverageAll()
+		{
+			driver = sm.CreateDriver();
+			Asserts.AssertAreEqual("JSCover", driver.Title, "Page to reset coverage");
+			driver.Url = new Config4test().GetCoverageUrl();
+			//sm.watermark();
+			RunCoverageSession1(sm, driver);
+			//simula la finalizacion de un caso y comienzo de otro cerrando el driver y reabriendolo
+			//sin ejecutar nada, deberia tener la cobertura inicial si no se conservase entre sesiones
+			//pero tengo esta mas la final pues SessionManager al iniciar por segunda vez el driver
+			//ha cargado los ultimos valores de cobertura
+			sm.QuitDriver(driver);
+			driver = sm.CreateDriver();
+			Asserts.AssertAreEqual("Restore JSCover coverage to local storage", driver.Title, "Page to reload coverage");
+			driver.Url = new Config4test().GetCoverageUrl();
+			RunCoverageSession2(sm, driver);
+			sm.QuitDriver(driver);
+		}
+
+		//finaliza driver por si ha fallado el anterior pues sm es unmanaged
+		[NUnit.Framework.TearDown]
+		public virtual void TearDown()
+		{
+			if (sm.Driver() != null)
+			{
+				sm.QuitDriver(driver);
+			}
+		}
+
+		/// <summary>Ejecucion sucesiva de acciones que aumentan progresivamente la cobertura</summary>
+		private void RunCoverageSession1(SeleniumManager sm, IWebDriver driver)
+		{
+			string CoverageOutFile = FileUtil.GetPath(Config4test.GetConfig().GetReportDir(), "jscoverage.json");
+			//fichero cobertura generado
+			//cobertura inicial por haber cargado la pagina
+			recorder.BeforeQuitDriver(driver);
+			NUnit.Framework.Assert.AreEqual(FileUtil.FileRead(TestBmkFolder + "/bmk.initial.jscoverage.json"), FileUtil.FileRead(CoverageOutFile));
+			//cobertura intermedia tras ejecutar una accion
+			TestActions.RunAlerts(driver, true, false, false);
+			recorder.BeforeQuitDriver(driver);
+			NUnit.Framework.Assert.AreEqual(FileUtil.FileRead(TestBmkFolder + "/bmk.middle.jscoverage.json"), FileUtil.FileRead(CoverageOutFile));
+			//cobertura final tras ejecutar otra accion
+			TestActions.RunAlerts(driver, false, true, true);
+			recorder.BeforeQuitDriver(driver);
+			NUnit.Framework.Assert.AreEqual(FileUtil.FileRead(TestBmkFolder + "/bmk.final.jscoverage.json"), FileUtil.FileRead(CoverageOutFile));
+		}
+
+		/// <summary>
+		/// Ejecucion de una segunda sesion tras haber abandonado la sesion y reabierto,
+		/// comprueba que la cobertura de la primera sesion no se pierde
+		/// </summary>
+		private void RunCoverageSession2(SeleniumManager sm, IWebDriver driver)
+		{
+			string CoverageOutFile = FileUtil.GetPath(Config4test.GetConfig().GetReportDir(), "jscoverage.json");
+			//fichero cobertura generado
+			recorder.BeforeQuitDriver(driver);
+			NUnit.Framework.Assert.AreEqual(FileUtil.FileRead(TestBmkFolder + "/bmk.final2.jscoverage.json"), FileUtil.FileRead(CoverageOutFile));
+		}
+	}
+}

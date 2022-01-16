@@ -1,0 +1,12 @@
+bin
+obj
+nupkg
+lib
+dist
+packages
+reports
+.vs
+dat/out
+Sharpen-Jars
+Sharpen-Project
+sharpen-temp

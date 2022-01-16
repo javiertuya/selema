@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31911.196
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "samples-selema-nunit3", "samples-selema-nunit3\samples-selema-nunit3.csproj", "{46B05DF8-B75D-4E7F-B105-048C151BE6EC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{46B05DF8-B75D-4E7F-B105-048C151BE6EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46B05DF8-B75D-4E7F-B105-048C151BE6EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46B05DF8-B75D-4E7F-B105-048C151BE6EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46B05DF8-B75D-4E7F-B105-048C151BE6EC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2C42A951-040C-4799-92E8-B5157B1A8E38}
+	EndGlobalSection
+EndGlobal

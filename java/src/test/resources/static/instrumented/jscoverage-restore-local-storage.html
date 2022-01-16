@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<!-- 
+JSCover incluye jscoverage-clear-local-storage.html para hacer reset de la cobertura almacenada en memoria del navegador.
+Cuando se utilizan diferentes sesiones del driver, el navegador puede tambien hacer un reset de la cobertura en memoria del navegador.
+Este archivo se utiliza para recargar la cobertura acumulada desde archivo.
+De esta forma en un test con varias sesiones del driver, tras inicializar el driver, en la primera se llamara a jscoverage-clear-local-storage.html
+y en el resto a este archivo
+-->
+<html lang="en">
+<head>
+    <title>Restore JSCover coverage to local storage</title>
+    <!-- Utiliza los mismos estilos que jscoverage-clear-local-storage.html -->
+    <link rel="stylesheet" type="text/css" href="jscoverage-highlight.css"/>
+    <link rel="stylesheet" type="text/css" href="jscoverage.css"/>
+    <script type="text/javascript">
+        function restoreLocalStorage() {
+            console.log(localStorage['jscover']);
+            localStorage['jscover']=document.getElementById('coverageToRestore').innerText;
+            console.log(localStorage['jscover']);
+        }
+    </script>
+</head>
+
+<div>
+    <div id="headingDiv">
+    <h1>Restore JSCover coverage to local storage</h1>
+    </div>
+    <div class="TabPage" style="display: block;">
+    <div id="coverageToRestore"></div>
+    </div>
+</div>
+</body>
+</html>

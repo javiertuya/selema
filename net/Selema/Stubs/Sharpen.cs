@@ -1,0 +1,6 @@
+﻿namespace Sharpen
+{
+    class Stub
+    {
+    }
+}

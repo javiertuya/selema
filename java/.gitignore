@@ -1,0 +1,6 @@
+target
+dat/out
+.sonar
+#sqlite databases
+*.db 
+

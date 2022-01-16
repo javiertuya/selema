@@ -1,0 +1,4 @@
+20200229 5:55:12.775,1,INFO,"Starting JSCover 2.0.6 file instrumentation",jscover.filesystem.FileSystemInstrumenter,
+20200229 5:55:12.775,1,INFO,"Starting JSCover 2.0.6 file instrumentation",jscover.filesystem.FileSystemInstrumenter,
+20200229 5:55:12.884,11,INFO,"Instrumenting actions.js",jscover.instrument.InstrumenterService,
+20200229 5:55:12.884,11,INFO,"Instrumenting actions.js",jscover.instrument.InstrumenterService,

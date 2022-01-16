@@ -1,0 +1,39 @@
+<html>
+<head>
+    <title>Test for tables</title>
+    <!--scripts para las pruebas de alertas y cobertura js-->
+    <script src="actions.js" type="text/javascript"></script>
+</head>
+<body onload="setTimeout(function(){ document.getElementById('btnDelay').style.visibility='visible'; }, 600);">
+<h1>Selema web test</h1>
+<table>
+<tr><td valign="top" style="border: 1px solid black;">
+
+    <h2>Alerts</h2>
+    <button id="btnAlert" type="button" 
+        onclick="doAlert();">Alert</button>
+    <span id="spanAlert">result</span>
+    <br />
+    <button id="btnConfirm" type="button" 
+        onclick="doConfirm();">Confirm</button>
+    <span id="spanConfirm">result</span>
+    <br />
+    <button id="btnPrompt" type="button" 
+        onclick="doPrompt()">Prompt</button>
+    <span id="spanPrompt">result</span>
+
+</td><td valign="top" style="border: 1px solid black;">
+
+    <h2>Actions</h2>
+    textbox: <input type="text" id="textbox">
+    <br />
+    span: <span id="spanSpan"></span>
+    <br />
+    <button id="btnDelay" type="button" style="visibility: hidden"
+    onclick="setTimeout(function(){ document.getElementById('spanDelay').textContent='TextAfterDelay'; }, 600); ">Delay</button>
+    <span id="spanDelay">(empty)</span>
+
+</td></tr></table>    
+
+</body>
+</html>
