@@ -5,7 +5,7 @@
 
 	<groupId>io.github.javiertuya</groupId>
 	<artifactId>selema</artifactId>
-	<version>1.9.23-SNAPSHOT</version>
+	<version>1.99.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<organization>
 		<name>Software Engineering Research Group - University of Oviedo, ES</name>
@@ -148,12 +148,6 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.7</version>
- 				<configuration>
-				      <excludes>
-				          <exclude>**/visualassert/**/*</exclude>
-				          <exclude>in2test/portable/**/*</exclude>
-				      </excludes>
-				</configuration>
 				<executions>
 					<execution>
 						<id>pre-unit-test</id>
@@ -212,8 +206,7 @@
 										<include name="**/*.xml" />
 									</fileset>
 									<report format="frames" todir="target/site/junit-frames" />
-									<report format="noframes"
-										todir="target/site/junit-noframes" />
+									<report format="noframes" todir="target/site/junit-noframes" />
 								</junitreport>
 							</target>
 						</configuration>
@@ -303,7 +296,7 @@
 
 	<licenses>
 		<license>
-			<name>MIT</name>
+			<name>Apache License 2.0</name>
 			<url>https://github.com/javiertuya/selema/blob/main/LICENSE</url>
 		</license>
 	</licenses>
