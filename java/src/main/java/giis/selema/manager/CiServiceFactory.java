@@ -28,7 +28,7 @@ public class CiServiceFactory {
 	}
 	public boolean isGithub() {
 		String envVar=JavaCs.getEnvironmentVariable("GITHUB_ACTIONS");
-		return envVar!=null && !"true".equals(envVar);
+		return envVar!=null && "true".equals(envVar);
 	}
 	//Gitlab: GITLAB_CI set to true
 }

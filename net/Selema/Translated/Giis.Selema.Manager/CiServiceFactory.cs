@@ -40,7 +40,7 @@ namespace Giis.Selema.Manager
 		public virtual bool IsGithub()
 		{
 			string envVar = JavaCs.GetEnvironmentVariable("GITHUB_ACTIONS");
-			return envVar != null && !"true".Equals(envVar);
+			return envVar != null && "true".Equals(envVar);
 		}
 		//Gitlab: GITLAB_CI set to true
 	}
