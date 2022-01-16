@@ -82,7 +82,6 @@ namespace Test4giis.Selema.Nunit3
 			sm.GetLogger().Info("INSIDE TEST BODY");
 			NUnit.Framework.Assert.AreEqual("result", sm.Driver().FindElement(By.Id("spanAlert")).Text);
 			lfas.AssertAfterPass();
-			sm.VisualAssertEquals("abc", "abc def");
 		}
 	}
 }

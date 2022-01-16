@@ -93,7 +93,6 @@ namespace Test4giis.Selema.Mstest2
 			sm.GetLogger().Info("INSIDE TEST BODY");
 			Microsoft.VisualStudio.TestTools.UnitTesting.Assert.AreEqual("result", sm.Driver().FindElement(By.Id("spanAlert")).Text);
 			lfas.AssertAfterPass();
-			sm.VisualAssertEquals("abc", "abc def");
 		}
 	}
 }
