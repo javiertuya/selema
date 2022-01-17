@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import giis.selema.framework.junit5.LifecycleJunit5;
 import giis.selema.manager.SeleniumManager;
+import giis.selema.services.impl.WatermarkService;
 import io.github.artsok.RepeatedIfExceptionsTest;
 
 /**
@@ -18,8 +19,8 @@ public class TestSampleJunit5 {
 	
 	@Test
 	public void testFailMethod() {
-		sm.driver().get("https://en.wikipedia.org/");
-		assertEquals("XXXX Wikipedia, the free encyclopedia", sm.driver().getTitle());
+		sm.driver().get("https://javiertuya.github.io/selema/samples/");
+		assertEquals("XXXX Selema samples", sm.driver().getTitle());
 	}
 	
 	//Repeated tests demo, uses a counter to simulate failures
@@ -29,10 +30,10 @@ public class TestSampleJunit5 {
 	@Test
 	public void testRepeated() {
 		repetitions++;
-		String expected="Wikipedia, the free encyclopedia";
+		String expected="Selema samples";
 		if (repetitions<3) //fails except last repetition
 			expected="XXX " + expected;
-		sm.driver().get("https://en.wikipedia.org/");
+		sm.driver().get("https://javiertuya.github.io/selema/samples/");
 		assertEquals(expected, sm.driver().getTitle());
 	}
 }

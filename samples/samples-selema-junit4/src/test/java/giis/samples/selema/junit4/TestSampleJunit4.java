@@ -23,8 +23,8 @@ public class TestSampleJunit4 {
 
 	@Test
 	public void testFailMethod() {
-		sm.driver().get("https://en.wikipedia.org/");
-		assertEquals("XXXX Wikipedia, the free encyclopedia", sm.driver().getTitle());
+		sm.driver().get("https://javiertuya.github.io/selema/samples/");
+		assertEquals("XXXX Selema samples", sm.driver().getTitle());
 	}
 	
 	//Repeated tests demo, uses a counter to simulate failures
@@ -34,10 +34,10 @@ public class TestSampleJunit4 {
 	@Test
 	public void testRepeated() {
 		repetitions++;
-		String expected="Wikipedia, the free encyclopedia";
+		String expected="Selema samples";
 		if (repetitions<3) //fails except last repetition
 			expected="XXX " + expected;
-		sm.driver().get("https://en.wikipedia.org/");
+		sm.driver().get("https://javiertuya.github.io/selema/samples/");
 		assertEquals(expected, sm.driver().getTitle());
 	}
 	
