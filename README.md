@@ -147,7 +147,7 @@ See comments in the example for additional explanations:
 
 Test execution produces an html log file `selema-log.html` in the `target` folder (on Java) or `reports` folder (on .NET) 
 with links to screenshots taken when some test fails, difference files and videos. 
-Log info is also sent to the configured application logger (if any).
+Log info is also sent to the configured application logger (if any): slf4j on Java and NLog on .NET.
 
 ![log-example](docs/log-file-example.png "Diff example")
 
@@ -174,7 +174,7 @@ On .NET all packages, classes and methods have the same names, but package and m
 
 ## Log file location
 
-Default location of log files and the log file name can be overriden by pasing a `SelemaConfig` object during SeleniumManager instantiation. 
+Default location of selema log file and log file name can be overriden by pasing a `SelemaConfig` object during SeleniumManager instantiation. 
 SelemaConfig admits the following customization methods (fluent style):
 
 - `setReportSubdir(String subdir)`: changes the name of the report folder (relative to the project root). Default is `target` (on Java) and `reports` (on .NET).
