@@ -1,0 +1,108 @@
+package test4giis.selema.core;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
+import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import giis.selema.framework.junit4.LifecycleJunit4Class;
+import giis.selema.framework.junit4.LifecycleJunit4Test;
+import giis.selema.manager.IAfterEachCallback;
+import giis.selema.manager.SeleniumManager;
+import giis.selema.portable.SelemaException;
+import giis.selema.services.IMediaContext;
+import giis.selema.services.impl.MediaContext;
+import test4giis.selema.core.AfterEachCallback;
+import test4giis.selema.core.LifecycleAsserts;
+import test4giis.selema.core.Config4test;
+import test4giis.selema.core.DriverConfigMaximize;
+
+/**
+ * Checks exceptional situations: Some of them do not raise exceptions, but write in the selema log, 
+ * others should raise exception to the user
+ */
+public class TestExceptions implements IAfterEachCallback {
+	//interfaces not needed by JUnit4, included to generate compatible NUnit3 translation
+	final static Logger log=LoggerFactory.getLogger(TestExceptions.class);
+	protected static LifecycleAsserts lfas=new LifecycleAsserts();
+	protected String currentName() { return "TestExceptions"; }
+	protected static int thisTestCount=0;
+
+	//this sm includes a configuration of the driver (check that driver runs maximized)
+	protected static SeleniumManager sm=new SeleniumManager(Config4test.getConfig())
+			.setManagerDelegate(new Config4test(false))
+			.setManageAtClass()
+			.setDriverDelegate(new DriverConfigMaximize());
+	@ClassRule public static LifecycleJunit4Class cw = new LifecycleJunit4Class(sm);
+	@Rule public LifecycleJunit4Test tw = new LifecycleJunit4Test(sm, new AfterEachCallback(lfas, log, sm));
+
+	protected static WebDriver saveDriver;
+	@Override
+	public void runAfterCallback(String testName, boolean success) { 
+		new AfterEachCallback(lfas, log, sm).runAfterCallback(testName, success);
+	}
+	//Dirty: Driver is managed at class level for performance
+	//but some tests manipulate the driver, save an restore for each test
+	@Before
+	public void setUp() {
+		saveDriver=sm.driver();
+		lfas.assertAfterSetup(sm, false, thisTestCount==0); //ensures correct setup
+		launchPage();
+	}
+	@After
+	public void tearDown() {
+		thisTestCount++; //only 0 in first test
+		sm.replaceDriver(saveDriver);
+	}
+
+	protected void launchPage() {
+		sm.driver().get(new Config4test().getWebUrl()); //siempre usa la misma pagina
+	}
+
+	@Test
+	public void testManagerWithoutConfig() {
+		try {
+			new SeleniumManager(null);
+			fail("Should fail");
+		} catch (SelemaException e) {
+			assertEquals("SeleniumManager instance requires an instance of SelemaConfig", e.getMessage());
+		}
+	}
+	@Test
+	public void testScreenshotException() {
+		//first screenshot pass
+		sm.screenshot("forced-screenshot");
+		lfas.assertLast("[INFO]", "Taking screenshot", "forced-screenshot.png");
+		//forces exception by passing a null driver
+		IMediaContext context=new MediaContext(sm.getConfig().getReportDir(), sm.getConfig().getQualifier(), 99, 99);
+		sm.getScreenshotService().takeScreenshot(null, context, "TestExceptions.testScreenshotInternalException");
+		lfas.assertLast("[ERROR]", "Can't take screenshot or write the content to file", "TestExceptions-testScreenshotInternalException.png");
+	}
+	@Test
+	public void testVisualAssertException() {
+		sm.visualAssertEquals("ab cd", "ab cd"); //first assert pass
+		try {
+			sm.visualAssertEquals("ab cd", "ab xy cd");
+			fail("Should fail");
+		} catch (Throwable e) { 
+		}
+		lfas.assertLast("[WARN]", "Visual Assert differences", "TestExceptions-testVisualAssertException.html");
+	}
+	@Test
+	public void testWatermarkException() {
+		try {
+			sm.watermark();
+			fail("Should fail");
+		} catch (Throwable e) { 
+		}
+		lfas.assertLast("[ERROR]", "Watermark service is not attached to this Selenium Manager");
+	}
+
+}

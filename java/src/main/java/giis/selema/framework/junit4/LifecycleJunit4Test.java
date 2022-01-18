@@ -66,10 +66,5 @@ public class LifecycleJunit4Test extends TestWatcher {
 		if (afterCallback!=null)
 			afterCallback.runAfterCallback(getTestName(), true);
 	}
-	@AfterClass
-	public void tearDownClass() {
-		if (sm!=null)
-			sm.onTearDownClass(className, getTestName());
-	}
 
 }

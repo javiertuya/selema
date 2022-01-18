@@ -54,10 +54,7 @@ namespace Test4giis.Selema.Core
 		[NUnit.Framework.TearDown]
 		public virtual void TearDown()
 		{
-			if (sm.Driver() != null)
-			{
-				sm.QuitDriver(driver);
-			}
+			sm.QuitDriver(driver);
 		}
 
 		/// <summary>Ejecucion sucesiva de acciones que aumentan progresivamente la cobertura</summary>

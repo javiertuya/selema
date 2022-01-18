@@ -14,7 +14,12 @@ import giis.selema.services.impl.WatermarkService;
 public class Config4test implements IManagerConfigDelegate {
 	private String PROPERTIES_FILE=FileUtil.getPath(new SelemaConfig().getProjectRoot(), "selema.properties");
 	private Properties prop;
+	private boolean useWatermark;
 	public Config4test() {
+		this(true);
+	}
+	public Config4test(boolean useWatermark) {
+		this.useWatermark=useWatermark;
 		prop=new PropertiesFactory().getPropertiesFromFilename(PROPERTIES_FILE);
 		if (prop==null)
 			throw new RuntimeException("Can't load test configuration: selema.properties");
@@ -27,8 +32,9 @@ public class Config4test implements IManagerConfigDelegate {
 	
 	//implements the interface IManagerConfig to establish the default configuration for test
 	public void configure(SeleniumManager sm) {
-		sm.setBrowser(getCurrentBrowser()).setDriverUrl(getCurrentDriverUrl())
-				.add(new WatermarkService());
+		sm.setBrowser(getCurrentBrowser()).setDriverUrl(getCurrentDriverUrl());
+		if (useWatermark)
+			sm.add(new WatermarkService());
 		if (useHeadlessDriver())
 			sm.setArguments(new String[] { "--headless" });
 		if (useRemoteWebDriver())

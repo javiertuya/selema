@@ -38,9 +38,9 @@ namespace Giis.Selema.Services.Impl
 				SeleniumActions.TakeScreenshotToFile(driver, fileName);
 				return msg;
 			}
-			catch (Exception)
+			catch (Exception e)
 			{
-				string msg = "Can't take screenshot or write the content to file " + fileName;
+				string msg = "Can't take screenshot or write the content to file " + fileName + ". Message: " + e.Message;
 				if (log != null)
 				{
 					log.Error(msg);

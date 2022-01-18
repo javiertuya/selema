@@ -37,7 +37,7 @@ public class ScreenshotService implements IScreenshotService {
 			SeleniumActions.takeScreenshotToFile(driver, fileName);
 			return msg;
 		} catch (RuntimeException e) {
-			String msg="Can't take screenshot or write the content to file "+fileName;
+			String msg="Can't take screenshot or write the content to file "+fileName+". Message: " + e.getMessage();
 			if (log!=null)
 				log.error(msg);
 			return msg;

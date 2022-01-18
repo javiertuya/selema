@@ -42,14 +42,9 @@ namespace Test4giis.Selema.Core
 			assertItems = new List<string[]>();
 		}
 
-		public virtual void AssertContains(string expected)
+		public virtual void AssertContains(params string[] expected)
 		{
-			assertItems.Add(new string[] { expected, null });
-		}
-
-		public virtual void AssertContains(string expected1, string expected2)
-		{
-			assertItems.Add(new string[] { expected1, expected2 });
+			assertItems.Add(expected);
 		}
 
 		public virtual void AssertEnd()
@@ -64,15 +59,14 @@ namespace Test4giis.Selema.Core
 			{
 				int offset = logLines.Count - assertItems.Count;
 				string actual = SelemaLogger.ReplaceTags(logLines[offset + i]);
-				string expected = assertItems[i][0];
-				if (!actual.ToLower().Contains(expected.ToLower()))
+				for (int j = 0; j < assertItems[i].Length; j++)
 				{
-					sb.Append(GetAssertMessage(offset + i, i, expected, actual));
-				}
-				expected = assertItems[i][1];
-				if (expected != null && !actual.ToLower().Contains(expected.ToLower()))
-				{
-					sb.Append(GetAssertMessage(offset + i, i, expected, actual));
+					//each of the items that must be included in the current log line
+					string expected = assertItems[i][j];
+					if (!actual.ToLower().Contains(expected.ToLower()))
+					{
+						sb.Append(GetAssertMessage(offset + i, i, expected, actual));
+					}
 				}
 			}
 			if (sb.Length > 0)

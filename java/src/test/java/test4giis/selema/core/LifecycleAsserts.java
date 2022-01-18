@@ -23,6 +23,13 @@ public class LifecycleAsserts {
 		assertEquals(expected.toLowerCase(), actual.toLowerCase());
 	}
 	
+	//checks only last line of log
+	public void assertLast(String... expected) {
+		logReader.assertBegin();
+		logReader.assertContains(expected);
+		logReader.assertEnd();
+	}
+	
 	//to check inside the test body at the beginning
 	public void assertAfterSetup(SeleniumManager sm, boolean browserAfter) {
 		assertAfterSetup(sm, browserAfter, false);

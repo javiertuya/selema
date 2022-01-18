@@ -32,11 +32,8 @@ public class LogReader {
 		logLines=FileUtil.fileReadLines(logFile);
 		assertItems=new ArrayList<String[]>();
 	}
-	public void assertContains(String expected) {
-		assertItems.add(new String[] {expected, null} );
-	}
-	public void assertContains(String expected1, String expected2) {
-		assertItems.add(new String[] {expected1, expected2} );
+	public void assertContains(String... expected) {
+		assertItems.add(expected);
 	}
 	public void assertEnd() {
 		if (assertItems.size()>logLines.size())
@@ -46,12 +43,11 @@ public class LogReader {
 		for (int i=0; i<assertItems.size(); i++) {
 			int offset=logLines.size()-assertItems.size();
 			String actual=SelemaLogger.replaceTags(logLines.get(offset+i));
-			String expected=assertItems.get(i)[0];
-			if (!actual.toLowerCase().contains(expected.toLowerCase()))
-				sb.append(getAssertMessage(offset+i, i, expected, actual));
-			expected=assertItems.get(i)[1];
-			if (expected!=null && !actual.toLowerCase().contains(expected.toLowerCase()))
-				sb.append(getAssertMessage(offset+i, i, expected, actual));
+			for (int j=0; j<assertItems.get(i).length; j++) { //each of the items that must be included in the current log line
+				String expected=assertItems.get(i)[j];
+				if (!actual.toLowerCase().contains(expected.toLowerCase()))
+					sb.append(getAssertMessage(offset+i, i, expected, actual));
+			}
 		}
 		if (sb.length()>0)
 			throw new SelemaException("LogReader has differences:\n" + sb.toString());

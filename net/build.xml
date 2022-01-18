@@ -195,6 +195,7 @@
       <include name="Test4giis*/**" />
       <replacefilter token="LogManager.GetLogger(this.GetType())" value="LogManager.GetCurrentClassLogger()" />
       <replacefilter token="LogManager.GetLogger(typeof(LogFactory))" value="LogManager.GetCurrentClassLogger()" />
+      <replacefilter token="LogManager.GetLogger(typeof(TestExceptions))" value="LogManager.GetCurrentClassLogger()" />
       <replacefilter token="LogManager.GetLogger(typeof(TestLifecycle4))" value="LogManager.GetCurrentClassLogger()" />
       <replacefilter token="LogManager.GetLogger(typeof(TestLifecycle4ClassManaged))" value="LogManager.GetCurrentClassLogger()" />
       <replacefilter token="LogManager.GetLogger(typeof(TestLifecycle4Unmanaged))" value="LogManager.GetCurrentClassLogger()" />
@@ -209,6 +210,7 @@
       <replacefilter token="protected internal static SeleniumManager" value="protected internal SeleniumManager" />
       <replacefilter token="public class TestLifecycle4" value="[LifecycleNunit3] public class TestLifecycle4" />
       <replacefilter token="public class TestActions" value="[LifecycleNunit3] public class TestActions" />
+      <replacefilter token="public class TestExceptions" value="[LifecycleNunit3] public class TestExceptions" />
       <replacefilter token="public virtual void TestRepeated()" value="[Retry(3)] public virtual void TestRepeated()" />
       <replacefilter token="[LifecycleNunit3] public class TestLifecycle4Inherited" value="public class TestLifecycle4Inherited" />
     </replace>

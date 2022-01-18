@@ -25,7 +25,10 @@ public class TestLifecycle4Repeated implements IAfterEachCallback {
 	final static Logger log=LoggerFactory.getLogger(TestLifecycle4Repeated.class);
 	protected static LifecycleAsserts lfas=new LifecycleAsserts();
 
-	protected static SeleniumManager sm=new SeleniumManager(Config4test.getConfig()).setManagerDelegate(new Config4test()).add(new WatermarkService());
+	protected static SeleniumManager sm=new SeleniumManager(Config4test.getConfig())
+			.setManagerDelegate(new Config4test())
+			.add(new WatermarkService())
+			.setMaximize(true);
 	@ClassRule public static LifecycleJunit4Class cw = new LifecycleJunit4Class(sm);
 	@Rule public LifecycleJunit4Test tw = new LifecycleJunit4Test(sm, new AfterEachCallback(lfas, log, sm));
 	@Rule public RepeatedTestRule repeatRule = new RepeatedTestRule(sm, new AfterEachCallback(lfas, log, sm));
@@ -35,11 +38,6 @@ public class TestLifecycle4Repeated implements IAfterEachCallback {
 		new AfterEachCallback(lfas, log, sm).runAfterCallback(testName, success);
 	}
 	
-	//@Test
-	//public void testXXX() {
-	//	assertTrue(true);
-	//}
-
 	@Before
 	public void setUp() {
 		sm.driver().get(new Config4test().getWebUrl());

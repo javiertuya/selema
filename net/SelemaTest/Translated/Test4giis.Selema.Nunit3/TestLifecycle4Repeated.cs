@@ -17,7 +17,7 @@ namespace Test4giis.Selema.Nunit3
 
 		protected internal static LifecycleAsserts lfas = new LifecycleAsserts();
 
-		protected internal SeleniumManager sm = new SeleniumManager(Config4test.GetConfig()).SetManagerDelegate(new Config4test()).Add(new WatermarkService());
+		protected internal SeleniumManager sm = new SeleniumManager(Config4test.GetConfig()).SetManagerDelegate(new Config4test()).Add(new WatermarkService()).SetMaximize(true);
 
 		
 		//public LifecycleNunit3Class cw = new LifecycleNunit3Class(sm);
@@ -33,10 +33,6 @@ namespace Test4giis.Selema.Nunit3
 			new AfterEachCallback(lfas, log, sm).RunAfterCallback(testName, success);
 		}
 
-		//@Test
-		//public void testXXX() {
-		//	assertTrue(true);
-		//}
 		[NUnit.Framework.SetUp]
 		public virtual void SetUp()
 		{

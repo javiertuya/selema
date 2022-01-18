@@ -1,6 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// THIS FILE HAS BEEN AUTOMATICALLY CONVERTED FROM THE JAVA SOURCES. DO NOT EDIT ///////
 /////////////////////////////////////////////////////////////////////////////////////////////
+using System;
 using Giis.Selema.Framework.Nunit3;
 using Giis.Selema.Manager;
 using NLog;
@@ -44,15 +45,15 @@ namespace Test4giis.Selema.Nunit3
 			//no debe haber driver activo
 			try
 			{
-				sm.GetLogger().Info("INSIDE TEST BODY");
 				sm.Driver().Url = new Config4test().GetWebUrl();
 				//siempre usa la misma pagina
 				NUnit.Framework.Assert.Fail("should fail");
 			}
-			catch
+			catch (Exception e)
 			{
-				lfas.AssertAfterPass();
+				NUnit.Framework.Assert.AreEqual("The Selenium Manager does not have any active WebDriver", e.Message);
 			}
+			lfas.AssertLast("[ERROR]", "The Selenium Manager does not have any active WebDriver");
 		}
 
 		[Test]
@@ -67,6 +68,8 @@ namespace Test4giis.Selema.Nunit3
 			//siempre usa la misma pagina
 			lfas.AssertAfterPass();
 			sm.QuitDriver(driver);
+			sm.QuitDriver(driver);
+			//ensures can be called multiple times
 			//despues de cerrar el driver se guardan los videos, estas acciones se deben comprobar antes del teardown para driver remoto
 			if (!string.Empty.Equals(sm.GetDriverUrl()))
 			{

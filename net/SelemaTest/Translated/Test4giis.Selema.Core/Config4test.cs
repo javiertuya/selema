@@ -16,8 +16,16 @@ namespace Test4giis.Selema.Core
 
 		private Properties prop;
 
+		private bool useWatermark;
+
 		public Config4test()
+			: this(true)
 		{
+		}
+
+		public Config4test(bool useWatermark)
+		{
+			this.useWatermark = useWatermark;
 			prop = new PropertiesFactory().GetPropertiesFromFilename(PropertiesFile);
 			if (prop == null)
 			{
@@ -35,7 +43,11 @@ namespace Test4giis.Selema.Core
 		//implements the interface IManagerConfig to establish the default configuration for test
 		public virtual void Configure(SeleniumManager sm)
 		{
-			sm.SetBrowser(GetCurrentBrowser()).SetDriverUrl(GetCurrentDriverUrl()).Add(new WatermarkService());
+			sm.SetBrowser(GetCurrentBrowser()).SetDriverUrl(GetCurrentDriverUrl());
+			if (useWatermark)
+			{
+				sm.Add(new WatermarkService());
+			}
 			if (UseHeadlessDriver())
 			{
 				sm.SetArguments(new string[] { "--headless" });

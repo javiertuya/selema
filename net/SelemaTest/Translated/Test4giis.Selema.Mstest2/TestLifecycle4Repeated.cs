@@ -21,7 +21,7 @@ namespace Test4giis.Selema.Mstest2
           protected internal static SeleniumManager sm;
 		public TestLifecycle4Repeated() {
         
-         sm = LifecycleMstest2.GetManager(sm,Config4test.GetConfig()).SetManagerDelegate(new Config4test()).Add(new WatermarkService());
+         sm = LifecycleMstest2.GetManager(sm,Config4test.GetConfig()).SetManagerDelegate(new Config4test()).Add(new WatermarkService()).SetMaximize(true);
 
 		
 		} //public LifecycleMstest2Class cw = new LifecycleMstest2Class(sm);
@@ -44,10 +44,6 @@ namespace Test4giis.Selema.Mstest2
 			new AfterEachCallback(lfas, log, sm).RunAfterCallback(testName, success);
 		}
 
-		//@Test
-		//public void testXXX() {
-		//	assertTrue(true);
-		//}
 		[TestInitialize]
 		public override void SetUp()
 		{

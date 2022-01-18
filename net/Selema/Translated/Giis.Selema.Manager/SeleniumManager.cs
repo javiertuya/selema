@@ -33,19 +33,14 @@ namespace Giis.Selema.Manager
 
 		private IWebDriver currentDriver = null;
 
-		//general purpose logger
-		//SeleniumManager html log
-		//empty is local
-		//Currently managed driver
-		public virtual IWebDriver Driver()
-		{
-			return currentDriver;
-		}
-
 		private string currentClassName = string.Empty;
 
 		private string currentTestName = string.Empty;
 
+		//general purpose logger
+		//SeleniumManager html log
+		//empty is local
+		//Currently managed driver
 		//Current context, only used for external calls from tests as watermark or getting driver in unmanaged mode
 		public virtual string CurrentClassName()
 		{
@@ -110,7 +105,11 @@ namespace Giis.Selema.Manager
 			//keeps track of the kind of session
 			//to avoid duplicate downloads of local drivers
 			//Behaviour parameters
-			conf = selemaConfig == null ? new SelemaConfig() : selemaConfig;
+			if (selemaConfig == null)
+			{
+				throw new SelemaException("SeleniumManager instance requires an instance of SelemaConfig");
+			}
+			conf = selemaConfig;
 			//ensures report folder is available
 			FileUtil.CreateDirectory(conf.GetReportDir());
 			this.selemaLog = new LogFactory().GetLogger(conf.GetName(), conf.GetReportDir(), conf.GetLogName());
@@ -266,14 +265,14 @@ namespace Giis.Selema.Manager
 			return this.ciService;
 		}
 
+		public virtual IScreenshotService GetScreenshotService()
+		{
+			return this.screenshotService;
+		}
+
 		public virtual IWatermarkService GetWatermarkService()
 		{
 			return this.watermark;
-		}
-
-		public virtual IVisualAssertService GetVisualAssertService()
-		{
-			return this.visualAssertService;
 		}
 
 		public virtual bool UsesRemoteDriver()
@@ -282,6 +281,18 @@ namespace Giis.Selema.Manager
 		}
 
 		//Driver management
+		/// <summary>Gets the current driver managed, logs and throws exception is not set</summary>
+		/// <returns/>
+		public virtual IWebDriver Driver()
+		{
+			if (currentDriver == null)
+			{
+				selemaLog.Error("The Selenium Manager does not have any active WebDriver");
+				throw new SelemaException("The Selenium Manager does not have any active WebDriver");
+			}
+			return currentDriver;
+		}
+
 		/// <summary>Gets a new WebDriver for the specified class and test.</summary>
 		/// <remarks>Gets a new WebDriver for the specified class and test. For inernal use only</remarks>
 		public virtual IWebDriver CreateDriver(string className, string testName)
@@ -446,34 +457,30 @@ namespace Giis.Selema.Manager
 		/// <summary>Takes a screenshot to a file that will be linked to the log</summary>
 		public virtual void Screenshot(string fileName)
 		{
-			if (screenshotService != null && currentDriver != null)
-			{
-				screenshotService.TakeScreenshot(currentDriver, mediaScreenshotContext, fileName);
-			}
+			screenshotService.TakeScreenshot(this.Driver(), mediaScreenshotContext, fileName);
 		}
 
 		/// <summary>Places a watermark with the test name (requires the watermark service be attached)</summary>
 		public virtual void Watermark()
 		{
-			if (watermark != null && currentDriver != null)
-			{
-				watermark.Write(currentDriver, currentTestName);
-			}
+			WatermarkText(currentTestName);
 		}
 
 		/// <summary>Places a watermark with a given text (requires the watermark service be attached)</summary>
 		public virtual void WatermarkText(string value)
 		{
-			if (watermark != null && currentDriver != null)
+			if (watermark == null)
 			{
-				watermark.Write(currentDriver, value);
+				selemaLog.Error("Watermark service is not attached to this Selenium Manager");
+				throw new SelemaException("Watermark service is not attached to this Selenium Manager");
 			}
+			watermark.Write(this.Driver(), value);
 		}
 
 		/// <summary>Asserts if two large strings and links the html differences to the log</summary>
 		public virtual void VisualAssertEquals(string expected, string actual)
 		{
-			visualAssertService.AssertEquals(expected, actual, string.Empty, mediaDiffContext, currentTestName);
+			VisualAssertEquals(expected, actual, string.Empty);
 		}
 
 		/// <summary>Asserts if two large strings and links the html differences to the log</summary>

@@ -29,6 +29,14 @@ namespace Test4giis.Selema.Core
 			NUnit.Framework.Assert.AreEqual(expected.ToLower(), actual.ToLower());
 		}
 
+		//checks only last line of log
+		public virtual void AssertLast(params string[] expected)
+		{
+			logReader.AssertBegin();
+			logReader.AssertContains(expected);
+			logReader.AssertEnd();
+		}
+
 		//to check inside the test body at the beginning
 		public virtual void AssertAfterSetup(SeleniumManager sm, bool browserAfter)
 		{

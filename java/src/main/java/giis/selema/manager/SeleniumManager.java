@@ -12,6 +12,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 
 import giis.selema.portable.FileUtil;
 import giis.selema.portable.JavaCs;
+import giis.selema.portable.SelemaException;
 import giis.selema.services.IBrowserService;
 import giis.selema.services.ICiService;
 import giis.selema.services.IJsCoverageService;
@@ -41,7 +42,6 @@ public class SeleniumManager {
 	
 	//Currently managed driver
 	private WebDriver currentDriver=null;
-	public WebDriver driver() { return currentDriver; }
 	//Current context, only used for external calls from tests as watermark or getting driver in unmanaged mode
 	private String currentClassName="";
 	private String currentTestName="";
@@ -82,7 +82,9 @@ public class SeleniumManager {
 	 * Creates an instance with a given configuration
 	 */
 	public SeleniumManager(SelemaConfig selemaConfig) { 
-		conf = selemaConfig==null ? new SelemaConfig() : selemaConfig;
+		if (selemaConfig==null)
+			throw new SelemaException("SeleniumManager instance requires an instance of SelemaConfig");
+		conf = selemaConfig;
 		//ensures report folder is available
 		FileUtil.createDirectory(conf.getReportDir());
 		this.selemaLog=new LogFactory().getLogger(conf.getName(), conf.getReportDir(), conf.getLogName());
@@ -231,11 +233,11 @@ public class SeleniumManager {
 	public ICiService getCiService() {
 		return this.ciService;
 	}
+	public IScreenshotService getScreenshotService() {
+		return this.screenshotService;
+	}
 	public IWatermarkService getWatermarkService() {
 		return this.watermark;
-	}
-	public IVisualAssertService getVisualAssertService() {
-		return this.visualAssertService;
 	}
 
 	public boolean usesRemoteDriver() {
@@ -244,6 +246,17 @@ public class SeleniumManager {
 	
 	//Driver management
 	
+	/**
+	 * Gets the current driver managed, logs and throws exception is not set
+	 * @return
+	 */
+	public WebDriver driver() {
+		if (currentDriver==null) {
+			selemaLog.error("The Selenium Manager does not have any active WebDriver");
+			throw new SelemaException("The Selenium Manager does not have any active WebDriver");
+		}
+		return currentDriver; 
+	}
     /**
 	 * Gets a new WebDriver for the specified class and test. For inernal use only
 	 */
@@ -365,28 +378,29 @@ public class SeleniumManager {
 	 * Takes a screenshot to a file that will be linked to the log
 	 */
 	public void screenshot(String fileName) {
-		if (screenshotService!=null && currentDriver!=null)
-			screenshotService.takeScreenshot(currentDriver, mediaScreenshotContext, fileName);
+		screenshotService.takeScreenshot(this.driver(), mediaScreenshotContext, fileName);
 	}
 	/**
 	 * Places a watermark with the test name (requires the watermark service be attached)
 	 */
 	public void watermark() {
-		if (watermark!=null && currentDriver!=null)
-			watermark.write(currentDriver, currentTestName);
+		watermarkText(currentTestName);
 	}
 	/**
 	 * Places a watermark with a given text (requires the watermark service be attached)
 	 */
 	public void watermarkText(String value) {
-		if (watermark!=null && currentDriver!=null)
-			watermark.write(currentDriver, value);
+		if (watermark==null) {
+			selemaLog.error("Watermark service is not attached to this Selenium Manager");
+			throw new SelemaException("Watermark service is not attached to this Selenium Manager");
+		}
+		watermark.write(this.driver(), value);
 	}
 	/**
 	 * Asserts if two large strings and links the html differences to the log
 	 */
 	public void visualAssertEquals(String expected, String actual) {
-		visualAssertService.assertEquals(expected, actual, "", mediaDiffContext, currentTestName);
+		visualAssertEquals(expected, actual, "");
 	}
 	/**
 	 * Asserts if two large strings and links the html differences to the log

@@ -62,29 +62,6 @@ public class FileUtil {
 		FileFilter fileFilter = new WildcardFileFilter(fileNameWildcard);
 		return dir.listFiles(fileFilter);
 	}
-	public static List<String> getFileListInDirectory(String path) {
-		List<String> lst=new ArrayList<>();
-		try {
-			File dir=new File(path);
-			for(File file: dir.listFiles()) {
-				lst.add(file.getName());
-			}
-		} catch (RuntimeException e) {
-			throw new SelemaException("Can't browse directory at path " + path);
-		}
-		return lst;
-	}
-	public static void deleteFilesInDirectory(String path) {
-		//No recursivo, solo ficheros
-		File dir=new File(path);
-		if (dir.exists())
-			for(File file: dir.listFiles()) 
-				if (!file.isDirectory()) {
-					boolean success=file.delete(); //NOSONAR
-					if (!success)
-						throw new SelemaException("Can't delete file " + file.getName());
-				}
-	}
 
 	public static String getPath(String first, String... more) {
 		String result=first;

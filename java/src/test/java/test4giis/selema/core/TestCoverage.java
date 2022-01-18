@@ -46,8 +46,7 @@ public class TestCoverage {  //interface only to generate compatible NUnit3 tran
 	//finaliza driver por si ha fallado el anterior pues sm es unmanaged
 	@After
 	public void tearDown() {
-		if (sm.driver()!=null)
-			sm.quitDriver(driver);
+		sm.quitDriver(driver);
 	}
 	/**
 	 * Ejecucion sucesiva de acciones que aumentan progresivamente la cobertura

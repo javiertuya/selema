@@ -1,5 +1,6 @@
 package test4giis.selema.junit4;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import org.slf4j.Logger;
@@ -38,12 +39,12 @@ public class TestLifecycle4Unmanaged implements IAfterEachCallback{
 		lfas.assertAfterSetup(sm, false);
 		//no debe haber driver activo
 		try {
-			sm.getLogger().info("INSIDE TEST BODY");
 			sm.driver().get(new Config4test().getWebUrl()); //siempre usa la misma pagina
 			fail("should fail");
 		} catch (Throwable e) {
-			lfas.assertAfterPass();
+			assertEquals("The Selenium Manager does not have any active WebDriver", e.getMessage());
 		}
+		lfas.assertLast("[ERROR]", "The Selenium Manager does not have any active WebDriver");
 	}
 	@Test
 	public void testWithDriver() {
@@ -55,6 +56,7 @@ public class TestLifecycle4Unmanaged implements IAfterEachCallback{
 		driver.get(new Config4test().getWebUrl()); //siempre usa la misma pagina
 		lfas.assertAfterPass();
 		sm.quitDriver(driver);
+		sm.quitDriver(driver); //ensures can be called multiple times
 		//despues de cerrar el driver se guardan los videos, estas acciones se deben comprobar antes del teardown para driver remoto
 		if (!"".equals(sm.getDriverUrl())) {
 			lfas.getLogReader().assertBegin();
