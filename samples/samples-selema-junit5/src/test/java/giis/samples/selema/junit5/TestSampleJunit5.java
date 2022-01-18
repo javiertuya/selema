@@ -6,7 +6,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import giis.selema.framework.junit5.LifecycleJunit5;
 import giis.selema.manager.SeleniumManager;
-import giis.selema.services.impl.WatermarkService;
 import io.github.artsok.RepeatedIfExceptionsTest;
 
 /**

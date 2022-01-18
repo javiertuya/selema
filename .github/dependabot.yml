@@ -5,12 +5,16 @@ updates:
     schedule:
       interval: daily
     open-pull-requests-limit: 20
+    assignees:
+      - "javiertuya" 
 
   - package-ecosystem: nuget
     directory: "/net/SelemaTest"
     schedule:
       interval: daily
     open-pull-requests-limit: 20
+    assignees:
+      - "javiertuya" 
     #avoid updates of frameworks versions to avoid deprecation warning/errors
   - package-ecosystem: nuget
     directory: "/net/Selema"
@@ -23,4 +27,19 @@ updates:
         update-types: ["version-update:semver-major"]
     schedule:
       interval: daily
+    assignees:
+      - "javiertuya" 
     open-pull-requests-limit: 20
+
+  - package-ecosystem: maven
+    directory: "/samples"
+    schedule:
+      interval: daily
+    assignees:
+      - "javiertuya" 
+  - package-ecosystem: nuget
+    directory: "/samples"
+    schedule:
+      interval: daily
+    assignees:
+      - "javiertuya" 
