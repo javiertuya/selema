@@ -1,4 +1,5 @@
 ![Status](https://github.com/javiertuya/selema/actions/workflows/test.yml/badge.svg)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=my%3Aselema&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=my%3Aselema)
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.javiertuya/selema)](https://search.maven.org/artifact/io.github.javiertuya/selema)
 [![Nuget](https://img.shields.io/nuget/v/Selema)](https://www.nuget.org/packages/Selema/)
 
