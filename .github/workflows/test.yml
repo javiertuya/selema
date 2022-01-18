@@ -113,7 +113,65 @@ jobs:
         if: ${{ always() && matrix.platform=='java' }}
         uses: actions/upload-artifact@v2
         with:
-          name: "test-report-${{ matrix.platform }}-${{ matrix.mode }}-for-sonar"
+          name: "sonar-${{ matrix.platform }}-${{ matrix.mode }}"
           path: |
             java/target/surefire-reports
             java/target/site/jacoco/jacoco.xml
+
+  sonarqube:
+    needs: [test]
+    #if: ${{ false }}  # disable for now
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: java
+    steps: #Recommended Sonarcloud configuration
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Cache Maven packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      #Comple and restore reports
+      - name: Generate classes
+        run: mvn test-compile --no-transfer-progress
+      - name: Restore test reports - headless
+        uses: actions/download-artifact@v2
+        with:
+          name: sonar-java-headless
+          path: java/target-headless
+      - name: Restore test reports - selenoid
+        uses: actions/download-artifact@v2
+        with:
+          name: sonar-java-selenoid
+          path: java/target-selenoid
+
+      #Manual exeuction, maven plugin does not read sonar-project.properties nor .sonarcloud.properties
+      - name: Download sonarscanner
+        run: curl --insecure -o ./sonarscanner.zip -L https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip && unzip -q sonarscanner.zip
+      - name: SonarQube Analysis
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.projectKey=my:selema -Dsonar.organization=giis
+      - name: SonarQube Quality Gate check
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with: #needs location because is not aware of working-directory
+          scanMetadataReportFile: java/.scannerwork/report-task.txt
