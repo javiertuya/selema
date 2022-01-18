@@ -19,21 +19,13 @@ public class FileUtil {
 	    throw new IllegalAccessError("Utility class");
 	  }
 	
-	public static String fileRead(String fileName, boolean throwIfNotExists) {
+	public static String fileRead(String fileName) {
 		try {
 			File f=new File(fileName);
-			if (f.exists())
-				return FileUtils.readFileToString(f, UTF_8);
-			if (throwIfNotExists)
-				throw new SelemaException("File does not exist "+fileName);
-			else
-				return null;
+			return FileUtils.readFileToString(f, UTF_8);
 		} catch (IOException e) {
 			throw new SelemaException(e);
 		}
-	}
-	public static String fileRead(String fileName) {
-		return fileRead(fileName, true);
 	}
 	public static List<String> fileReadLines(String fileName) {
 		try {
@@ -102,13 +94,6 @@ public class FileUtil {
 		for (int i=0; i<more.length; i++)
 			result=FilenameUtils.concat(result, more[i]);
         return result;
-    }
-	//Variantes sin array dinamico para compatibilidad con downgrade a jdk4 realizado por retrotranslator
-	public static String getPath(String first, String more1) {
-		return getPath(first, new String[] {more1}); //NOSONAR necesario por compatibilidad
-    }
-	public static String getPath(String first, String more1, String more2) {
-		return getPath(first, new String[] {more1, more2}); //NOSONAR necesario por compatibilidad
     }
 
 	public static String getFullPath(String path)

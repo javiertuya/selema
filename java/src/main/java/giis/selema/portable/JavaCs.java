@@ -16,9 +16,6 @@ public class JavaCs {
 	private JavaCs() {
 	    throw new IllegalAccessError("Utility class");
 	}
-	public static boolean equalsIgnoreCase(String thisString, String anotherString) {
-		return thisString.equalsIgnoreCase(anotherString);
-	}
 	public static String substring(String fromString, int beginIndex) {
 		return fromString.substring(beginIndex);
 	}
@@ -27,15 +24,6 @@ public class JavaCs {
 	}
 	public static String intToString(int value) {
 		return Integer.toString(value);
-	}
-	public static String join(String separator, String[] values) {
-		StringBuilder sb=new StringBuilder(); //no usa join porque no compila con sharpen
-		for (int i=0; i<values.length; i++)
-			sb.append((i==0 ? "" : separator) + values[i]);
-	    return sb.toString();
-	}
-	public static String[] toArray(List<String> lst) {
-	       return lst.toArray(new String[lst.size()]);
 	}
 	public static String deepToString(String[] strArray) {
 		return Arrays.deepToString(strArray);
@@ -63,11 +51,6 @@ public class JavaCs {
 		return System.getenv(name); //NOSONAR
 	}
 	
-	//needed because the C# version with NLog exchanges the parameter order used in slf4j
-	public static void loggerError(Logger logger, String message, Throwable e) {
-		logger.error(message, e);
-	}
-
 	public static Date getCurrentDate() {
 		return new Date();
 	}
@@ -77,14 +60,11 @@ public class JavaCs {
 	public static long currentTimeMillis() {
 		return System.currentTimeMillis();
 	}
-	public static void sleep(int millis) {
+	public static void sleep(long millis) {
 		try {
 			Thread.sleep((long)millis);
 		} catch (Exception e1) { //NOSONAR
 			throw new SelemaException("Exception in Thread.Sleep",e1);
 		}
-	}
-	public static String getUniqueId() {
-		return UUID.randomUUID().toString();
 	}
 }

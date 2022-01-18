@@ -11,34 +11,11 @@ namespace Giis.Selema.Portable
     /// </summary>
     public static class JavaCs
 	{
-		public static bool EqualsIgnoreCase(string thisString, string anotherString)
-		{
-            return thisString.Equals(anotherString, System.StringComparison.CurrentCultureIgnoreCase);
-        }
-
-        public static string Substring(string fromString, int beginIndex)
-		{
-            return fromString.Substring(beginIndex);
-        }
-
         public static string Substring(string fromString, int beginIndex, int endIndex)
 		{
             return fromString.Substring(beginIndex, endIndex-beginIndex);
         }
 
-        public static string IntToString(int value)
-        {
-            return value.ToString();
-        }
-
-        public static string Join(string separator, string[] values)
-        {
-            return String.Join(separator, values);
-        }
-        public static string[] ToArray(List<string> lst)
-		{
-            return lst.ToArray();
-        }
         public static string DeepToString(string[] strArray)
         {
             StringBuilder sb = new StringBuilder();
@@ -86,11 +63,6 @@ namespace Giis.Selema.Portable
             return Environment.GetEnvironmentVariable(name);
         }
 
-        public static void LoggerError(Logger logger, string message, Exception e)
-        {
-            logger.Error(e, message);
-        }
-
         public static DateTime GetCurrentDate()
         {
             return DateTime.Now;
@@ -106,10 +78,6 @@ namespace Giis.Selema.Portable
         public static void Sleep(int millis)
         {
             System.Threading.Thread.Sleep(millis);
-        }
-        public static string GetUniqueId()
-        {
-            return Guid.NewGuid().ToString();
         }
     }
 }
