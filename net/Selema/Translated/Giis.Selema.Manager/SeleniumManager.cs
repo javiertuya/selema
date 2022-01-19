@@ -7,7 +7,6 @@ using Giis.Selema.Services;
 using Giis.Selema.Services.Impl;
 using NLog;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Remote;
 using Sharpen;
 
 namespace Giis.Selema.Manager
@@ -68,8 +67,6 @@ namespace Giis.Selema.Manager
 
 		private bool lastSessionRemote = false;
 
-		private IList<string> driversWithSetupDone = new List<string>();
-
 		private SelemaConfig conf = null;
 
 		private IDriverConfigDelegate driverConfig = null;
@@ -103,7 +100,6 @@ namespace Giis.Selema.Manager
 			//uniquely identifies each instance of this class
 			//uniquely identifies each session (new driver) created by this instance
 			//keeps track of the kind of session
-			//to avoid duplicate downloads of local drivers
 			//Behaviour parameters
 			if (selemaConfig == null)
 			{
@@ -260,11 +256,6 @@ namespace Giis.Selema.Manager
 			return this.selemaLog;
 		}
 
-		public virtual ICiService GetCiService()
-		{
-			return this.ciService;
-		}
-
 		public virtual IScreenshotService GetScreenshotService()
 		{
 			return this.screenshotService;
@@ -301,7 +292,7 @@ namespace Giis.Selema.Manager
 			mediaVideoContext = new MediaContext(conf.GetReportDir(), conf.GetQualifier(), instanceCount, sessionCount);
 			mediaScreenshotContext = new MediaContext(conf.GetReportDir(), conf.GetQualifier(), instanceCount, sessionCount);
 			mediaDiffContext = new MediaContext(conf.GetReportDir(), conf.GetQualifier(), instanceCount, sessionCount);
-			if (!JavaCs.IsEmpty(currentDriverUrl))
+			if (this.UsesRemoteDriver())
 			{
 				lastSessionRemote = true;
 				selemaLog.Info("Remote session " + currentBrowser + " starting...");
@@ -313,7 +304,7 @@ namespace Giis.Selema.Manager
 				{
 					videoRecorder.BeforeCreateDriver();
 				}
-				RemoteWebDriver rdriver = GetRemoteSeleniumDriver(driverScope);
+				IWebDriver rdriver = GetRemoteSeleniumDriver(driverScope);
 				if (videoRecorder != null)
 				{
 					videoRecorder.AfterCreateDriver(rdriver);
@@ -491,17 +482,10 @@ namespace Giis.Selema.Manager
 
 		private IWebDriver GetLocalSeleniumDriver()
 		{
-			//Uses a WebDriverManager, setup is only done once per browser
-			SeleniumDriverFactory factory = new SeleniumDriverFactory();
-			if (!driversWithSetupDone.Contains(currentBrowser))
-			{
-				factory.DownloadLocalDriver(currentBrowser);
-				driversWithSetupDone.Add(currentBrowser);
-			}
-			return factory.GetLocalSeleniumDriver(currentBrowser, currentOptions, currentArguments);
+			return new SeleniumDriverFactory().GetSeleniumDriver(currentBrowser, string.Empty, currentOptions, currentArguments);
 		}
 
-		private RemoteWebDriver GetRemoteSeleniumDriver(string driverScope)
+		private IWebDriver GetRemoteSeleniumDriver(string driverScope)
 		{
 			//prepara las opciones anyadiendo a las definidas al configurar, las requeridas por los diferentes servicios
 			IDictionary<string, object> allOptions = new Dictionary<string, object>();
@@ -527,7 +511,7 @@ namespace Giis.Selema.Manager
 			{
 				allOptions["selenoid:options"] = selenoidOptions;
 			}
-			return new SeleniumDriverFactory().GetRemoteSeleniumDriver(currentBrowser, currentDriverUrl, allOptions, currentArguments);
+			return new SeleniumDriverFactory().GetSeleniumDriver(currentBrowser, currentDriverUrl, allOptions, currentArguments);
 		}
 	}
 }

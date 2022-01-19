@@ -15,5 +15,9 @@ namespace Giis.Selema.Framework.Nunit3
         {
             StringAssert.Contains(substring, value);
         }
+        public static void AssertIsTrue(bool condition, string message)
+        {
+            Assert.IsTrue(condition, message);
+        }
     }
 }

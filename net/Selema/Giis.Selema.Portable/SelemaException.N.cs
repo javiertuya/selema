@@ -1,3 +1,4 @@
+using NLog;
 using System;
 
 namespace Giis.Selema.Portable
@@ -12,5 +13,8 @@ namespace Giis.Selema.Portable
 		public SelemaException(string message) : base(message) { }
 
 		public SelemaException(string message, Exception cause) : base(message, cause) { }
+		public SelemaException(Logger log, string message, Exception cause) : base(message, cause) {
+			log.Error(cause, message);
+		}
 	}
 }

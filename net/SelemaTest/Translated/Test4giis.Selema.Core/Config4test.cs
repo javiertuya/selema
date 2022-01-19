@@ -68,7 +68,7 @@ namespace Test4giis.Selema.Core
 			return "headless".Equals(prop.GetProperty("selema.test.mode"));
 		}
 
-		private string GetRemoteDriverUrl()
+		public virtual string GetRemoteDriverUrl()
 		{
 			return prop.GetProperty("selema.test.remote.webdriver");
 		}

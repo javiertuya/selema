@@ -1,14 +1,11 @@
 package giis.selema.manager;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.RemoteWebDriver;
 
 import giis.selema.portable.FileUtil;
 import giis.selema.portable.JavaCs;
@@ -58,7 +55,6 @@ public class SeleniumManager {
 	private static int instanceCount=0; //uniquely identifies each instance of this class
 	private int sessionCount=0; //uniquely identifies each session (new driver) created by this instance
 	private boolean lastSessionRemote=false; //keeps track of the kind of session
-	private List<String> driversWithSetupDone=new ArrayList<>(); //to avoid duplicate downloads of local drivers
 
 	//Behaviour parameters
 	private SelemaConfig conf=null;
@@ -230,9 +226,6 @@ public class SeleniumManager {
 	public ISelemaLogger getLogger() {
 		return this.selemaLog;
 	}
-	public ICiService getCiService() {
-		return this.ciService;
-	}
 	public IScreenshotService getScreenshotService() {
 		return this.screenshotService;
 	}
@@ -265,7 +258,7 @@ public class SeleniumManager {
 		mediaVideoContext=new MediaContext(conf.getReportDir(), conf.getQualifier(), instanceCount, sessionCount);
 		mediaScreenshotContext=new MediaContext(conf.getReportDir(), conf.getQualifier(), instanceCount, sessionCount);
 		mediaDiffContext=new MediaContext(conf.getReportDir(), conf.getQualifier(), instanceCount, sessionCount);
-		if (!JavaCs.isEmpty(currentDriverUrl)) {
+		if (this.usesRemoteDriver()) {
 			lastSessionRemote=true;
 			selemaLog.info("Remote session " + currentBrowser + " starting...");
 			//Colecciona los datos para identificacion de nombre de sesion para visualizacion en selenoid-ui y nombrado de videos
@@ -274,7 +267,7 @@ public class SeleniumManager {
 			//El instante antes y despues de creacion del driver sera el margen de tolerancia de este instante
 			if (videoRecorder!=null)
 				videoRecorder.beforeCreateDriver();
-			RemoteWebDriver rdriver=getRemoteSeleniumDriver(driverScope);
+			WebDriver rdriver=getRemoteSeleniumDriver(driverScope);
 			if (videoRecorder!=null)
 				videoRecorder.afterCreateDriver(rdriver);
 			selemaLog.info("Remote session " + currentBrowser + " started. Remote web driver at " + currentDriverUrl + ", scope: " + driverScope);
@@ -411,15 +404,9 @@ public class SeleniumManager {
 
 	
 	private WebDriver getLocalSeleniumDriver() { 
-		//Uses a WebDriverManager, setup is only done once per browser
-		SeleniumDriverFactory factory=new SeleniumDriverFactory();
-		if (!driversWithSetupDone.contains(currentBrowser)) {
-			factory.downloadLocalDriver(currentBrowser);
-			driversWithSetupDone.add(currentBrowser);
-		}
-		return factory.getLocalSeleniumDriver(currentBrowser, currentOptions, currentArguments);
+		return new SeleniumDriverFactory().getSeleniumDriver(currentBrowser, "", currentOptions, currentArguments);
 	}
-	private RemoteWebDriver getRemoteSeleniumDriver(String driverScope) {
+	private WebDriver getRemoteSeleniumDriver(String driverScope) {
 		//prepara las opciones anyadiendo a las definidas al configurar, las requeridas por los diferentes servicios
 		Map<String,Object> allOptions=new HashMap<>();
 		if (currentOptions!=null)
@@ -438,7 +425,7 @@ public class SeleniumManager {
 		if (browserService!=null)
 			allOptions.put("selenoid:options",selenoidOptions);
 		
-		return new SeleniumDriverFactory().getRemoteSeleniumDriver(currentBrowser, currentDriverUrl, allOptions, currentArguments);
+		return new SeleniumDriverFactory().getSeleniumDriver(currentBrowser, currentDriverUrl, allOptions, currentArguments);
 	}
 	
 }

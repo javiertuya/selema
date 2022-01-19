@@ -55,12 +55,12 @@ public class SeleniumObjects {
 	 * Downloads the driver executable for the specified browser using WebDriverManager
 	 */
 	public void downloadDriverExecutable(String browser) {
-        DriverManagerType driverManagerType = DriverManagerType.valueOf(browser.toUpperCase());
         try {	
+        	DriverManagerType driverManagerType = DriverManagerType.valueOf(browser.toUpperCase());
 			Class.forName(driverManagerType.browserClass());
 			WebDriverManager.getInstance(driverManagerType).setup();
-		} catch (ClassNotFoundException e) {
-			throw new SelemaException("Local selenium driver not available for browser: "+browser+". Message: "+e.getMessage());
+		} catch (Throwable e) {
+			throw new SelemaException(log, "Can't download driver executable for browser: "+browser, e);
 		}
 	}
 }

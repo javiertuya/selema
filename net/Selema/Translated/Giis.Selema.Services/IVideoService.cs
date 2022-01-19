@@ -2,7 +2,7 @@
 /////// THIS FILE HAS BEEN AUTOMATICALLY CONVERTED FROM THE JAVA SOURCES. DO NOT EDIT ///////
 /////////////////////////////////////////////////////////////////////////////////////////////
 using System.Collections.Generic;
-using OpenQA.Selenium.Remote;
+using OpenQA.Selenium;
 using Sharpen;
 
 namespace Giis.Selema.Services
@@ -15,7 +15,7 @@ namespace Giis.Selema.Services
 
 		void BeforeCreateDriver();
 
-		void AfterCreateDriver(RemoteWebDriver driver);
+		void AfterCreateDriver(IWebDriver driver);
 
 		string OnTestFailure(IMediaContext context, string testName);
 

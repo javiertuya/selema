@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using Giis.Selema.Portable;
 using Giis.Selema.Services;
-using OpenQA.Selenium.Remote;
+using OpenQA.Selenium;
 using Sharpen;
 
 namespace Giis.Selema.Services.Impl
@@ -36,7 +36,7 @@ namespace Giis.Selema.Services.Impl
 			lastSessionStartingTimestamp = JavaCs.CurrentTimeMillis();
 		}
 
-		public virtual void AfterCreateDriver(RemoteWebDriver driver)
+		public virtual void AfterCreateDriver(IWebDriver driver)
 		{
 			lastSessionStartedTimestamp = JavaCs.CurrentTimeMillis();
 		}

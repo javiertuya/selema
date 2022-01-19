@@ -2,7 +2,7 @@ package giis.selema.services;
 
 import java.util.Map;
 
-import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.WebDriver;
 /**
  * Support for video recording from a browser service
  */
@@ -15,7 +15,7 @@ public interface IVideoService {
 	
 	void beforeCreateDriver();
 
-	void afterCreateDriver(RemoteWebDriver driver);
+	void afterCreateDriver(WebDriver driver);
 
 	String onTestFailure(IMediaContext context, String testName);
 

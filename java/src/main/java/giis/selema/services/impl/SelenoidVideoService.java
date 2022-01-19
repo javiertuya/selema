@@ -3,7 +3,7 @@ package giis.selema.services.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.WebDriver;
 
 import giis.selema.portable.FileUtil;
 import giis.selema.portable.JavaCs;
@@ -35,7 +35,7 @@ public class SelenoidVideoService implements IVideoService {
 		lastSessionStartingTimestamp=JavaCs.currentTimeMillis();
 	}
 	@Override
-	public void afterCreateDriver(RemoteWebDriver driver) {
+	public void afterCreateDriver(WebDriver driver) {
 		lastSessionStartedTimestamp=JavaCs.currentTimeMillis();
 	}
 	@Override

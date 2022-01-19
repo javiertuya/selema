@@ -21,28 +21,26 @@ namespace Giis.Selema.Manager
 	{
 		internal readonly Logger log = LogManager.GetCurrentClassLogger();
 
-		/// <summary>Obtiene el driver local adecuado al browser</summary>
-		public virtual IWebDriver GetLocalSeleniumDriver(string browser, IDictionary<string, object> options, string[] arguments)
-		{
-			return GetSeleniumDriver(browser, null, options, arguments);
-		}
+		private IList<string> driversWithSetupDone = new List<string>();
 
+		private string lastOptionString = string.Empty;
+
+		//to avoid duplicate downloads of local drivers
 		/// <summary>
-		/// Obtiene el driver para ejecucion en un navegador a traves del RemoteWebDriver que se encuentra en la url especificada
-		/// y con la configuracion requerida para uso de Selenoid
+		/// Unified entry point to instantiate a WebDriver for the indicated browser adding the capabilities and arguments specified;
+		/// if the remoteUrl is empty or null returns a WebDriver (downloading the driver executable if needed),
+		/// if not, returns a RemoteWebDriver
 		/// </summary>
-		public virtual RemoteWebDriver GetRemoteSeleniumDriver(string browser, string remoteUrl, IDictionary<string, object> options, string[] arguments)
-		{
-			return (RemoteWebDriver)GetSeleniumDriver(browser, remoteUrl, options, arguments);
-		}
-
-		/// <summary>Crea una instancia del driver correspondiente al browser indicado inicializando las options y arguments</summary>
-		private IWebDriver GetSeleniumDriver(string browser, string remoteUrl, IDictionary<string, object> caps, string[] args)
+		public virtual IWebDriver GetSeleniumDriver(string browser, string remoteUrl, IDictionary<string, object> caps, string[] args)
 		{
 			SeleniumObjects reflect = new SeleniumObjects();
+			string objectToInstantiate = string.Empty;
+			//to enhance error messages
+			string url = string.Empty;
 			try
 			{
-				//Establece las capabilities y argumentos en un objeto options
+				objectToInstantiate = "WebDriver Options";
+				//Sets capabilities and arguments by create an options object
 				log.Debug("Setting up WebDriver Options, browser: " + browser);
 				object opt = reflect.GetOptionsObj(browser, args);
 				if (caps != null)
@@ -57,29 +55,45 @@ namespace Giis.Selema.Manager
 				{
 					reflect.AddArguments(opt, args);
 				}
-				//creacion del driver con las opciones
+				//Creates either local or remote web driver
+				objectToInstantiate = "WebDriver";
 				log.Debug("Setting up WebDriver, browser: " + browser + ", url: " + remoteUrl);
+				lastOptionString = opt.ToString();
+				log.Trace("Option string: " + lastOptionString);
 				if (remoteUrl == null || string.Empty.Equals(remoteUrl.Trim()))
 				{
+					EnsureLocalDriverDownloaded(browser);
 					return (IWebDriver)reflect.GetDriverObj(browser, opt);
 				}
 				else
 				{
+					objectToInstantiate = "RemoteWebDriver";
+					url = remoteUrl;
 					return (RemoteWebDriver)reflect.GetRemoteDriverObj(remoteUrl, opt);
 				}
 			}
 			catch (Exception e)
 			{
 				//
-				log.Error("Can't instantiate object from browser: " + browser + ". See debug log for more details");
-				throw new SelemaException("Can't instantiate object for browser: " + browser + ". Message: " + e.Message);
+				throw new SelemaException(log, "Can't instantiate " + objectToInstantiate + " for browser: " + browser + (string.Empty.Equals(url) ? string.Empty : " at url: " + url), e);
 			}
 		}
 
-		/// <summary>Descarga el driver adecuado al browser</summary>
-		public virtual void DownloadLocalDriver(string browser)
+		/// <summary>Gets the Options object (as string) that corresponds to the latest driver instantiated (only for testing purposes)</summary>
+		public virtual string GetLastOptionString()
 		{
-			new SeleniumObjects().DownloadDriverExecutable(browser);
+			return lastOptionString;
+		}
+
+		/// <summary>Ensures that the appropriate local driver has been downladed,</summary>
+		public virtual void EnsureLocalDriverDownloaded(string browser)
+		{
+			browser = browser.ToLower();
+			if (!driversWithSetupDone.Contains(browser))
+			{
+				new SeleniumObjects().DownloadDriverExecutable(browser);
+				driversWithSetupDone.Add(browser);
+			}
 		}
 	}
 }

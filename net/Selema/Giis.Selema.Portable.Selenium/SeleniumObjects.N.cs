@@ -117,10 +117,17 @@ namespace Giis.Selema.Portable.Selenium
 		/// </summary>
 		public void DownloadDriverExecutable(string browser)
 		{
-			string clasName = GetDrivermanagerClassName(browser);
-			object browserConfig = Activator.CreateInstance(Type.GetType(clasName));
-			//second parametr indicates that browser version will be used, available only for chrome
-			SetUpWebDriver((IDriverConfig)browserConfig, browser.ToLower() == "chrome");
+			try
+            {
+				string clasName = GetDrivermanagerClassName(browser);
+				object browserConfig = Activator.CreateInstance(Type.GetType(clasName));
+				//second parametr indicates that browser version will be used, available only for chrome
+				SetUpWebDriver((IDriverConfig)browserConfig, browser.ToLower() == "chrome");
+			}
+			catch (Exception e)
+            {
+				throw new SelemaException(log, "Can't download driver executable for browser: " + browser, e);
+			}
 		}
 
 	}

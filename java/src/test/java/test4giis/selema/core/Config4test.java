@@ -47,7 +47,7 @@ public class Config4test implements IManagerConfigDelegate {
 	public boolean useHeadlessDriver() {
 		return "headless".equals(prop.getProperty("selema.test.mode"));
 	}
-	private String getRemoteDriverUrl() {
+	public String getRemoteDriverUrl() {
 		return prop.getProperty("selema.test.remote.webdriver");
 	}
 	public String getCurrentDriverUrl() {

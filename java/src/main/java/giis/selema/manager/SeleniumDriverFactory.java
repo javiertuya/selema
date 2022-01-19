@@ -1,5 +1,7 @@
 package giis.selema.manager;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.openqa.selenium.WebDriver;
@@ -17,29 +19,21 @@ import giis.selema.portable.selenium.SeleniumObjects;
  */
 public class SeleniumDriverFactory {
 	final Logger log=LoggerFactory.getLogger(this.getClass());
+	private List<String> driversWithSetupDone=new ArrayList<>(); //to avoid duplicate downloads of local drivers
+	private String lastOptionString="";
 	
 	/**
-	 * Obtiene el driver local adecuado al browser
+	 * Unified entry point to instantiate a WebDriver for the indicated browser adding the capabilities and arguments specified;
+	 * if the remoteUrl is empty or null returns a WebDriver (downloading the driver executable if needed),
+	 * if not, returns a RemoteWebDriver 
 	 */
-	public WebDriver getLocalSeleniumDriver(String browser, Map<String, Object> options, String[] arguments) {
-		return getSeleniumDriver(browser, null, options, arguments);
-	}
-	
-	/**
-	 * Obtiene el driver para ejecucion en un navegador a traves del RemoteWebDriver que se encuentra en la url especificada
-	 * y con la configuracion requerida para uso de Selenoid
-	 */
-	public RemoteWebDriver getRemoteSeleniumDriver(String browser, String remoteUrl, Map<String,Object> options, String[] arguments) {
-		return (RemoteWebDriver)getSeleniumDriver(browser, remoteUrl, options, arguments);
-	}
-	
-	/**
-	 * Crea una instancia del driver correspondiente al browser indicado inicializando las options y arguments 
-	 */
-	private WebDriver getSeleniumDriver(String browser, String remoteUrl, Map<String, Object> caps, String[] args) {
+	public WebDriver getSeleniumDriver(String browser, String remoteUrl, Map<String, Object> caps, String[] args) {
 		SeleniumObjects reflect=new SeleniumObjects();
+		String objectToInstantiate=""; //to enhance error messages
+		String url="";
 		try {
-			//Establece las capabilities y argumentos en un objeto options
+			objectToInstantiate="WebDriver Options";
+			//Sets capabilities and arguments by create an options object
 			log.debug("Setting up WebDriver Options, browser: "+browser);
 			Object opt=reflect.getOptionsObj(browser, args) ;
 			if (caps!=null)
@@ -48,23 +42,41 @@ public class SeleniumDriverFactory {
 			if (args!=null)
 				reflect.addArguments(opt, args);
 			
-			//creacion del driver con las opciones
+			//Creates either local or remote web driver
+			objectToInstantiate="WebDriver";
 			log.debug("Setting up WebDriver, browser: "+browser+", url: "+remoteUrl);
-			if (remoteUrl==null || "".equals(remoteUrl.trim()))
+			lastOptionString=opt.toString();
+			log.trace("Option string: "+lastOptionString);
+			if (remoteUrl==null || "".equals(remoteUrl.trim())) {
+				ensureLocalDriverDownloaded(browser);
 				return (WebDriver)reflect.getDriverObj(browser, opt);
-			else
+			} else {
+				objectToInstantiate="RemoteWebDriver";
+				url=remoteUrl;
 				return (RemoteWebDriver)reflect.getRemoteDriverObj(remoteUrl, opt);
+			}
 		} catch (Exception e) { //NOSONAR
-			log.error("Can't instantiate object from browser: "+browser+". See debug log for more details");
-			throw new SelemaException("Can't instantiate object for browser: "+browser+". Message: "+e.getMessage());
+			throw new SelemaException(log, "Can't instantiate "
+					+ objectToInstantiate + " for browser: " + browser 
+					+ ("".equals(url)?"":" at url: "+url), e);
 		}
+	}
+	/**
+	 * Gets the Options object (as string) that corresponds to the latest driver instantiated (only for testing purposes)
+	 */
+	public String getLastOptionString() {
+		return lastOptionString;
 	}
 	
 	/**
-	 * Descarga el driver adecuado al browser
+	 * Ensures that the appropriate local driver has been downladed, 
 	 */
-	public void downloadLocalDriver(String browser) {
-		new SeleniumObjects().downloadDriverExecutable(browser);
+	public void ensureLocalDriverDownloaded(String browser) {
+		browser=browser.toLowerCase();
+		if (!driversWithSetupDone.contains(browser)) {
+			new SeleniumObjects().downloadDriverExecutable(browser);
+			driversWithSetupDone.add(browser);
+		}
 	}
 	
 }
