@@ -32,7 +32,7 @@ public class JsCoverService implements IJsCoverageService {
 	private boolean resetDone=false;
 
 	//This shall be instantiated as a singleton
-	public static JsCoverService instance;
+	private static JsCoverService instance;
 	private JsCoverService(String appRootUrl) {
 		this.appRoot=appRootUrl;
 	}

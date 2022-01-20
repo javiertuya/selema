@@ -39,6 +39,7 @@ public class SeleniumObjects {
 		browser=browser.toLowerCase();
 		String pkg="org.openqa.selenium." + browser;
 		//Handle exceptions to the class name to be obtained
+		//20-jan-2022 removed commented code selenium3 edge exception
 		//if ("edge".equals(browser))
 		//	pkg="com.microsoft.edge.seleniumtools";
 		String cls="remote".equals(browser) ? "RemoteWeb" : capitalize(browser);

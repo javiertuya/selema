@@ -62,7 +62,7 @@ public class JavaCs {
 	}
 	public static void sleep(long millis) {
 		try {
-			Thread.sleep((long)millis);
+			Thread.sleep(millis);
 		} catch (Exception e1) { //NOSONAR
 			throw new SelemaException("Exception in Thread.Sleep",e1);
 		}

@@ -13,7 +13,7 @@ public class PropertiesFactory {
 			prop.load(new FileInputStream(fileName)); //NOSONAR no usa try-with-resources por compatibilidad java 1.6
 			return prop;
 		} catch (IOException e) {
-			return null;
+			return null; //NOSONAR for compatibility with .net implementation
 		}
 	}
 }

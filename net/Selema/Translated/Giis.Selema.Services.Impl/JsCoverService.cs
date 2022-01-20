@@ -34,7 +34,7 @@ namespace Giis.Selema.Services.Impl
 
 		private bool resetDone = false;
 
-		public static Giis.Selema.Services.Impl.JsCoverService instance;
+		private static Giis.Selema.Services.Impl.JsCoverService instance;
 
 		private JsCoverService(string appRootUrl)
 		{
