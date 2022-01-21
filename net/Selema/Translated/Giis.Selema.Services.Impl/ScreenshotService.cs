@@ -26,9 +26,9 @@ namespace Giis.Selema.Services.Impl
 		public virtual string TakeScreenshot(IWebDriver driver, IMediaContext context, string testName)
 		{
 			string screenshotFile = context.GetScreenshotFileName(testName);
-			string fileName = FileUtil.GetPath(context.GetReportFolder(), screenshotFile);
 			try
 			{
+				string fileName = FileUtil.GetPath(context.GetReportFolder(), screenshotFile);
 				string screenshotUrl = "<a href=\"" + screenshotFile + "\">" + screenshotFile + "</a>";
 				string msg = "Taking screenshot: " + screenshotUrl;
 				if (log != null)
@@ -40,7 +40,7 @@ namespace Giis.Selema.Services.Impl
 			}
 			catch (Exception e)
 			{
-				string msg = "Can't take screenshot or write the content to file " + fileName + ". Message: " + e.Message;
+				string msg = "Can't take screenshot or write the content to file " + screenshotFile + ". Message: " + e.Message;
 				if (log != null)
 				{
 					log.Error(msg);

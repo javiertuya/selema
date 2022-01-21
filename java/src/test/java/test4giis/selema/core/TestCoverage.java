@@ -13,7 +13,6 @@ import giis.selema.portable.FileUtil;
 import giis.selema.services.IJsCoverageService;
 import giis.selema.services.impl.JsCoverService;
 
-
 public class TestCoverage {  //interface only to generate compatible NUnit3 translation
 	private WebDriver driver;
 	
@@ -42,11 +41,19 @@ public class TestCoverage {  //interface only to generate compatible NUnit3 tran
 		driver.get(new Config4test().getCoverageUrl());
 		runCoverageSession2(sm, driver);
 		sm.quitDriver(driver);
+		
+		//simulates failure when no coverage file can be read (the service will become invalidated, name restored in teardown)
+		((JsCoverService)sm.getCoverageService()).setCoverageFileName("notexists.json");
+		driver=sm.createDriver();
+		LifecycleAsserts lfas=new LifecycleAsserts();
+		lfas.assertLast("Exception reading js coverage file","notexists.json");
+		sm.quitDriver(driver);
 	}
 	//finaliza driver por si ha fallado el anterior pues sm es unmanaged
 	@After
 	public void tearDown() {
 		sm.quitDriver(driver);
+		((JsCoverService)sm.getCoverageService()).setCoverageFileName("jscoverage.json");
 	}
 	/**
 	 * Ejecucion sucesiva de acciones que aumentan progresivamente la cobertura

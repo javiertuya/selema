@@ -9,8 +9,23 @@ namespace Giis.Selema.Portable
     /// </summary>
     public static class FileUtil
     {
+        /// <summary>
+        /// Throws exception if invalid characters: Although linux is more permisive than windows in characters allowed to filenames,
+        /// when running in GitHub Actions, some characters are never allowed in actions such as publish artifacts
+        /// </summary>
+        /// <param name="name"></param>
+        private static void CheckFileName(string name)
+        {
+            string invalid = "\"<>|*?\r\n";
+            foreach (char c in invalid.ToCharArray())
+            {
+                if (name.IndexOf(c) != -1)
+                    throw new Exception("File name contains an invalid character: \" : < > | * ? \\r \\n");
+            }
+        }
         public static string FileRead(string fileName)
         {
+            CheckFileName(fileName);
             return File.ReadAllText(fileName);
         }
         public static List<string> FileReadLines(string fileName)
@@ -28,18 +43,15 @@ namespace Giis.Selema.Portable
 
         public static void FileWrite(string fileName, string contents)
         {
+            CheckFileName(fileName);
             File.WriteAllText(fileName, contents);
         }
         public static void FileAppend(string fileName, string line)
         {
+            CheckFileName(fileName);
             File.AppendAllText(fileName, line);
         }
-        public static void CopyFile(string source, string dest)
-        {
-            throw (new NotImplementedException());
-        }
- 
-        
+
         //devuelve un array con todos los ficheros de un folder que hacen match con una especificacion de fichero que contiene *
         public static string[] ListFilesMatchingWildcard(string folder, string fileNameWildcard)
         {
@@ -51,6 +63,7 @@ namespace Giis.Selema.Portable
         }
         public static string GetFullPath(string path)
         {
+            CheckFileName(path);
             return Path.GetFullPath(path);
         }
         /** 
@@ -58,6 +71,7 @@ namespace Giis.Selema.Portable
          */
         public static void CreateDirectory(string filePath)
         {
+            CheckFileName(filePath);
             Directory.CreateDirectory(filePath);
         }
 

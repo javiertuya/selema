@@ -20,8 +20,6 @@ public class JsCoverService implements IJsCoverageService {
 	private static final String CLEAR_LOCAL_STORAGE_HTML="/jscoverage-clear-local-storage.html";
 	//html to restore browser local memory from file
 	private static final String RESTORE_LOCAL_STORAGE_HTML="/jscoverage-restore-local-storage.html";
-	//file that stores the coverage results
-	private static final String SAVED_COVERAGE_NAME="jscoverage.json";
 	//js script executed to save coverage from browser local memory to file
 	private static final String SAVE_COVERAGE_SCRIPT="return jscoverage_serializeCoverageToJSON();";
 	//js script to restore coverage from file
@@ -29,12 +27,14 @@ public class JsCoverService implements IJsCoverageService {
 
 	private String appRoot;
 	private String reportDir;
+	private String savedCoverageFile;
 	private boolean resetDone=false;
 
 	//This shall be instantiated as a singleton
 	private static JsCoverService instance;
 	private JsCoverService(String appRootUrl) {
 		this.appRoot=appRootUrl;
+		this.savedCoverageFile="jscoverage.json";
 	}
 	/**
 	 * Instantiation of this service as a singleton
@@ -62,7 +62,7 @@ public class JsCoverService implements IJsCoverageService {
 	 */
 	@Override
 	public void afterCreateDriver(WebDriver driver) {
-		String coverageFileName=FileUtil.getPath(this.reportDir, SAVED_COVERAGE_NAME); 
+		String coverageFileName=FileUtil.getPath(this.reportDir, savedCoverageFile); 
 		if (!resetDone) {
 			driver.get(appRoot + CLEAR_LOCAL_STORAGE_HTML);
 			//Creates a first default file without coverage data
@@ -87,7 +87,7 @@ public class JsCoverService implements IJsCoverageService {
 	 */
 	@Override
 	public void beforeQuitDriver(WebDriver driver) {
-		String coverageFileName=FileUtil.getPath(reportDir, SAVED_COVERAGE_NAME); 
+		String coverageFileName=FileUtil.getPath(reportDir, savedCoverageFile); 
 		try {
 			selemaLog.debug("Saving JSCover coverage from browser local storage to file "+coverageFileName);
 			String jsonCoverage=SeleniumActions.executeScript(driver, SAVE_COVERAGE_SCRIPT);
@@ -96,6 +96,12 @@ public class JsCoverService implements IJsCoverageService {
 		} catch (RuntimeException e) {
 			selemaLog.error("Can't get JSCover coverage, either code is not instrumented or output file "+coverageFileName+" can't be saved: " + e.getMessage());
 		}
+	}
+	/**
+	 * Sets the file name where coverage is saved, only for testing
+	 */
+	public void setCoverageFileName(String name) {
+		this.savedCoverageFile=name;
 	}
 
 }

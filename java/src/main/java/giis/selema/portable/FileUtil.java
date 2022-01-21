@@ -19,8 +19,20 @@ public class FileUtil {
 	    throw new IllegalAccessError("Utility class");
 	  }
 	
+	/**
+	 * Checks invalid characters: Although linux is more permisive than windows in characters allowed to filenames,
+	 * when running in GitHub Actions, some characters are never allowed in actions such as publish artifacts
+	 */
+	public static void checkFileName(String name) throws IOException {
+		String invalid="\"<>|*?\r\n";
+	    for (char c : invalid.toCharArray()) {
+			if (name.indexOf(c) != -1)
+				throw new IOException("File name contains an invalid character: \" : < > | * ? \\r \\n");
+	    }
+	}
 	public static String fileRead(String fileName) {
 		try {
+			checkFileName(fileName);
 			File f=new File(fileName);
 			return FileUtils.readFileToString(f, UTF_8);
 		} catch (IOException e) {
@@ -37,6 +49,7 @@ public class FileUtil {
 
 	public static void fileWrite(String fileName, String contents) {
 		try {
+			checkFileName(fileName);
 			FileUtils.writeStringToFile(new File(fileName), contents, UTF_8);
 		} catch (IOException e) {
 			throw new SelemaException("Error writing file "+fileName, e);
@@ -44,6 +57,7 @@ public class FileUtil {
 	}
 	public static void fileAppend(String fileName, String line) {
 		try {
+			checkFileName(fileName);
 			FileUtils.writeStringToFile(new File(fileName), line, UTF_8, true);
 		} catch (IOException e) {
 			throw new SelemaException("Error appending to file "+fileName, e);
@@ -51,6 +65,7 @@ public class FileUtil {
 	}
 	public static void copyFile(File source, File dest) {
 		try {
+			checkFileName(dest.getName());
 			FileUtils.copyFile(source,dest);
 		} catch (IOException e) {
 			throw new SelemaException("Error copying files", e);
@@ -76,6 +91,7 @@ public class FileUtil {
 	public static String getFullPath(String path)
     {
         try {
+			checkFileName(path);
 			return new File(path).getCanonicalPath();
 		} catch (IOException e) {
 			throw new SelemaException("Error getting full path of "+path, e);
@@ -84,6 +100,7 @@ public class FileUtil {
 
 	public static void createDirectory(String path) {
 		try {
+			checkFileName(path);
 			FileUtils.forceMkdir(new File(path));
 		} catch (IOException e) {
 			throw new SelemaException(e);

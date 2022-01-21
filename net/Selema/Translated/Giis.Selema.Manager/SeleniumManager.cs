@@ -161,17 +161,19 @@ namespace Giis.Selema.Manager
 		}
 
 		/// <summary>Adds the specific capabilities to the WebDriver prior to its creation</summary>
-		public virtual void SetOptions(IDictionary<string, object> options)
+		public virtual Giis.Selema.Manager.SeleniumManager SetOptions(IDictionary<string, object> options)
 		{
 			log.Debug("Set options: " + options.ToString());
 			this.currentOptions = options;
+			return this;
 		}
 
 		/// <summary>Adds the specific arguments to the WebDriver execution</summary>
-		public virtual void SetArguments(string[] arguments)
+		public virtual Giis.Selema.Manager.SeleniumManager SetArguments(string[] arguments)
 		{
 			log.Debug("Set arguments: " + JavaCs.DeepToString(arguments));
 			this.currentArguments = arguments;
+			return this;
 		}
 
 		/// <summary>Starts the created drivers as maximized</summary>
@@ -264,6 +266,11 @@ namespace Giis.Selema.Manager
 		public virtual IWatermarkService GetWatermarkService()
 		{
 			return this.watermark;
+		}
+
+		public virtual IJsCoverageService GetCoverageService()
+		{
+			return this.coverageRecorder;
 		}
 
 		public virtual bool UsesRemoteDriver()

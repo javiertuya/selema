@@ -22,8 +22,6 @@ namespace Giis.Selema.Services.Impl
 
 		private const string RestoreLocalStorageHtml = "/jscoverage-restore-local-storage.html";
 
-		private const string SavedCoverageName = "jscoverage.json";
-
 		private const string SaveCoverageScript = "return jscoverage_serializeCoverageToJSON();";
 
 		private const string RestoreCoverageScript = "restoreLocalStorage()";
@@ -31,6 +29,8 @@ namespace Giis.Selema.Services.Impl
 		private string appRoot;
 
 		private string reportDir;
+
+		private string savedCoverageFile;
 
 		private bool resetDone = false;
 
@@ -40,11 +40,11 @@ namespace Giis.Selema.Services.Impl
 		{
 			//html to reset browser local memory
 			//html to restore browser local memory from file
-			//file that stores the coverage results
 			//js script executed to save coverage from browser local memory to file
 			//js script to restore coverage from file
 			//This shall be instantiated as a singleton
 			this.appRoot = appRootUrl;
+			this.savedCoverageFile = "jscoverage.json";
 		}
 
 		/// <summary>Instantiation of this service as a singleton</summary>
@@ -75,7 +75,7 @@ namespace Giis.Selema.Services.Impl
 		/// </remarks>
 		public virtual void AfterCreateDriver(IWebDriver driver)
 		{
-			string coverageFileName = FileUtil.GetPath(this.reportDir, SavedCoverageName);
+			string coverageFileName = FileUtil.GetPath(this.reportDir, savedCoverageFile);
 			if (!resetDone)
 			{
 				driver.Url = appRoot + ClearLocalStorageHtml;
@@ -105,7 +105,7 @@ namespace Giis.Selema.Services.Impl
 		/// <summary>Saves coverage from browser local memory to the json external file jscoverage.json</summary>
 		public virtual void BeforeQuitDriver(IWebDriver driver)
 		{
-			string coverageFileName = FileUtil.GetPath(reportDir, SavedCoverageName);
+			string coverageFileName = FileUtil.GetPath(reportDir, savedCoverageFile);
 			try
 			{
 				selemaLog.Debug("Saving JSCover coverage from browser local storage to file " + coverageFileName);
@@ -117,6 +117,12 @@ namespace Giis.Selema.Services.Impl
 			{
 				selemaLog.Error("Can't get JSCover coverage, either code is not instrumented or output file " + coverageFileName + " can't be saved: " + e.Message);
 			}
+		}
+
+		/// <summary>Sets the file name where coverage is saved, only for testing</summary>
+		public virtual void SetCoverageFileName(string name)
+		{
+			this.savedCoverageFile = name;
 		}
 	}
 }

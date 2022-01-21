@@ -40,12 +40,10 @@ public class SeleniumObjects {
 		String pkg="org.openqa.selenium." + browser;
 		//Handle exceptions to the class name to be obtained
 		//20-jan-2022 removed commented code selenium3 edge exception
-		//if ("edge".equals(browser))
-		//	pkg="com.microsoft.edge.seleniumtools";
 		String cls="remote".equals(browser) ? "RemoteWeb" : capitalize(browser);
 
 		String className=pkg + "." + cls + clstype;
-		log.debug("Getting instance of class: " + className);
+		log.trace("Getting instance of class: " + className);
 		return className;
 	}
 	private String capitalize(String input) {

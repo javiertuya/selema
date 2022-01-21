@@ -100,6 +100,11 @@ jobs:
           check_name: "test-result-${{ matrix.platform }}-${{ matrix.mode }}"
           report_paths: "**/${{ env.REPORT_FOLDER }}/surefire-reports/TEST-*.xml"
           fail_on_failure: 'true'
+      - if: ${{ always() && matrix.platform=='java' }}
+        run: ls -la target/selema
+      - if: ${{ always() && matrix.platform=='net' }}
+        run: ls -la reports/selema
+
       - if: always()
         name: Publish test report files
         uses: actions/upload-artifact@v2

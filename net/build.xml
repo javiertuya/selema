@@ -289,7 +289,6 @@
     <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4Unmanaged.cs" token="CLASS_CONSTRUCTOR" value="TestLifecycle4Unmanaged" />
     <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4Inherited.cs" token="CLASS_CONSTRUCTOR" value="TestLifecycle4Inherited" />
     <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4Repeated.cs" token="CLASS_CONSTRUCTOR" value="TestLifecycle4Repeated" />
-    <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4VisualAssert.cs" token="CLASS_CONSTRUCTOR" value="TestLifecycle4VisualAssert" />
 
     <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4Repeated.cs" token="Retry(" value="RetryTestMethod(" />
     <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4Repeated.cs" token="[TestMethod]" value="" />

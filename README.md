@@ -5,7 +5,7 @@
 
 # Selema - Selenium Test Lifecycle Manager
 
-A Multi-platform, multi-framework Selenium Test Lifecycle Manager on Java and .NET.
+A multi-platform, multi-framework Selenium Test Lifecycle Manager on Java and .NET.
 Automates the WebDriver instantiation and configuration, 
 providing an unified test log, clues for debugging
 and integration with CI platforms and Browser services.
@@ -23,7 +23,7 @@ and integration with CI platforms and Browser services.
   - Video recording and display a timestamp when test fails
   - Watermark with the test being executed and its status
   - Visual differences when comparing large strings (Visual Assert)
-  - Flaky test handling (Retry failed tests) on all frameworks
+  - Flaky test handling (Retry failed tests) on all supported frameworks
 
 # Getting started
 
@@ -33,7 +33,7 @@ On .NET, include the `Selema` package in you project as indicated in
 [NuGet](https://www.nuget.org/packages/Selema/)
 
 Selema works around two main components: 
-A `Lifecycle*` class that detects the events during the test lifecycle 
+A `Lifecycle*` controller class that detects the events during the test lifecycle 
 and calls the `SeleniumManager` to perform the required actions.
 
 ## Basic usage
@@ -157,12 +157,12 @@ Log info is also sent to the configured application logger (if any): slf4j on Ja
 Basic configuration is made using setter methods on the SeleniumManager instance. 
 All `set*` methods follow a fluent style, so they can be concatenated in a single statement.
 
-NOTE: The below examples show the Java syntax. 
-On .NET all packages, classes and methods have the same names, but package and methods names are capitalized.
+NOTE: The below sections use the the Java syntax. 
+Unless otherwise stated, on .NET, all packages, classes and methods have the same names than on Java, but package and methods names are capitalized.
 
 ## Driver management
 
-- **Browser**: `setBrowser(String browser)` sets the WebDriver for the specified browser ("chrome","firefox","edge","safari","opera"), default is chrome.
+- **Browser**: `setBrowser(String browser)` sets the WebDriver for the specified browser ("chrome", "firefox", "edge", "safari", "opera"), default is chrome.
 - **Drivers**: `setDriverUrl(String driverUrl)` sets a RemoteWebDriver instead a local one (default). The driverUrl must point to the browser service.
 - **Modes of Operation**: By default, Selema starts a WebDriver before each test executions and quits after each test execution, but this behaviour can be modified:
   - `setManageAtClass()`: Starts a WebDriver before the first test at each class, and quits after all tests in the class
@@ -175,13 +175,13 @@ On .NET all packages, classes and methods have the same names, but package and m
 
 ## Log file location
 
-Default location of selema log file and log file name can be overriden by pasing a `SelemaConfig` object during SeleniumManager instantiation. 
-SelemaConfig admits the following customization methods (fluent style):
+Default location of selema log file and log file name can be overriden by pasing a `SelemaConfig` instance as argument at the SeleniumManager instantiation. 
+`SelemaConfig` admits the following fluent style customization methods:
 
 - `setReportSubdir(String subdir)`: changes the name of the report folder (relative to the project root). Default is `target` (on Java) and `reports` (on .NET).
 - `setProjectRoot(String root)`: changes the location of the project root. 
   Default is `.` on Java and `../../../..` on .NET (this is the solution folder provided that the test project is located just below the solution folder).
-- `SelemaConfig setName(String name)`: changes the name of the log and the log file. Useful when you need to separate logs in different files.
+- `setName(String name)`: changes the name of the log and the log file. Useful when you need to separate logs in different files.
 
 For instance, `new SeleniumManager(new SelemaConfig().setReportSubdir("target/site").setName("custom"))` 
 instantiates a SeleniumManager that places the reports in the `target/site` folder 
@@ -190,12 +190,13 @@ and produces a log file named `selema-custom-log.html`.
 ## Delegated configurations
 
 Additional or new configurations can be delegated to an user suplied object that implments a given interface
-and establishes these configurations when the SeleniumManager calls its `configure` method:
+and establishes these configurations in its `configure` method:
 
-- `setManagerDelegate(IManagerConfigDelegate configDelegate)`: Executes the configuration actions specified in the `configure` method.
+- `setManagerDelegate(IManagerConfigDelegate configDelegate)`: Sets a delegate that executes the configuration actions specified in the `configure` method
+  at the Selenium Manager instantiation.
   Useful when same configuration is made on multiple test classes, or configuration is complex, maybe read from a properties file.
 - `setDriverDelegate(IDriverConfigDelegate driverConfig)` Sets a delegate that executes the configuration actions specified in the `configure` method
-  just after the driver is created
+  just after each driver is created.
 
 # Advanced configuration and services
 
@@ -220,7 +221,8 @@ During test execution the user can also write arbitrary text using the `watermar
 Use `add(new SelenoidService())` to attach an instance that allows integrate and configure [Selenoid](https://aerokube.com/selenoid/latest/), 
 in particular, recording videos of each driver session. 
 The Selenoid service instance can be cusomized with these methods:
-- `setVideo()`: Activates the video recording, provided that the Selenoid server is configured for video recording (TODO url)
+- `setVideo()`: Activates the video recording, provided that the Selenoid server is 
+  properly [configured for video recording](https://aerokube.com/selenoid/latest/#_video_recording)
 - `setVnc()`: Activates the VNC capabilities to be able to watch the test execution in real time (e.g. using selenoid-ui). 
   Note that Selenoid requires special driver containers to allow this capability.
 
@@ -273,24 +275,25 @@ Important notes:
   At the instantiation, the SeleniumManager detects if tests are running under one of the recognized CI platforms and attaches the corresponding service instance. 
   Method `getCiService()`  retrieves the attached service, allowing access to a number of methods useful to perform conditional actions depending on the run platform:
   - `isLocal()`: Returns true if tests are not running in any of the recognized CI platforms.
-  - `getName()`: Returns the name of the platform (e.g. local for local mode, jenkins, ...)
-  - `getJobId()`: Returns an unique identifier including the build number.
+  - `getName()`: Returns the name of the platform (local for local mode, jenkins pr github)
+  - `getJobId()`: Returns an unique job identifier including the build number.
   - `getJobName()`: Returns the job identifier without the build number.
 - **Screenshot service**: To take screenshots of the browser state and place the picture accesible from the log. 
   Usually, the tests do not access directly to this service, but can use the `screenshot(String fileName)` method on the SeleniumManager instance to take a picture at any time.
-- **Visual Assert service**: To compare large strings. Places an html file with the differences accesible from the log. 
-  Methods `visualAssertEquals(...)` can be invoked on the SeleniumManager instance to perform the assert on the strings.
+- **Visual Assert service**: To compare large strings. Places an html file with the differences accesible from the log.
+  The Methods `visualAssertEquals(...)` can be invoked on the SeleniumManager instance to perform the assert on the strings.
+  See the [Visual Assert documentation](https://github.com/javiertuya/visual-assert) for more information.
 
 # Handling flaky tests
 
-A common approach to mitigate the problem of flaky tests is to retry the test execution until test pass or a maximum number of retries. 
+A common approach to mitigate the problem of flaky tests is to retry the test execution until test passes or a maximum number of retries. 
 Support for this feature is managed differently (or not managed at all) by the test frameworks. 
 Selema includes the required support on all supported frameworks. [See examples on each platform here](samples).
 
 - **JUnit 5**: Declare the [rerunner-jupiter](https://search.maven.org/artifact/io.github.artsok/rerunner-jupiter) dependency
   and add the annotation `@RepeatedIfExceptionsTest(repeats = <repetitions>)` to the appropriate tests.
 - **JUnit 4**: Selema provides a custom rule implementation. 
-  After declaring rules for the selenum manager, delcare a new instance of rule `RepeatedTestRule` 
+  After declaring rules for the selenum manager, delcare a new instance of rule class `RepeatedTestRule` 
   and add the annotation `@RepeatedIfExceptionsTest(repeats = <repetitions>)` to the appropriate tests. 
 - **NUnit 3**: Use the native `Retry` annotation. Add the annotation `[Retry(<repetitions>)]` to the appropriate tests.
 - **MSTest 2**: Selema provides a custom implementation. 

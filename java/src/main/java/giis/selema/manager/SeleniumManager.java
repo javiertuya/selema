@@ -140,16 +140,18 @@ public class SeleniumManager {
 	/**
 	 * Adds the specific capabilities to the WebDriver prior to its creation
 	 */
-	public void setOptions(Map<String,Object> options) {
+	public SeleniumManager setOptions(Map<String,Object> options) {
 		log.debug("Set options: "+options.toString());
 		this.currentOptions=options;
+		return this;
 	}
 	/**
 	 * Adds the specific arguments to the WebDriver execution
 	 */
-	public void setArguments(String[] arguments) {
+	public SeleniumManager setArguments(String[] arguments) {
 		log.debug("Set arguments: "+JavaCs.deepToString(arguments));
 		this.currentArguments=arguments;
+		return this;
 	}
 	/**
 	 * Starts the created drivers as maximized
@@ -231,6 +233,9 @@ public class SeleniumManager {
 	}
 	public IWatermarkService getWatermarkService() {
 		return this.watermark;
+	}
+	public IJsCoverageService getCoverageService() {
+		return this.coverageRecorder;
 	}
 
 	public boolean usesRemoteDriver() {

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Giis.Selema.Framework.Nunit3;
 using Giis.Selema.Manager;
 using Giis.Selema.Portable;
+using Giis.Selema.Services.Impl;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using Sharpen;
@@ -180,16 +181,41 @@ namespace Test4giis.Selema.Core
 		//lifecycle tests with remote driver use a browser service, but it should work if not browser service is attached
 		//As this is not inside a lifecycle controller, simulates the steps.
 		[Test]
-		public virtual void TestRemoteWebDriverFromManager()
+		public virtual void TestRemoteWebDriverFromManagerNoBrowserService()
 		{
 			if (!OnRemote())
 			{
 				return;
 			}
-			LogReader logReader = new LifecycleAsserts().GetLogReader();
-			SeleniumManager sm = new SeleniumManager(Config4test.GetConfig()).SetDriverUrl(new Config4test().GetRemoteDriverUrl());
+			IDictionary<string, object> capsToAdd = new SortedDictionary<string, object>();
+			capsToAdd["key1"] = "value1";
+			capsToAdd["key2"] = "value2";
+			SeleniumManager sm = new SeleniumManager(Config4test.GetConfig()).SetDriverUrl(new Config4test().GetRemoteDriverUrl()).SetOptions(capsToAdd);
+			//can't get options from driver instance, check at the debug log
 			sm.OnSetUp("TestDriver", "TestDriver.testRemoteWebDriverFromManager");
 			sm.OnFailure("TestDriver", "TestDriver.testRemoteWebDriverFromManager");
+			AssertLogRemoteWebDriver();
+			sm.OnTearDown("TestDriver", "TestDriver.testRemoteWebDriverFromManager");
+		}
+
+		//with browser service but no video too
+		[Test]
+		public virtual void TestRemoteWebDriverFromManagerNoVideoService()
+		{
+			if (!OnRemote())
+			{
+				return;
+			}
+			SeleniumManager sm = new SeleniumManager(Config4test.GetConfig()).SetDriverUrl(new Config4test().GetRemoteDriverUrl()).Add(new SelenoidService());
+			sm.OnSetUp("TestDriver", "TestDriver.testRemoteWebDriverFromManager");
+			sm.OnFailure("TestDriver", "TestDriver.testRemoteWebDriverFromManager");
+			AssertLogRemoteWebDriver();
+			sm.OnTearDown("TestDriver", "TestDriver.testRemoteWebDriverFromManager");
+		}
+
+		private void AssertLogRemoteWebDriver()
+		{
+			LogReader logReader = new LifecycleAsserts().GetLogReader();
 			logReader.AssertBegin();
 			logReader.AssertContains("Creating SeleniumManager instance");
 			logReader.AssertContains("*** SetUp - TestDriver.testRemoteWebDriverFromManager");

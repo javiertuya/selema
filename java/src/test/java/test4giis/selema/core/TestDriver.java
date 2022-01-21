@@ -18,6 +18,7 @@ import giis.selema.manager.SelemaConfig;
 import giis.selema.manager.SeleniumDriverFactory;
 import giis.selema.manager.SeleniumManager;
 import giis.selema.portable.SelemaException;
+import giis.selema.services.impl.SelenoidService;
 
 /**
  * Some detailed tests for the driver instantiation features
@@ -140,12 +141,31 @@ public class TestDriver {
 	//lifecycle tests with remote driver use a browser service, but it should work if not browser service is attached
 	//As this is not inside a lifecycle controller, simulates the steps.
 	@Test
-	public void testRemoteWebDriverFromManager() {
+	public void testRemoteWebDriverFromManagerNoBrowserService() {
 		if (!onRemote()) return;
-		LogReader logReader=new LifecycleAsserts().getLogReader();
-		SeleniumManager sm=new SeleniumManager(Config4test.getConfig()).setDriverUrl(new Config4test().getRemoteDriverUrl());
+		Map<String,Object> capsToAdd=new TreeMap<String,Object>();
+		capsToAdd.put("key1","value1");
+		capsToAdd.put("key2","value2");
+		SeleniumManager sm=new SeleniumManager(Config4test.getConfig())
+				.setDriverUrl(new Config4test().getRemoteDriverUrl())
+				.setOptions(capsToAdd); //can't get options from driver instance, check at the debug log
 		sm.onSetUp("TestDriver", "TestDriver.testRemoteWebDriverFromManager");
 		sm.onFailure("TestDriver", "TestDriver.testRemoteWebDriverFromManager");
+		assertLogRemoteWebDriver();
+		sm.onTearDown("TestDriver", "TestDriver.testRemoteWebDriverFromManager");
+	}
+	//with browser service but no video too
+	@Test
+	public void testRemoteWebDriverFromManagerNoVideoService() {
+		if (!onRemote()) return;
+		SeleniumManager sm=new SeleniumManager(Config4test.getConfig()).setDriverUrl(new Config4test().getRemoteDriverUrl()).add(new SelenoidService());
+		sm.onSetUp("TestDriver", "TestDriver.testRemoteWebDriverFromManager");
+		sm.onFailure("TestDriver", "TestDriver.testRemoteWebDriverFromManager");
+		assertLogRemoteWebDriver();
+		sm.onTearDown("TestDriver", "TestDriver.testRemoteWebDriverFromManager");
+	}
+	private void assertLogRemoteWebDriver() {
+		LogReader logReader=new LifecycleAsserts().getLogReader();
 		logReader.assertBegin();
 		logReader.assertContains("Creating SeleniumManager instance");
 		logReader.assertContains("*** SetUp - TestDriver.testRemoteWebDriverFromManager");

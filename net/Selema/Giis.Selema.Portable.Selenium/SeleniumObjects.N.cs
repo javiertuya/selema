@@ -68,7 +68,7 @@ namespace Giis.Selema.Portable.Selenium
 			//}
 			//en net debe incluirse el nombre del assembly
 			string className = pkg + "." + cls + clstype + ", " + assembly;
-			log.Debug("Getting instance of class: " + className);
+			log.Trace("Getting instance of class: " + className);
 			return className;
 		}
 		private string Capitalize(string input)

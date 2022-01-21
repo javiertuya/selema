@@ -15,10 +15,12 @@ import org.slf4j.LoggerFactory;
 import giis.selema.framework.junit4.LifecycleJunit4Class;
 import giis.selema.framework.junit4.LifecycleJunit4Test;
 import giis.selema.manager.IAfterEachCallback;
+import giis.selema.manager.SelemaConfig;
 import giis.selema.manager.SeleniumManager;
 import giis.selema.portable.SelemaException;
 import giis.selema.services.IMediaContext;
 import giis.selema.services.impl.MediaContext;
+import giis.visualassert.portable.FileUtil;
 import test4giis.selema.core.AfterEachCallback;
 import test4giis.selema.core.LifecycleAsserts;
 import test4giis.selema.core.Config4test;
@@ -26,7 +28,8 @@ import test4giis.selema.core.DriverConfigMaximize;
 
 /**
  * Checks exceptional situations: Some of them do not raise exceptions, but write in the selema log, 
- * others should raise exception to the user
+ * others should raise exception to the user.
+ * Note that exceptions are tested using try catch to allow automatic conversion to nunit
  */
 public class TestExceptions implements IAfterEachCallback {
 	//interfaces not needed by JUnit4, included to generate compatible NUnit3 translation
@@ -41,7 +44,7 @@ public class TestExceptions implements IAfterEachCallback {
 			.setManageAtClass()
 			.setDriverDelegate(new DriverConfigMaximize());
 	@ClassRule public static LifecycleJunit4Class cw = new LifecycleJunit4Class(sm);
-	@Rule public LifecycleJunit4Test tw = new LifecycleJunit4Test(sm, new AfterEachCallback(lfas, log, sm));
+	@Rule public LifecycleJunit4Test tw = new LifecycleJunit4Test(sm);
 
 	protected static WebDriver saveDriver;
 	@Override
@@ -68,15 +71,28 @@ public class TestExceptions implements IAfterEachCallback {
 
 	@Test
 	public void testManagerWithoutConfig() {
-		try {
-			new SeleniumManager(null);
+		try { new SeleniumManager(null);
 			fail("Should fail");
 		} catch (SelemaException e) {
 			assertEquals("SeleniumManager instance requires an instance of SelemaConfig", e.getMessage());
 		}
 	}
+	
+	//uses a different report subdir to do not include wrong named files/folders that cause error when published as artifacts
 	@Test
-	public void testScreenshotException() {
+	public void testManagerWrongName() {
+		try { new SeleniumManager(new SelemaConfig().setReportSubdir("dat/tmp").setName("ab?cd")); fail("Should fail"); } catch(RuntimeException e) {};
+	}
+	@Test
+	public void testManagerWrongReportSubdir() {
+		try { new SeleniumManager(new SelemaConfig().setReportSubdir("dat/tmp/ab?cd")); fail("Should fail"); } catch(RuntimeException e) {};
+	}
+	@Test
+	public void testManagerWrongProjectRoot() {
+		try { new SeleniumManager(new SelemaConfig().setProjectRoot("dat/tmp/ab?cd")); fail("Should fail"); } catch(RuntimeException e) {};
+	}
+	@Test
+	public void testScreenshotExceptionByDriver() {
 		//first screenshot pass
 		sm.screenshot("forced-screenshot");
 		lfas.assertLast("[INFO]", "Taking screenshot", "forced-screenshot.png");
@@ -86,22 +102,21 @@ public class TestExceptions implements IAfterEachCallback {
 		lfas.assertLast("[ERROR]", "Can't take screenshot or write the content to file", "TestExceptions-testScreenshotInternalException.png");
 	}
 	@Test
+	public void testScreenshotExceptionWriting() {
+		//forces exception writing by pasing an invalid report dir
+		IMediaContext context=new MediaContext(sm.getConfig().getProjectRoot() + "/dat/tmp/ab?cd", sm.getConfig().getQualifier(), 99, 99);
+		sm.getScreenshotService().takeScreenshot(sm.driver(), context, "TestExceptions.testScreenshotInternalException");
+		lfas.assertLast("[ERROR]", "Can't take screenshot or write the content to file", "TestExceptions-testScreenshotInternalException.png");
+	}
+	@Test
 	public void testVisualAssertException() {
 		sm.visualAssertEquals("ab cd", "ab cd"); //first assert pass
-		try {
-			sm.visualAssertEquals("ab cd", "ab xy cd");
-			fail("Should fail");
-		} catch (Throwable e) { 
-		}
+		try { sm.visualAssertEquals("ab cd", "ab xy cd"); fail("Should fail"); } catch (Throwable e) { }
 		lfas.assertLast("[WARN]", "Visual Assert differences", "TestExceptions-testVisualAssertException.html");
 	}
 	@Test
 	public void testWatermarkException() {
-		try {
-			sm.watermark();
-			fail("Should fail");
-		} catch (Throwable e) { 
-		}
+		try { sm.watermark(); fail("Should fail"); } catch (Throwable e) { }
 		lfas.assertLast("[ERROR]", "Watermark service is not attached to this Selenium Manager");
 	}
 

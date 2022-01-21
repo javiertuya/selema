@@ -1,6 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// THIS FILE HAS BEEN AUTOMATICALLY CONVERTED FROM THE JAVA SOURCES. DO NOT EDIT ///////
 /////////////////////////////////////////////////////////////////////////////////////////////
+using System;
 using Giis.Selema.Framework.Nunit3;
 using Giis.Selema.Manager;
 using Giis.Selema.Portable;
@@ -15,8 +16,13 @@ namespace Test4giis.Selema.Core
 {
 	/// <summary>
 	/// Checks exceptional situations: Some of them do not raise exceptions, but write in the selema log,
-	/// others should raise exception to the user
+	/// others should raise exception to the user.
 	/// </summary>
+	/// <remarks>
+	/// Checks exceptional situations: Some of them do not raise exceptions, but write in the selema log,
+	/// others should raise exception to the user.
+	/// Note that exceptions are tested using try catch to allow automatic conversion to nunit
+	/// </remarks>
 	[LifecycleNunit3] public class TestExceptions : IAfterEachCallback
 	{
 		internal static readonly Logger log = LogManager.GetCurrentClassLogger();
@@ -37,7 +43,7 @@ namespace Test4giis.Selema.Core
 		//public LifecycleNunit3Class cw = new LifecycleNunit3Class(sm);
 
 		
-		//public LifecycleNunit3Test tw = new LifecycleNunit3Test(sm, new AfterEachCallback(lfas, log, sm));
+		//public LifecycleNunit3Test tw = new LifecycleNunit3Test(sm);
 
 		protected internal static IWebDriver saveDriver;
 
@@ -86,8 +92,48 @@ namespace Test4giis.Selema.Core
 			}
 		}
 
+		//uses a different report subdir to do not include wrong named files/folders that cause error when published as artifacts
 		[Test]
-		public virtual void TestScreenshotException()
+		public virtual void TestManagerWrongName()
+		{
+			try
+			{
+				new SeleniumManager(new SelemaConfig().SetReportSubdir("dat/tmp").SetName("ab?cd"));
+				NUnit.Framework.Assert.Fail("Should fail");
+			}
+			catch (Exception)
+			{
+			}
+		}
+
+		[Test]
+		public virtual void TestManagerWrongReportSubdir()
+		{
+			try
+			{
+				new SeleniumManager(new SelemaConfig().SetReportSubdir("dat/tmp/ab?cd"));
+				NUnit.Framework.Assert.Fail("Should fail");
+			}
+			catch (Exception)
+			{
+			}
+		}
+
+		[Test]
+		public virtual void TestManagerWrongProjectRoot()
+		{
+			try
+			{
+				new SeleniumManager(new SelemaConfig().SetProjectRoot("dat/tmp/ab?cd"));
+				NUnit.Framework.Assert.Fail("Should fail");
+			}
+			catch (Exception)
+			{
+			}
+		}
+
+		[Test]
+		public virtual void TestScreenshotExceptionByDriver()
 		{
 			//first screenshot pass
 			sm.Screenshot("forced-screenshot");
@@ -95,6 +141,15 @@ namespace Test4giis.Selema.Core
 			//forces exception by passing a null driver
 			IMediaContext context = new MediaContext(sm.GetConfig().GetReportDir(), sm.GetConfig().GetQualifier(), 99, 99);
 			sm.GetScreenshotService().TakeScreenshot(null, context, "TestExceptions.testScreenshotInternalException");
+			lfas.AssertLast("[ERROR]", "Can't take screenshot or write the content to file", "TestExceptions-testScreenshotInternalException.png");
+		}
+
+		[Test]
+		public virtual void TestScreenshotExceptionWriting()
+		{
+			//forces exception writing by pasing an invalid report dir
+			IMediaContext context = new MediaContext(sm.GetConfig().GetProjectRoot() + "/dat/tmp/ab?cd", sm.GetConfig().GetQualifier(), 99, 99);
+			sm.GetScreenshotService().TakeScreenshot(sm.Driver(), context, "TestExceptions.testScreenshotInternalException");
 			lfas.AssertLast("[ERROR]", "Can't take screenshot or write the content to file", "TestExceptions-testScreenshotInternalException.png");
 		}
 

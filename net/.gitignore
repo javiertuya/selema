@@ -6,7 +6,8 @@ dist
 packages
 reports
 .vs
-dat/out
+dat/tmp
+temp
 Sharpen-Jars
 Sharpen-Project
 sharpen-temp

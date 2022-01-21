@@ -28,8 +28,8 @@ public class ScreenshotService implements IScreenshotService {
 	@Override
 	public String takeScreenshot(WebDriver driver, IMediaContext context, String testName) {
 		String screenshotFile=context.getScreenshotFileName(testName);
-		String fileName=FileUtil.getPath(context.getReportFolder(), screenshotFile);
 		try {
+			String fileName=FileUtil.getPath(context.getReportFolder(), screenshotFile);
 			String screenshotUrl="<a href=\"" + screenshotFile + "\">" + screenshotFile + "</a>";
 			String msg="Taking screenshot: " + screenshotUrl;
 			if (log!=null)
@@ -37,7 +37,7 @@ public class ScreenshotService implements IScreenshotService {
 			SeleniumActions.takeScreenshotToFile(driver, fileName);
 			return msg;
 		} catch (RuntimeException e) {
-			String msg="Can't take screenshot or write the content to file "+fileName+". Message: " + e.getMessage();
+			String msg="Can't take screenshot or write the content to file "+screenshotFile+". Message: " + e.getMessage();
 			if (log!=null)
 				log.error(msg);
 			return msg;

@@ -48,6 +48,12 @@ namespace Test4giis.Selema.Core
 			driver.Url = new Config4test().GetCoverageUrl();
 			RunCoverageSession2(sm, driver);
 			sm.QuitDriver(driver);
+			//simulates failure when no coverage file can be read (the service will become invalidated, name restored in teardown)
+			((JsCoverService)sm.GetCoverageService()).SetCoverageFileName("notexists.json");
+			driver = sm.CreateDriver();
+			LifecycleAsserts lfas = new LifecycleAsserts();
+			lfas.AssertLast("Exception reading js coverage file", "notexists.json");
+			sm.QuitDriver(driver);
 		}
 
 		//finaliza driver por si ha fallado el anterior pues sm es unmanaged
@@ -55,6 +61,7 @@ namespace Test4giis.Selema.Core
 		public virtual void TearDown()
 		{
 			sm.QuitDriver(driver);
+			((JsCoverService)sm.GetCoverageService()).SetCoverageFileName("jscoverage.json");
 		}
 
 		/// <summary>Ejecucion sucesiva de acciones que aumentan progresivamente la cobertura</summary>
