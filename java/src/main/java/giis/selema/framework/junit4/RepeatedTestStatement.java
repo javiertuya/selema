@@ -34,6 +34,7 @@ public class RepeatedTestStatement extends Statement {
         Throwable caughtThrowable = null;
         // retry logic
         for (int i = 0; i < retryCount; i++) {
+            log.trace("Entering repetition "+i);
         	String testName=getNameUntilBracket(sm.currentTestName());
             try {
             	if (i>0)

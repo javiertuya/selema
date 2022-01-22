@@ -46,7 +46,7 @@ public class SeleniumDriverFactory {
 			objectToInstantiate="WebDriver";
 			log.debug("Setting up WebDriver, browser: "+browser+", url: "+remoteUrl);
 			lastOptionString=opt.toString();
-			log.trace("Option string: "+lastOptionString);
+			log.trace("Option string: "+lastOptionString.replace("\n", "").replace("\r", ""));
 			if (remoteUrl==null || "".equals(remoteUrl.trim())) {
 				ensureLocalDriverDownloaded(browser);
 				return (WebDriver)reflect.getDriverObj(browser, opt);

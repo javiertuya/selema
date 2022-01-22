@@ -21,6 +21,7 @@ public class LifecycleJunit4Class extends ExternalResource {
 
 	public LifecycleJunit4Class(SeleniumManager smgr) {
 		sm=smgr;
+		log.trace("Instance of SeleniumManager is bound to class rule");
 	}
 	
     public Statement apply(Statement base, Description description) {

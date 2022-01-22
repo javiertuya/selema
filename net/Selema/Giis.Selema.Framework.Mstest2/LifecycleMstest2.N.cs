@@ -13,7 +13,7 @@ namespace Giis.Selema.Framework.Mstest2
     /// </summary>
 	public abstract class LifecycleMstest2
 	{
-        static readonly Logger log = LogManager.GetLogger("lifecycle");
+        static readonly Logger log = LogManager.GetLogger("Giis.Selema.Framework.Mstest2.LifecycleMstest2");
         private static SeleniumManager sm = null;
         //On MSTest IAfterEachCallback is not defined, it will be executed by subclass in ClassCleanup;
         protected static string className="undefined";
@@ -27,11 +27,13 @@ namespace Giis.Selema.Framework.Mstest2
         public static SeleniumManager GetManager(SeleniumManager manager)
         {
             sm = manager ?? new SeleniumManager();
+            log.Trace("Instance of SeleniumManager is bound");
             return sm;
         }
         public static SeleniumManager GetManager(SeleniumManager manager, SelemaConfig config)
         {
             sm = manager ?? new SeleniumManager(config);
+            log.Trace("Instance of SeleniumManager is bound");
             return sm;
         }
 
@@ -82,7 +84,7 @@ namespace Giis.Selema.Framework.Mstest2
                 else
                 {
                     log.Trace("Lifecycle test succeeded");
-                    sm.GetLogger().Info("SUCCESS " + GetTestName());
+                    sm.OnSuccess(GetTestName());
                 }
             }
             log.Trace("Lifecycle test end");

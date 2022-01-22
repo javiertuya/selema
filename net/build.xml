@@ -292,7 +292,7 @@
 
     <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4Repeated.cs" token="Retry(" value="RetryTestMethod(" />
     <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4Repeated.cs" token="[TestMethod]" value="" />
-    <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4Repeated.cs" token="sm.Driver().Url" value="base.SetUp(); sm.Driver().Url" />
+    <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4Repeated.cs" token="sm.Driver.Url" value="base.SetUp(); sm.Driver.Url" />
     <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4Repeated.cs" token="public virtual void SetUp()" value="public override void SetUp()" />
     <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4Inherited.cs" token="[TestClass]" value="[Microsoft.VisualStudio.TestTools.UnitTesting.TestClass]" />
 

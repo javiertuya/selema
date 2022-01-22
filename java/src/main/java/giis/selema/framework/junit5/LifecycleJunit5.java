@@ -112,7 +112,7 @@ public class LifecycleJunit5 implements TestWatcher, TestInstancePostProcessor, 
 	public void testSuccessful(ExtensionContext context) {
 		log.trace("Lifecycle test succeeded");
 		if (sm!=null)
-			sm.getLogger().info("SUCCESS " + getTestName());
+			sm.onSuccess(getTestName());
 		afterEachActions(context);
 	}
 	private void afterEachActions(ExtensionContext context) { //NOSONAR not needed, but requred by the interface
@@ -124,11 +124,6 @@ public class LifecycleJunit5 implements TestWatcher, TestInstancePostProcessor, 
 			afterCallback.runAfterCallback(getTestName(), true);
 	}
 	
-	public void tearDownClass() {
-		if (sm!=null)
-			sm.onTearDownClass(className, getTestName());
-	}
-
 	/**
 	 * Finds the instance of SeleniumManager that is declared in the test instance
 	 */
@@ -143,6 +138,7 @@ public class LifecycleJunit5 implements TestWatcher, TestInstancePostProcessor, 
 				if (field.getType().equals(SeleniumManager.class)) {
 					field.setAccessible(true); //NOSONAR required to allow private SeleniumManager instances
 					Object smInstance=field.get(testInstance);
+					log.trace("Instance of SeleniumManager is bound");
 					return (SeleniumManager)smInstance;
 				}
 			}
@@ -150,10 +146,10 @@ public class LifecycleJunit5 implements TestWatcher, TestInstancePostProcessor, 
 			if (targetClass.getSuperclass()!=null)
 				return findSeleniumManagerInstance(testInstance, targetClass.getSuperclass());
 			
-			log.warn("Can't get an instance of SeleniumManager");
+			log.warn("Can't bind an instance of SeleniumManager");
 			return null;
 		} catch (Exception e) {
-			log.warn("Can't get an instance of SeleniumManager, exception: "+e.getMessage());
+			log.warn("Error binding an instance of SeleniumManager, exception: "+e.getMessage());
 			return null;
 		}
 	}

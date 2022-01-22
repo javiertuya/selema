@@ -59,7 +59,7 @@ namespace Giis.Selema.Manager
 				objectToInstantiate = "WebDriver";
 				log.Debug("Setting up WebDriver, browser: " + browser + ", url: " + remoteUrl);
 				lastOptionString = opt.ToString();
-				log.Trace("Option string: " + lastOptionString);
+				log.Trace("Option string: " + lastOptionString.Replace("\n", string.Empty).Replace("\r", string.Empty));
 				if (remoteUrl == null || string.Empty.Equals(remoteUrl.Trim()))
 				{
 					EnsureLocalDriverDownloaded(browser);

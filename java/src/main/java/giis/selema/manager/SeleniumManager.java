@@ -335,12 +335,14 @@ public class SeleniumManager {
 	//Response to lifecycle events
 	
 	public void onSetUpClass(String className) {
+		log.trace("on set up class "+className);
 		currentClassName=className;
 		currentTestName="";
 		if (manageAtClass)
 			createDriver(className, "");
 	}
 	public void onSetUp(String className, String testName) {
+		log.trace("on set up test "+testName);
 		selemaLog.info("*** SetUp - " + testName);
 		currentClassName=className;
 		currentTestName=testName;
@@ -349,15 +351,18 @@ public class SeleniumManager {
 		}
 	}
 	public void onTearDown(String className, String testName) {
+		log.trace("on tear down test "+testName);
 		selemaLog.info("TearDown - " + testName);
 		if (manageAtTest)
 			quitDriver(currentDriver, className, testName); 
 	}
 	public void onTearDownClass(String className, String testName) {
+		log.trace("on tear down class "+className);
 		if (manageAtClass)
 			quitDriver(currentDriver, className, testName);
 	}
 	public String onFailure(String className, String testName) {
+		log.trace("on test failure "+testName);
 		selemaLog.warn("FAIL " + testName);
 		String msg="";
 		if (currentDriver!=null)
@@ -368,6 +373,10 @@ public class SeleniumManager {
 		if (currentDriver!=null && watermark!=null) 
 			watermark.fail(currentDriver, testName);
 		return msg;
+	}
+	public void onSuccess(String testName) {
+		log.trace("on test success "+testName);
+		selemaLog.info("SUCCESS " + testName);
 	}
 	private String getDriverScope(String className, String testName) {
 		String scope = manageAtClass ? className : testName;
@@ -415,9 +424,11 @@ public class SeleniumManager {
 
 	
 	private WebDriver getLocalSeleniumDriver() { 
+		log.trace("Get local Selenium Driver");
 		return new SeleniumDriverFactory().getSeleniumDriver(currentBrowser, "", currentOptions, currentArguments);
 	}
 	private WebDriver getRemoteSeleniumDriver(String driverScope) {
+		log.trace("Get remote Selenium Driver");
 		//prepara las opciones anyadiendo a las definidas al configurar, las requeridas por los diferentes servicios
 		Map<String,Object> allOptions=new HashMap<>();
 		if (currentOptions!=null)

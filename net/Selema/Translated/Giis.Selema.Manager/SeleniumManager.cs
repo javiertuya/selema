@@ -398,6 +398,7 @@ namespace Giis.Selema.Manager
 		//Response to lifecycle events
 		public virtual void OnSetUpClass(string className)
 		{
+			log.Trace("on set up class " + className);
 			currentClassName = className;
 			currentTestName = string.Empty;
 			if (manageAtClass)
@@ -408,6 +409,7 @@ namespace Giis.Selema.Manager
 
 		public virtual void OnSetUp(string className, string testName)
 		{
+			log.Trace("on set up test " + testName);
 			selemaLog.Info("*** SetUp - " + testName);
 			currentClassName = className;
 			currentTestName = testName;
@@ -419,6 +421,7 @@ namespace Giis.Selema.Manager
 
 		public virtual void OnTearDown(string className, string testName)
 		{
+			log.Trace("on tear down test " + testName);
 			selemaLog.Info("TearDown - " + testName);
 			if (manageAtTest)
 			{
@@ -428,6 +431,7 @@ namespace Giis.Selema.Manager
 
 		public virtual void OnTearDownClass(string className, string testName)
 		{
+			log.Trace("on tear down class " + className);
 			if (manageAtClass)
 			{
 				QuitDriver(currentDriver, className, testName);
@@ -436,6 +440,7 @@ namespace Giis.Selema.Manager
 
 		public virtual string OnFailure(string className, string testName)
 		{
+			log.Trace("on test failure " + testName);
 			selemaLog.Warn("FAIL " + testName);
 			string msg = string.Empty;
 			if (currentDriver != null)
@@ -452,6 +457,12 @@ namespace Giis.Selema.Manager
 				watermark.Fail(currentDriver, testName);
 			}
 			return msg;
+		}
+
+		public virtual void OnSuccess(string testName)
+		{
+			log.Trace("on test success " + testName);
+			selemaLog.Info("SUCCESS " + testName);
 		}
 
 		private string GetDriverScope(string className, string testName)
@@ -500,11 +511,13 @@ namespace Giis.Selema.Manager
 
 		private IWebDriver GetLocalSeleniumDriver()
 		{
+			log.Trace("Get local Selenium Driver");
 			return new SeleniumDriverFactory().GetSeleniumDriver(currentBrowser, string.Empty, currentOptions, currentArguments);
 		}
 
 		private IWebDriver GetRemoteSeleniumDriver(string driverScope)
 		{
+			log.Trace("Get remote Selenium Driver");
 			//prepara las opciones anyadiendo a las definidas al configurar, las requeridas por los diferentes servicios
 			IDictionary<string, object> allOptions = new Dictionary<string, object>();
 			if (currentOptions != null)

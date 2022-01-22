@@ -27,6 +27,7 @@ public class LifecycleJunit4Test extends TestWatcher {
 	public LifecycleJunit4Test(SeleniumManager smgr, IAfterEachCallback callback) {
 		this.afterCallback=callback;
 		sm=smgr;
+		log.trace("Instance of SeleniumManager is bound to test rule");
 	}
 	public LifecycleJunit4Test(SeleniumManager smgr) {
 		this(smgr, null);
@@ -55,7 +56,7 @@ public class LifecycleJunit4Test extends TestWatcher {
 	protected void succeeded(Description description) {
 		log.trace("Lifecycle test succeeded");
 		if (sm!=null)
-			sm.getLogger().info("SUCCESS " + getTestName());
+			sm.onSuccess(getTestName());
 	}
 	@Override
 	public void finished(Description description) {

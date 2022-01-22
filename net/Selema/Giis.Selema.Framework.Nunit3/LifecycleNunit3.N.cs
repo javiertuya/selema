@@ -16,7 +16,7 @@ namespace Giis.Selema.Framework.Nunit3
     [AttributeUsage(AttributeTargets.Class)]
     public class LifecycleNunit3 : Attribute, ITestAction
     {
-        static readonly Logger log = LogManager.GetLogger("lifecycle");
+        static readonly Logger log = LogManager.GetLogger("Giis.Selema.Framework.Nunit3.LifecycleNunit3");
 
         private SeleniumManager sm;
         private IAfterEachCallback afterCallback;
@@ -92,7 +92,7 @@ namespace Giis.Selema.Framework.Nunit3
                     else
                     {
                         log.Trace("Lifecycle test succeeded");
-                        sm.GetLogger().Info("SUCCESS " + testName);
+                        sm.OnSuccess(testName);
                     }
                 }
                 log.Trace("Lifecycle test end");
@@ -121,14 +121,15 @@ namespace Giis.Selema.Framework.Nunit3
                     if (field.FieldType == typeof(SeleniumManager))
                     {
                         object smInstance = field.GetValue(testInstance);
+                        log.Trace("Instance of SeleniumManager is bound");
                         return (SeleniumManager)smInstance;
                     }
-                log.Warn("Can't get an instance of SeleniumManager");
+                log.Warn("Can't bind an instance of SeleniumManager");
                 return null;
             }
             catch (Exception e)
             {
-                log.Warn("Can't get an instance of SeleniumManager, exception: " + e.Message);
+                log.Warn("Error binding an instance of SeleniumManager, exception: " + e.Message);
                 return null;
             }
         }
