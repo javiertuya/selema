@@ -47,7 +47,7 @@ namespace Test4giis.Selema.Mstest2
 		[TestInitialize]
 		public override void SetUp()
 		{
-			base.SetUp(); sm.Driver().Url = new Config4test().GetWebUrl();
+			sm.Driver.Url = new Config4test().GetWebUrl();
 			sm.Watermark();
 		}
 

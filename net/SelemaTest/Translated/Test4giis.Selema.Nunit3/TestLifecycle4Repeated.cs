@@ -36,7 +36,7 @@ namespace Test4giis.Selema.Nunit3
 		[NUnit.Framework.SetUp]
 		public virtual void SetUp()
 		{
-			sm.Driver().Url = new Config4test().GetWebUrl();
+			sm.Driver.Url = new Config4test().GetWebUrl();
 			sm.Watermark();
 		}
 

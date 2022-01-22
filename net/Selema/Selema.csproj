@@ -2,7 +2,7 @@
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <InformationalVersion>2.0.0</InformationalVersion>
+    <InformationalVersion>2.0.1-SNAPSHOT</InformationalVersion>
  
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>CS1591</NoWarn>
@@ -10,11 +10,11 @@
   
     <PackageOutputPath>./nupkg</PackageOutputPath>
     <RepositoryUrl>https://github.com/$(GITHUB_REPOSITORY)</RepositoryUrl>
-    <Version>2.0.0</Version>
+    <Version>2.0.1-SNAPSHOT</Version>
     <Authors>Javier Tuya</Authors>
     <Company>GIIS - University of Oviedo, ES</Company>
     <Description>
-      A Multi-platform, multi-framework Selenium Test Lifecycle Manager on Java and .NET. Automates the WebDriver instantiation and configuration, providing an unified test log, clues for debugging and integration with CI platforms and Browser services
+      A multi-platform, multi-framework Selenium Test Lifecycle Manager on Java and .NET. Automates the WebDriver instantiation and configuration, providing an unified test log, clues for debugging and integration with CI platforms and Browser services
     </Description>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/javiertuya/visual-assert</PackageProjectUrl>

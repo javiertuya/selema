@@ -246,14 +246,20 @@ public class SeleniumManager {
 	
 	/**
 	 * Gets the current driver managed, logs and throws exception is not set
-	 * @return
 	 */
-	public WebDriver driver() {
+	public WebDriver getDriver() {
 		if (currentDriver==null) {
 			selemaLog.error("The Selenium Manager does not have any active WebDriver");
 			throw new SelemaException("The Selenium Manager does not have any active WebDriver");
 		}
 		return currentDriver; 
+	}
+	/**
+	 * Gets the current driver managed, logs and throws exception is not set 
+	 * (synonym of getDriver() accessed as a property on net)
+	 */
+	public WebDriver driver() {
+		return getDriver(); 
 	}
     /**
 	 * Gets a new WebDriver for the specified class and test. For inernal use only

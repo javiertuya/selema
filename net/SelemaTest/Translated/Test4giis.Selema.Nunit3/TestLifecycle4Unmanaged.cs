@@ -45,7 +45,7 @@ namespace Test4giis.Selema.Nunit3
 			//no debe haber driver activo
 			try
 			{
-				sm.Driver().Url = new Config4test().GetWebUrl();
+				sm.Driver.Url = new Config4test().GetWebUrl();
 				//siempre usa la misma pagina
 				NUnit.Framework.Assert.Fail("should fail");
 			}

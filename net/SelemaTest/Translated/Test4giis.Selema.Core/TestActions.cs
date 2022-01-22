@@ -24,7 +24,7 @@ namespace Test4giis.Selema.Core
 		[Test]
 		public virtual void TestSendKeys()
 		{
-			IWebDriver driver = sm.Driver();
+			IWebDriver driver = sm.Driver;
 			driver.Url = new Config4test().GetWebUrl();
 			sm.Watermark();
 			IWebElement elem = driver.FindElement(By.Id("textbox"));
@@ -38,7 +38,7 @@ namespace Test4giis.Selema.Core
 		[Test]
 		public virtual void TestSetHtmlOrText()
 		{
-			IWebDriver driver = sm.Driver();
+			IWebDriver driver = sm.Driver;
 			driver.Url = new Config4test().GetWebUrl();
 			sm.Watermark();
 			IWebElement elem = driver.FindElement(By.Id("spanSpan"));
@@ -51,7 +51,7 @@ namespace Test4giis.Selema.Core
 		[Test]
 		public virtual void TestWebDriverWaits()
 		{
-			IWebDriver driver = sm.Driver();
+			IWebDriver driver = sm.Driver;
 			driver.Url = new Config4test().GetWebUrl();
 			sm.Watermark();
 			IWebElement elem = SeleniumActions.FindById(driver, "btnDelay");

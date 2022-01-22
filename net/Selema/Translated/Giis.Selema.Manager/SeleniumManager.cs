@@ -280,8 +280,7 @@ namespace Giis.Selema.Manager
 
 		//Driver management
 		/// <summary>Gets the current driver managed, logs and throws exception is not set</summary>
-		/// <returns/>
-		public virtual IWebDriver Driver()
+		public virtual IWebDriver GetDriver()
 		{
 			if (currentDriver == null)
 			{
@@ -289,6 +288,18 @@ namespace Giis.Selema.Manager
 				throw new SelemaException("The Selenium Manager does not have any active WebDriver");
 			}
 			return currentDriver;
+		}
+
+		/// <summary>
+		/// Gets the current driver managed, logs and throws exception is not set
+		/// (synonym of getDriver() accessed as a property on net)
+		/// </summary>
+		public virtual IWebDriver Driver
+		{
+			get
+			{
+				return GetDriver();
+			}
 		}
 
 		/// <summary>Gets a new WebDriver for the specified class and test.</summary>
@@ -455,7 +466,7 @@ namespace Giis.Selema.Manager
 		/// <summary>Takes a screenshot to a file that will be linked to the log</summary>
 		public virtual void Screenshot(string fileName)
 		{
-			screenshotService.TakeScreenshot(this.Driver(), mediaScreenshotContext, fileName);
+			screenshotService.TakeScreenshot(this.Driver, mediaScreenshotContext, fileName);
 		}
 
 		/// <summary>Places a watermark with the test name (requires the watermark service be attached)</summary>
@@ -472,7 +483,7 @@ namespace Giis.Selema.Manager
 				selemaLog.Error("Watermark service is not attached to this Selenium Manager");
 				throw new SelemaException("Watermark service is not attached to this Selenium Manager");
 			}
-			watermark.Write(this.Driver(), value);
+			watermark.Write(this.Driver, value);
 		}
 
 		/// <summary>Asserts if two large strings and links the html differences to the log</summary>

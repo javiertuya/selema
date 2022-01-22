@@ -56,7 +56,7 @@ namespace Test4giis.Selema.Mstest2
 			//no debe haber driver activo
 			try
 			{
-				sm.Driver().Url = new Config4test().GetWebUrl();
+				sm.Driver.Url = new Config4test().GetWebUrl();
 				//siempre usa la misma pagina
 				Microsoft.VisualStudio.TestTools.UnitTesting.Assert.Fail("should fail");
 			}

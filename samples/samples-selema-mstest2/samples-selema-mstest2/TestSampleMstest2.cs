@@ -32,8 +32,8 @@ namespace Giis.Samples.Selema.Mstest2
         [TestMethod]
         public void TestFailMethod()
         {
-            sm.Driver().Url = "https://javiertuya.github.io/selema/samples/";
-            Assert.AreEqual("XXXX Selema samples", sm.Driver().Title);
+            sm.Driver.Url = "https://javiertuya.github.io/selema/samples/";
+            Assert.AreEqual("XXXX Selema samples", sm.Driver.Title);
         }
 
         //Repeated tests demo, uses a counter to simulate failures
@@ -46,8 +46,8 @@ namespace Giis.Samples.Selema.Mstest2
             string expected = "Selema samples";
             if (repetitions < 3) //fails except last repetition
                 expected = "XXX " + expected;
-            sm.Driver().Url = "https://javiertuya.github.io/selema/samples/";
-            Assert.AreEqual(expected, sm.Driver().Title);
+            sm.Driver.Url = "https://javiertuya.github.io/selema/samples/";
+            Assert.AreEqual(expected, sm.Driver.Title);
         }
 
     }

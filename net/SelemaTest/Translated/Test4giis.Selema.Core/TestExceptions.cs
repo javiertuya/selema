@@ -58,7 +58,7 @@ namespace Test4giis.Selema.Core
 		[NUnit.Framework.SetUp]
 		public virtual void SetUp()
 		{
-			saveDriver = sm.Driver();
+			saveDriver = sm.Driver;
 			lfas.AssertAfterSetup(sm, false, thisTestCount == 0);
 			//ensures correct setup
 			LaunchPage();
@@ -74,7 +74,7 @@ namespace Test4giis.Selema.Core
 
 		protected internal virtual void LaunchPage()
 		{
-			sm.Driver().Url = new Config4test().GetWebUrl();
+			sm.Driver.Url = new Config4test().GetWebUrl();
 		}
 
 		//siempre usa la misma pagina
@@ -149,7 +149,7 @@ namespace Test4giis.Selema.Core
 		{
 			//forces exception writing by pasing an invalid report dir
 			IMediaContext context = new MediaContext(sm.GetConfig().GetProjectRoot() + "/dat/tmp/ab?cd", sm.GetConfig().GetQualifier(), 99, 99);
-			sm.GetScreenshotService().TakeScreenshot(sm.Driver(), context, "TestExceptions.testScreenshotInternalException");
+			sm.GetScreenshotService().TakeScreenshot(sm.Driver, context, "TestExceptions.testScreenshotInternalException");
 			lfas.AssertLast("[ERROR]", "Can't take screenshot or write the content to file", "TestExceptions-testScreenshotInternalException.png");
 		}
 

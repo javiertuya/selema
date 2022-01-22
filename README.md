@@ -43,7 +43,8 @@ To use Selema with your tests you only need:
 - Configure the test class with a `Lifecycle*` annotation or rule (depending on the test framework).
 
 The appropriate Selenium WebDriver will be instantiated and closed before and after test execution
-and accesible to the tests using `sm.driver()`.
+and accesible to the tests using the `driver()` method (Java) or the `Driver` property (net).
+
 Expand/collapse the below items for instructions and examples on each of the supported platforms.
 [Full source of examples can be found here](samples):
 
@@ -105,8 +106,8 @@ and (2) a decorate the test class with the `[LifecycleNunit3]` annotation:
         [Test]
         public void TestFailMethod()
         {
-            sm.Driver().Url = "https://en.wikipedia.org/";
-            Assert.AreEqual("XXXX Wikipedia, the free encyclopedia", sm.Driver().Title);
+            sm.Driver.Url = "https://en.wikipedia.org/";
+            Assert.AreEqual("XXXX Wikipedia, the free encyclopedia", sm.Driver.Title);
         }
     }
 ```
@@ -136,8 +137,8 @@ See comments in the example for additional explanations:
         [TestMethod]
         public void TestFailMethod2()
         {
-            sm.Driver().Url = "https://en.wikipedia.org/";
-            Assert.AreEqual("XXXX Wikipedia, the free encyclopedia", sm.Driver().Title);
+            sm.Driver.Url = "https://en.wikipedia.org/";
+            Assert.AreEqual("XXXX Wikipedia, the free encyclopedia", sm.Driver.Title);
         }
     }
 ```
