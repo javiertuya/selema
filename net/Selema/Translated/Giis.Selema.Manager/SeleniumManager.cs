@@ -258,6 +258,11 @@ namespace Giis.Selema.Manager
 			return this.selemaLog;
 		}
 
+		public virtual ICiService GetCiService()
+		{
+			return this.ciService;
+		}
+
 		public virtual IScreenshotService GetScreenshotService()
 		{
 			return this.screenshotService;
@@ -469,7 +474,7 @@ namespace Giis.Selema.Manager
 		{
 			string scope = manageAtClass ? className : testName;
 			//Le anyade el id del job para evitar mezclar videos cuando se comparte la instancia de selenoid
-			scope += " " + ciService.GetJobId();
+			scope += " " + this.GetCiService().GetJobId();
 			return scope;
 		}
 

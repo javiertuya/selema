@@ -228,6 +228,9 @@ public class SeleniumManager {
 	public ISelemaLogger getLogger() {
 		return this.selemaLog;
 	}
+	public ICiService getCiService() {
+		return this.ciService;
+	}
 	public IScreenshotService getScreenshotService() {
 		return this.screenshotService;
 	}
@@ -381,7 +384,7 @@ public class SeleniumManager {
 	private String getDriverScope(String className, String testName) {
 		String scope = manageAtClass ? className : testName;
 		//Le anyade el id del job para evitar mezclar videos cuando se comparte la instancia de selenoid
-		scope += " " + ciService.getJobId();
+		scope += " " + this.getCiService().getJobId();
 		return scope;
 	}
 
