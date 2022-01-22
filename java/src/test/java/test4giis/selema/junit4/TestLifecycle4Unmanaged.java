@@ -1,6 +1,8 @@
 package test4giis.selema.junit4;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.slf4j.Logger;
@@ -37,7 +39,8 @@ public class TestLifecycle4Unmanaged implements IAfterEachCallback{
 	public void testNoDriver() {
 		lfas.assertNow(currentName()+".testNoDriver", sm.currentTestName());
 		lfas.assertAfterSetup(sm, false);
-		//no debe haber driver activo
+		//should not have an active driver, accesing to it throws exception
+		assertFalse(sm.hasDriver());
 		try {
 			sm.driver().get(new Config4test().getWebUrl()); //siempre usa la misma pagina
 			fail("should fail");
@@ -49,11 +52,12 @@ public class TestLifecycle4Unmanaged implements IAfterEachCallback{
 	@Test
 	public void testWithDriver() {
 		lfas.assertNow(currentName()+".testWithDriver", sm.currentTestName());
-		//aunque es unmanaged, uso los metodos de la base para crear y cerrar el driver pero lo mantiene fuera de SeleniumManager
+		//even if it is unmanaged, I can create a driver that is bound to the manager
 		WebDriver driver=sm.createDriver();
+		assertTrue(sm.hasDriver());
 		lfas.assertAfterSetup(sm, true);
 		sm.getLogger().info("INSIDE TEST BODY");
-		driver.get(new Config4test().getWebUrl()); //siempre usa la misma pagina
+		driver.get(new Config4test().getWebUrl());
 		lfas.assertAfterPass();
 		sm.quitDriver(driver);
 		sm.quitDriver(driver); //ensures can be called multiple times

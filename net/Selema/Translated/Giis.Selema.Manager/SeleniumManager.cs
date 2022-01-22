@@ -307,6 +307,12 @@ namespace Giis.Selema.Manager
 			}
 		}
 
+		/// <summary>Indicates if the web driver has been instantiated</summary>
+		public virtual bool HasDriver()
+		{
+			return currentDriver != null;
+		}
+
 		/// <summary>Gets a new WebDriver for the specified class and test.</summary>
 		/// <remarks>Gets a new WebDriver for the specified class and test. For inernal use only</remarks>
 		public virtual IWebDriver CreateDriver(string className, string testName)

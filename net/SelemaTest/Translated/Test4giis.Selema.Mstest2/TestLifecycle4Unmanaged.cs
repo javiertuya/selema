@@ -53,7 +53,8 @@ namespace Test4giis.Selema.Mstest2
 		{
 			lfas.AssertNow(CurrentName() + ".testNoDriver", sm.CurrentTestName());
 			lfas.AssertAfterSetup(sm, false);
-			//no debe haber driver activo
+			//should not have an active driver, accesing to it throws exception
+			Microsoft.VisualStudio.TestTools.UnitTesting.Assert.IsFalse(sm.HasDriver());
 			try
 			{
 				sm.Driver.Url = new Config4test().GetWebUrl();
@@ -71,12 +72,12 @@ namespace Test4giis.Selema.Mstest2
 		public virtual void TestWithDriver()
 		{
 			lfas.AssertNow(CurrentName() + ".testWithDriver", sm.CurrentTestName());
-			//aunque es unmanaged, uso los metodos de la base para crear y cerrar el driver pero lo mantiene fuera de SeleniumManager
+			//even if it is unmanaged, I can create a driver that is bound to the manager
 			IWebDriver driver = sm.CreateDriver();
+			Microsoft.VisualStudio.TestTools.UnitTesting.Assert.IsTrue(sm.HasDriver());
 			lfas.AssertAfterSetup(sm, true);
 			sm.GetLogger().Info("INSIDE TEST BODY");
 			driver.Url = new Config4test().GetWebUrl();
-			//siempre usa la misma pagina
 			lfas.AssertAfterPass();
 			sm.QuitDriver(driver);
 			sm.QuitDriver(driver);

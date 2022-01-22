@@ -264,6 +264,12 @@ public class SeleniumManager {
 	public WebDriver driver() {
 		return getDriver(); 
 	}
+	/**
+	 * Indicates if the web driver has been instantiated
+	 */
+	public boolean hasDriver() {
+		return currentDriver!=null;
+	}
     /**
 	 * Gets a new WebDriver for the specified class and test. For inernal use only
 	 */
