@@ -167,8 +167,9 @@ Unless otherwise stated, on .NET, all packages, classes and methods have the sam
 - **Drivers**: `setDriverUrl(String driverUrl)` sets a RemoteWebDriver instead a local one (default). The driverUrl must point to the browser service.
 - **Modes of Operation**: By default, Selema starts a WebDriver before each test executions and quits after each test execution, but this behaviour can be modified:
   - `setManageAtClass()`: Starts a WebDriver before the first test at each class, and quits after all tests in the class
-  - `setManageNone()`: Do not start/quit a webdriver, if needed, you can control the driver instantiation by calling `createDriver()`
-  	and `quitDriver(WebDriver driver)` on the SeleniumManager Instance.
+  - `setManageNone()`: Do not start/quit automatically any webdriver. Useful to test scenarios that involve users closing browsers.
+    If needed, tester can instantiate and close a driver by calling `createDriver()` and `quitDriver(WebDriver driver)` on the SeleniumManager Instance.
+    Method `hasDriver()` indicates if an instance of the driver has been created (accesing a non instantiated driver thwows an exception).
   - `setManagedAtTest()`: Returns to the default behaviour.
 - **WebDriver Capabilities (options)**: `setOptions(Map<String,Object> options)` adds the specific capabilities to the WebDriver prior to its creation.
 - **WebDriver Arguments**: `setArguments(String[] arguments)` adds the specific arguments to the WebDriver execution. 
@@ -190,7 +191,7 @@ and produces a log file named `selema-custom-log.html`.
 
 ## Delegated configurations
 
-Additional or new configurations can be delegated to an user suplied object that implments a given interface
+Additional or new configurations can be delegated to an tester suplied object that implments a given interface
 and establishes these configurations in its `configure` method:
 
 - `setManagerDelegate(IManagerConfigDelegate configDelegate)`: Sets a delegate that executes the configuration actions specified in the `configure` method
@@ -214,7 +215,7 @@ Use `add(new WatermarkService())` to attach an instance. The service instance ca
 - `setBackground(String color)`: Sets a background color to better differentiate the watermark from the web content (by default watermark has no background).
 
 Watermarks are automatically inserted after a test fails.
-Additional watermark with the test name can be inserted by the user using the `watermark()` method of the SeleniumManager instance (tipically just after moving to an url). 
+Additional watermark with the test name can be inserted by the tester using the `watermark()` method of the SeleniumManager instance (tipically just after moving to an url). 
 During test execution the user can also write arbitrary text using the `watermarkText(String value)` method.
 
 ## Browser service (Selenoid)
