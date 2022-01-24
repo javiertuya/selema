@@ -126,6 +126,10 @@ jobs:
   sonarqube:
     needs: [test]
     #if: ${{ false }}  # disable for now
+    #this job fails when comming from a dependabot PR (can't read the sonarqube token). Discussion and workarounds:
+    #https://community.sonarsource.com/t/youre-not-authorized-to-run-analysis-and-github-bots/41994/4
+    #https://github.com/dependabot/dependabot-core/issues/3253#issuecomment-797125425
+    if: ${{ github.actor != 'dependabot[bot]' }}
     runs-on: ubuntu-latest
     defaults:
       run:

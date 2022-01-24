@@ -43,3 +43,11 @@ updates:
       interval: daily
     assignees:
       - "javiertuya" 
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: daily
+    open-pull-requests-limit: 20
+    assignees:
+      - "javiertuya" 
