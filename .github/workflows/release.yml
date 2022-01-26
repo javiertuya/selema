@@ -29,7 +29,7 @@ jobs:
           server-id: ossrh # Value of the distributionManagement/repository/id field of the pom.xml
           server-username: MAVEN_USERNAME # env variable for username in deploy
           server-password: MAVEN_CENTRAL_TOKEN # env variable for token in deploy
-          gpg_private_key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }} # Value of the GPG private key to import
+          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }} # Value of the GPG private key to import
           gpg-passphrase: MAVEN_GPG_PASSPHRASE # env variable for GPG private key passphrase
 
       - name: Publish to Apache Maven Central
@@ -62,7 +62,7 @@ jobs:
       #  env:
       #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      #- name: Push to nuget.org
-      #  run: dotnet nuget push Selema/nupkg/*.nupkg  --api-key ${{ secrets.NUGET_API_KEY }} --source "https://api.nuget.org/v3/index.json"
+      - name: Push to nuget.org
+        run: dotnet nuget push Selema/nupkg/*.nupkg  --api-key ${{ secrets.NUGET_API_KEY }} --source "https://api.nuget.org/v3/index.json"
       #- name: Push to int.nugettest.org
       #  run: dotnet nuget push Selema/nupkg/*.nupkg  --api-key ${{ secrets.NUGETTEST_API_KEY }} --source "https://apiint.nugettest.org/v3/index.json"
