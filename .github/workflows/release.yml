@@ -18,7 +18,7 @@ jobs:
       #It requires export the private key with the armor option: gpg --output private.pgm --armor --export-secret-key <email>
       - name: Import GPG Key 
         uses: crazy-max/ghaction-import-gpg@v4.1.0
-        env:
+        with:
           gpg_private_key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
       - name: Set up Apache Maven Central
