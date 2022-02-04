@@ -48,7 +48,7 @@
     -->
     <PackageReference Include="MSTest.TestFramework" Version="2.2.8" />
     <PackageReference Include="DotNetSeleniumExtras.WaitHelpers" Version="3.11.0" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.41" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.42" />
     <PackageReference Include="NLog" Version="4.7.13" />
     <PackageReference Include="NUnit" Version="3.13.2" />
     <PackageReference Include="VisualAssert" Version="2.1.3" />
