@@ -48,9 +48,6 @@ public class TestDriver {
 		WebDriver driver=factory.getSeleniumDriver("chrome", "", null, headlesArgument);
 		assertOptions(factory, "{browserName:chrome,goog:chromeOptions:{args:[--headless]}}");
 		driver.close();
-		driver=factory.getSeleniumDriver("firefox", "", null, headlesArgument);
-		assertOptions(factory, "{browserName:firefox,moz:firefoxOptions:{args:[--headless]}}");
-		driver.close();
 		//browser name is case insensitive, browser already downloaded, null remote url
 		driver=factory.getSeleniumDriver("CHRome", null, null, headlesArgument);
 		assertOptions(factory, "{browserName:chrome,goog:chromeOptions:{args:[--headless]}}");
