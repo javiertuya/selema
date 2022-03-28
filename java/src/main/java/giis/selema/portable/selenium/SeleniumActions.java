@@ -1,6 +1,7 @@
 package giis.selema.portable.selenium;
 
 import java.io.File;
+import java.time.Duration;
 
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
@@ -83,7 +84,7 @@ public class SeleniumActions {
 	}
 
 	private static WebDriverWait newWebDriverWait(WebDriver driver, long seconds) {
-		return new WebDriverWait(driver, seconds);
+		return new WebDriverWait(driver, Duration.ofSeconds(seconds));
 	}
 
     /**
