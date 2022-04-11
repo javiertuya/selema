@@ -50,9 +50,6 @@ namespace Test4giis.Selema.Core
 			IWebDriver driver = factory.GetSeleniumDriver("chrome", string.Empty, null, headlesArgument);
 			AssertOptions(factory, "{browserName:chrome,goog:chromeOptions:{args:[--headless]}}");
 			driver.Close();
-			driver = factory.GetSeleniumDriver("firefox", string.Empty, null, headlesArgument);
-			AssertOptions(factory, "{browserName:firefox,moz:firefoxOptions:{args:[--headless]}}");
-			driver.Close();
 			//browser name is case insensitive, browser already downloaded, null remote url
 			driver = factory.GetSeleniumDriver("CHRome", null, null, headlesArgument);
 			AssertOptions(factory, "{browserName:chrome,goog:chromeOptions:{args:[--headless]}}");
