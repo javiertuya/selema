@@ -159,12 +159,12 @@ jobs:
       - name: Generate classes
         run: mvn test-compile --no-transfer-progress
       - name: Restore test reports - headless
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: sonar-java-headless
           path: java/target-headless
       - name: Restore test reports - selenoid
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: sonar-java-selenoid
           path: java/target-selenoid
