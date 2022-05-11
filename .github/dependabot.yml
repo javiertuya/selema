@@ -9,15 +9,8 @@ updates:
       - "javiertuya" 
 
   - package-ecosystem: nuget
-    directory: "/net/SelemaTest"
-    schedule:
-      interval: daily
-    open-pull-requests-limit: 20
-    assignees:
-      - "javiertuya" 
-    #avoid updates of frameworks versions to avoid deprecation warning/errors
-  - package-ecosystem: nuget
-    directory: "/net/Selema"
+    directory: "/net"
+    #avoid major updates of frameworks to avoid deprecation warning
     ignore:
       - dependency-name: "Selenium.WebDriver"
         update-types: ["version-update:semver-major"]
