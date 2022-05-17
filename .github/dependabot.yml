@@ -18,6 +18,8 @@ updates:
         update-types: ["version-update:semver-major"]
       - dependency-name: "NUnit"
         update-types: ["version-update:semver-major"]
+      - dependency-name: "NLog"
+        update-types: ["version-update:semver-major"]
     schedule:
       interval: daily
     assignees:
