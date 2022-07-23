@@ -24,9 +24,14 @@ namespace Giis.Selema.Portable.Selenium
 
 		public void SetCapability(object opt, string key, object value)
 		{
-			//Selenium 3 difference from java: to add a capability a thir parameter is required (true: global)
-			//In selenium 4 AddAdditionalCapability is deprecated, AddAdditionalOption should be used
-			//Uses the deprecated one to keep compatibility with selenium 3
+			MethodInfo setCapability = opt.GetType().GetMethod("AddAdditionalOption", new Type[] { typeof(string), typeof(object) });
+			setCapability.Invoke(opt, new object[] { key, value });
+		}
+		public void SetCapabilityV3(object opt, string key, object value)
+		{
+			//Rename this method to SetCapability if using selenium 3
+			//As of selenium web driver 4.3.0 this method does not work as the deprecated 
+			//AddAdditionalCapability method has been removed
 			MethodInfo setCapability = opt.GetType().GetMethod("AddAdditionalCapability", new Type[] { typeof(string), typeof(object), typeof(bool) });
 			setCapability.Invoke(opt, new object[] { key, value, true });
 		}
