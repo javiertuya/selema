@@ -298,10 +298,12 @@ Support for this feature is managed differently (or not managed at all) by the t
 Selema includes the required support on all supported frameworks. [See examples on each platform here](samples).
 
 - **JUnit 5**: Declare the [rerunner-jupiter](https://search.maven.org/artifact/io.github.artsok/rerunner-jupiter) dependency
-  and add the annotation `@RepeatedIfExceptionsTest(repeats = <repetitions>)` to the appropriate tests.
+  and set the annotation `@RepeatedIfExceptionsTest(repeats = <repetitions>)` to the appropriate tests.
+  Note that you **MUST NOT** add the `@Test` annotation.
 - **JUnit 4**: Selema provides a custom rule implementation. 
   After declaring rules for the selenum manager, delcare a new instance of rule class `RepeatedTestRule` 
-  and add the annotation `@RepeatedIfExceptionsTest(repeats = <repetitions>)` to the appropriate tests. 
+  and add the annotation `@RepeatedIfExceptionsTest(repeats = <repetitions>)` to the appropriate tests.
+  Note that you **MUST** add the `@Test` annotation.
 - **NUnit 3**: Use the native `Retry` annotation. Add the annotation `[Retry(<repetitions>)]` to the appropriate tests.
 - **MSTest 2**: Selema provides a custom implementation. 
   Replace the `[TestMethod]` annotation by `[RetryTestMethod(<repetitions>)]` in the appropriate tests.

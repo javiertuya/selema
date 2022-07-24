@@ -25,7 +25,7 @@ public class TestSampleJunit5 {
 	//Repeated tests demo, uses a counter to simulate failures
 	private static int repetitions=0;
 	 
-	@RepeatedIfExceptionsTest(repeats = 3)
+	@RepeatedIfExceptionsTest(repeats = 3) //Note that the Test annotation is not included
 	public void testRepeated() {
 		repetitions++;
 		String expected="Selema samples";

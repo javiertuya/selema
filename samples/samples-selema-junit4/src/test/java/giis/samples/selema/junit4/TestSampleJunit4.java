@@ -31,7 +31,7 @@ public class TestSampleJunit4 {
 	private static int repetitions=0;
 	 
 	@RepeatedIfExceptionsTest(repeats = 3)
-	@Test
+	@Test //Note that the Test annotation must be included
 	public void testRepeated() {
 		repetitions++;
 		String expected="Selema samples";
