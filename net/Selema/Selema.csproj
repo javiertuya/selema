@@ -2,7 +2,7 @@
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <InformationalVersion>2.0.5-SNAPSHOT</InformationalVersion>
+    <InformationalVersion>2.1.0</InformationalVersion>
  
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>CS1591</NoWarn>
@@ -10,7 +10,7 @@
   
     <PackageOutputPath>./nupkg</PackageOutputPath>
     <RepositoryUrl>https://github.com/$(GITHUB_REPOSITORY)</RepositoryUrl>
-    <Version>2.0.5-SNAPSHOT</Version>
+    <Version>2.1.0</Version>
     <Authors>Javier Tuya</Authors>
     <Company>GIIS - University of Oviedo, ES</Company>
     <Description>
