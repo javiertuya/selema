@@ -113,6 +113,19 @@ public class TestExceptions implements IAfterEachCallback {
 		sm.visualAssertEquals("ab cd", "ab cd"); //first assert pass
 		try { sm.visualAssertEquals("ab cd", "ab xy cd"); fail("Should fail"); } catch (Throwable e) { }
 		lfas.assertLast("[WARN]", "Visual Assert differences", "TestExceptions-testVisualAssertException.html");
+		//with message
+		try { sm.visualAssertEquals("ef gh", "ef zt gh", "va message"); fail("Should fail"); } catch (Throwable e) { }
+		lfas.assertLast("[WARN]", "Visual Assert differences", "TestExceptions-testVisualAssertException.html", "va message");
+	}
+	@Test
+	public void testSoftAssertException() {
+		sm.softAssertClear();
+		sm.softAssertEquals("ab cd", "ab cd"); //first assert pass
+		sm.softAssertEquals("ab cd", "ab xy cd");
+		sm.softAssertEquals("ef gh", "ef zt gh", "sva message");
+		try { sm.softAssertAll(); fail("Should fail"); } catch (Throwable e) { }
+		lfas.assertLast(0, "[WARN]", "Soft Visual Assert differences (Failure 2)", "TestExceptions-testSoftAssertException.html", "sva message");
+		lfas.assertLast(1, "[WARN]", "Soft Visual Assert differences (Failure 1)", "TestExceptions-testSoftAssertException.html");
 	}
 	@Test
 	public void testWatermarkException() {

@@ -49,6 +49,11 @@ namespace Test4giis.Selema.Core
 
 		public virtual void AssertEnd()
 		{
+			AssertEnd(0);
+		}
+
+		public virtual void AssertEnd(int offsetFromLast)
+		{
 			if (assertItems.Count > logLines.Count)
 			{
 				throw new SelemaException("Log file has less lines than expected");
@@ -57,7 +62,7 @@ namespace Test4giis.Selema.Core
 			//compares all assertItems at the end of logLines
 			for (int i = 0; i < assertItems.Count; i++)
 			{
-				int offset = logLines.Count - assertItems.Count;
+				int offset = logLines.Count - assertItems.Count - offsetFromLast;
 				string actual = SelemaLogger.ReplaceTags(logLines[offset + i]);
 				for (int j = 0; j < assertItems[i].Length; j++)
 				{

@@ -35,7 +35,7 @@ public class VisualAssertService implements IVisualAssertService {
 				//before assert determines file name and create log
 				String diffFile=context.getDiffFileName(testName);
 				String diffUrl="<a href=\"" + diffFile + "\">" + diffFile + "</a>";
-				logger.warn("Visual Assert differences: " + diffUrl);
+				logger.warn("Visual Assert differences: " + diffUrl + ("".equals(message) ? "" : " - Message: " + message));
 				va.assertEquals(expected, actual, message, diffFile);
 			} else //si no hay contexto ejecuta directametnte el assert y que genere el archivo
 				va.assertEquals(expected, actual, message, "");

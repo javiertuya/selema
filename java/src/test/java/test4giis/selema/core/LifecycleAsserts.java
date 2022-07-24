@@ -23,11 +23,15 @@ public class LifecycleAsserts {
 		assertEquals(expected.toLowerCase(), actual.toLowerCase());
 	}
 	
-	//checks only last line of log
-	public void assertLast(String... expected) {
+	//checks the log line located at the offset position from end
+	public void assertLast(int offset, String... expected) {
 		logReader.assertBegin();
 		logReader.assertContains(expected);
-		logReader.assertEnd();
+		logReader.assertEnd(offset);
+	}
+	//checks only last line of log
+	public void assertLast(String... expected) {
+		assertLast(0, expected);
 	}
 	
 	//to check inside the test body at the beginning

@@ -38,7 +38,7 @@ namespace Giis.Selema.Services.Impl
 					//before assert determines file name and create log
 					string diffFile = context.GetDiffFileName(testName);
 					string diffUrl = "<a href=\"" + diffFile + "\">" + diffFile + "</a>";
-					logger.Warn("Visual Assert differences: " + diffUrl);
+					logger.Warn("Visual Assert differences: " + diffUrl + (string.Empty.Equals(message) ? string.Empty : " - Message: " + message));
 					va.AssertEquals(expected, actual, message, diffFile);
 				}
 				else

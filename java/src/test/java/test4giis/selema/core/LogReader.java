@@ -36,12 +36,15 @@ public class LogReader {
 		assertItems.add(expected);
 	}
 	public void assertEnd() {
+		assertEnd(0);
+	}
+	public void assertEnd(int offsetFromLast) {
 		if (assertItems.size()>logLines.size())
 			throw new SelemaException("Log file has less lines than expected");
 		StringBuilder sb=new StringBuilder();
 		//compares all assertItems at the end of logLines
 		for (int i=0; i<assertItems.size(); i++) {
-			int offset=logLines.size()-assertItems.size();
+			int offset=logLines.size()-assertItems.size() - offsetFromLast;
 			String actual=SelemaLogger.replaceTags(logLines.get(offset+i));
 			for (int j=0; j<assertItems.get(i).length; j++) { //each of the items that must be included in the current log line
 				String expected=assertItems.get(i)[j];

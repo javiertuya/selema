@@ -16,11 +16,13 @@ import giis.selema.services.IJsCoverageService;
 import giis.selema.services.IMediaContext;
 import giis.selema.services.IScreenshotService;
 import giis.selema.services.ISelemaLogger;
+import giis.selema.services.ISoftAssertService;
 import giis.selema.services.IVideoService;
 import giis.selema.services.IVisualAssertService;
 import giis.selema.services.IWatermarkService;
 import giis.selema.services.impl.MediaContext;
 import giis.selema.services.impl.ScreenshotService;
+import giis.selema.services.impl.SoftAssertService;
 import giis.selema.services.impl.VisualAssertService;
 
 /**
@@ -63,6 +65,7 @@ public class SeleniumManager {
 	private ICiService ciService=null;
 	private IScreenshotService screenshotService=null;
 	private IVisualAssertService visualAssertService=null;
+	private ISoftAssertService softAssertService=null;
 	private IBrowserService browserService=null;
 	private IVideoService videoRecorder=null;
     private IJsCoverageService coverageRecorder=null;
@@ -89,6 +92,7 @@ public class SeleniumManager {
 		ciService=new CiServiceFactory().getCurrent();
 		screenshotService=new ScreenshotService().configure(selemaLog);
 		visualAssertService=new VisualAssertService().configure(selemaLog, ciService.isLocal(), conf.getProjectRoot(), conf.getReportSubdir());
+		softAssertService=new SoftAssertService().configure(selemaLog, ciService.isLocal(), conf.getProjectRoot(), conf.getReportSubdir());
 		//Other services must be configuresd using add methods
 		
 		instanceCount++;
@@ -425,12 +429,38 @@ public class SeleniumManager {
 		visualAssertEquals(expected, actual, "");
 	}
 	/**
-	 * Asserts if two large strings and links the html differences to the log
+	 * Asserts if two large strings and links the html differences to the log, including an additional message
 	 */
 	public void visualAssertEquals(String expected, String actual, String message) {
 		visualAssertService.assertEquals(expected, actual, message, mediaDiffContext, currentTestName);
 	}
 
+	/**
+	 * Soft Asserts if two large strings and links the html differences to the log:
+	 * records the assertion message instead of throwing and exception until softAssertAll() is called
+	 */
+	public void softAssertEquals(String expected, String actual) {
+		softAssertEquals(expected, actual, "");
+	}
+	/**
+	 * Soft Asserts if two large strings and links the html differences to the log with an additonal message:
+	 * records the assertion message instead of throwing and exception until softAssertAll() is called
+	 */
+	public void softAssertEquals(String expected, String actual, String message) {
+		softAssertService.assertEquals(expected, actual, message, mediaDiffContext, currentTestName);
+	}
+	/**
+	 * Throws and exception if at least one soft assertion failed including all assertion messages
+	 */
+	public void softAssertAll() {
+		softAssertService.assertAll();
+	}
+	/**
+	 * Resets the current soft assertion failure messages that are stored
+	 */
+	public void softAssertClear() {
+		softAssertService.assertClear();
+	}
 	
 	private WebDriver getLocalSeleniumDriver() { 
 		log.trace("Get local Selenium Driver");

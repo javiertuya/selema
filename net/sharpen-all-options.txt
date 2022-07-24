@@ -9,7 +9,7 @@
 -cp sharpen-temp/lib/selenium-api-3.141.59.jar
 -cp sharpen-temp/lib/selenium-remote-driver-3.141.59.jar
 -cp sharpen-temp/lib/selenium-support-3.141.59.jar
--cp sharpen-temp/lib/visual-assert-2.1.0.jar
+-cp sharpen-temp/lib/visual-assert-2.2.1.jar
 
 -flatDirectoryStructure
 -pascalCase+ 

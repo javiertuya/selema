@@ -79,6 +79,8 @@ namespace Giis.Selema.Manager
 
 		private IVisualAssertService visualAssertService = null;
 
+		private ISoftAssertService softAssertService = null;
+
 		private IBrowserService browserService = null;
 
 		private IVideoService videoRecorder = null;
@@ -113,6 +115,7 @@ namespace Giis.Selema.Manager
 			ciService = new CiServiceFactory().GetCurrent();
 			screenshotService = new ScreenshotService().Configure(selemaLog);
 			visualAssertService = new VisualAssertService().Configure(selemaLog, ciService.IsLocal(), conf.GetProjectRoot(), conf.GetReportSubdir());
+			softAssertService = new SoftAssertService().Configure(selemaLog, ciService.IsLocal(), conf.GetProjectRoot(), conf.GetReportSubdir());
 			//Other services must be configuresd using add methods
 			instanceCount++;
 			selemaLog.Info("*** Creating SeleniumManager instance " + instanceCount + " on " + ciService.GetName());
@@ -514,10 +517,40 @@ namespace Giis.Selema.Manager
 			VisualAssertEquals(expected, actual, string.Empty);
 		}
 
-		/// <summary>Asserts if two large strings and links the html differences to the log</summary>
+		/// <summary>Asserts if two large strings and links the html differences to the log, including an additional message</summary>
 		public virtual void VisualAssertEquals(string expected, string actual, string message)
 		{
 			visualAssertService.AssertEquals(expected, actual, message, mediaDiffContext, currentTestName);
+		}
+
+		/// <summary>
+		/// Soft Asserts if two large strings and links the html differences to the log:
+		/// records the assertion message instead of throwing and exception until softAssertAll() is called
+		/// </summary>
+		public virtual void SoftAssertEquals(string expected, string actual)
+		{
+			SoftAssertEquals(expected, actual, string.Empty);
+		}
+
+		/// <summary>
+		/// Soft Asserts if two large strings and links the html differences to the log with an additonal message:
+		/// records the assertion message instead of throwing and exception until softAssertAll() is called
+		/// </summary>
+		public virtual void SoftAssertEquals(string expected, string actual, string message)
+		{
+			softAssertService.AssertEquals(expected, actual, message, mediaDiffContext, currentTestName);
+		}
+
+		/// <summary>Throws and exception if at least one soft assertion failed including all assertion messages</summary>
+		public virtual void SoftAssertAll()
+		{
+			softAssertService.AssertAll();
+		}
+
+		/// <summary>Resets the current soft assertion failure messages that are stored</summary>
+		public virtual void SoftAssertClear()
+		{
+			softAssertService.AssertClear();
 		}
 
 		private IWebDriver GetLocalSeleniumDriver()

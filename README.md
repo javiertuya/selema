@@ -283,8 +283,13 @@ Important notes:
 - **Screenshot service**: To take screenshots of the browser state and place the picture accesible from the log. 
   Usually, the tests do not access directly to this service, but can use the `screenshot(String fileName)` method on the SeleniumManager instance to take a picture at any time.
 - **Visual Assert service**: To compare large strings. Places an html file with the differences accesible from the log.
-  The Methods `visualAssertEquals(...)` can be invoked on the SeleniumManager instance to perform the assert on the strings.
-  See the [Visual Assert documentation](https://github.com/javiertuya/visual-assert) for more information.
+  - The Methods `visualAssertEquals(...)` can be invoked on the SeleniumManager instance to perform the assert on the strings.
+  - See the [Visual Assert documentation](https://github.com/javiertuya/visual-assert) for more information.
+- **Soft Assert service**: A variant of Visual Assert that implements soft assertions.
+  - The methods `softAssertEquals(...)` that fail record the message and the diff files instead of throwing an exception.
+  - Method `softAssertAll()` must be called at the end of each test to cause an exception to be thrown including all assertion messages
+    (if one or more assertions failed).
+  - Method `softAssertClear()` must be called at the beginning of each test to reset the assertion messages of the Selenium Manager instance.
 
 # Handling flaky tests
 

@@ -29,12 +29,18 @@ namespace Test4giis.Selema.Core
 			NUnit.Framework.Assert.AreEqual(expected.ToLower(), actual.ToLower());
 		}
 
-		//checks only last line of log
-		public virtual void AssertLast(params string[] expected)
+		//checks the log line located at the offset position from end
+		public virtual void AssertLast(int offset, params string[] expected)
 		{
 			logReader.AssertBegin();
 			logReader.AssertContains(expected);
-			logReader.AssertEnd();
+			logReader.AssertEnd(offset);
+		}
+
+		//checks only last line of log
+		public virtual void AssertLast(params string[] expected)
+		{
+			AssertLast(0, expected);
 		}
 
 		//to check inside the test body at the beginning

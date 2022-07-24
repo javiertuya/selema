@@ -167,6 +167,36 @@ namespace Test4giis.Selema.Core
 			{
 			}
 			lfas.AssertLast("[WARN]", "Visual Assert differences", "TestExceptions-testVisualAssertException.html");
+			//with message
+			try
+			{
+				sm.VisualAssertEquals("ef gh", "ef zt gh", "va message");
+				NUnit.Framework.Assert.Fail("Should fail");
+			}
+			catch
+			{
+			}
+			lfas.AssertLast("[WARN]", "Visual Assert differences", "TestExceptions-testVisualAssertException.html", "va message");
+		}
+
+		[Test]
+		public virtual void TestSoftAssertException()
+		{
+			sm.SoftAssertClear();
+			sm.SoftAssertEquals("ab cd", "ab cd");
+			//first assert pass
+			sm.SoftAssertEquals("ab cd", "ab xy cd");
+			sm.SoftAssertEquals("ef gh", "ef zt gh", "sva message");
+			try
+			{
+				sm.SoftAssertAll();
+				NUnit.Framework.Assert.Fail("Should fail");
+			}
+			catch
+			{
+			}
+			lfas.AssertLast(0, "[WARN]", "Soft Visual Assert differences (Failure 2)", "TestExceptions-testSoftAssertException.html", "sva message");
+			lfas.AssertLast(1, "[WARN]", "Soft Visual Assert differences (Failure 1)", "TestExceptions-testSoftAssertException.html");
 		}
 
 		[Test]
