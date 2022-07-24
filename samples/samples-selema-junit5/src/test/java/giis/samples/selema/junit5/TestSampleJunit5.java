@@ -26,7 +26,6 @@ public class TestSampleJunit5 {
 	private static int repetitions=0;
 	 
 	@RepeatedIfExceptionsTest(repeats = 3)
-	@Test
 	public void testRepeated() {
 		repetitions++;
 		String expected="Selema samples";
