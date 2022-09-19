@@ -52,7 +52,7 @@
     <PackageReference Include="NLog" Version="4.7.15" />
     <PackageReference Include="NUnit" Version="3.13.3" />
     <PackageReference Include="VisualAssert" Version="2.2.1" />
-    <PackageReference Include="WebDriverManager" Version="2.15.0" />
+    <PackageReference Include="WebDriverManager" Version="2.16.0" />
     <!--
     <PackageReference Include="Selenium.WebDriver" Version="4.1.0" />
     -->
