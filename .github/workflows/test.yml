@@ -30,7 +30,7 @@ jobs:
           java-version: '8'
           cache: 'maven'
       - if: ${{ matrix.platform=='net' }}
-        uses: actions/setup-dotnet@v3.0.2
+        uses: actions/setup-dotnet@v3.0.3
         with:
             dotnet-version: '3.1.x'
 
@@ -95,7 +95,7 @@ jobs:
       #    skip_publishing: ${{ github.actor != 'javiertuya' }} #avoids failure on dependabot or other user PRs
       - name: Generate report checks1
         if: always()
-        uses: mikepenz/action-junit-report@v3.5.1
+        uses: mikepenz/action-junit-report@v3.6.1
         with:
           check_name: "test-result-${{ matrix.platform }}-${{ matrix.mode }}"
           report_paths: "**/${{ env.REPORT_FOLDER }}/surefire-reports/TEST-*.xml"
