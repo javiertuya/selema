@@ -16,6 +16,8 @@ updates:
         update-types: ["version-update:semver-major"]
       - dependency-name: "MSTest.TestFramework"
         update-types: ["version-update:semver-major"]
+      - dependency-name: "MSTest.TestAdapter"
+        update-types: ["version-update:semver-major"]
       - dependency-name: "NUnit"
         update-types: ["version-update:semver-major"]
       - dependency-name: "NLog"

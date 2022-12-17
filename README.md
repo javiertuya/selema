@@ -27,7 +27,7 @@ and integration with CI platforms and Browser services.
 
 ## Breaking change v3.0.0
 
-As of v3.0.0 the class `SeleniumManager` is renamed `SeleManager` to avoid naming conflics with Selenium >=v4.6
+As of v3.0.0 the class `SeleniumManager` is renamed to `SeleManager` to avoid naming conflics with Selenium >=v4.6
 
 # Getting started
 
