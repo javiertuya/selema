@@ -67,7 +67,7 @@
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
-			<version>4.7.0</version>
+			<version>4.7.2</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- selenium 3
@@ -97,7 +97,7 @@
 		<dependency>
 		    <groupId>org.slf4j</groupId>
 		    <artifactId>slf4j-api</artifactId>
-		    <version>2.0.5</version>
+		    <version>2.0.6</version>
 		</dependency>
 		<dependency>
 		    <groupId>org.slf4j</groupId>
