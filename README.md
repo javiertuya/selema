@@ -38,12 +38,12 @@ On .NET, include the `Selema` package in you project as indicated in
 
 Selema works around two main components: 
 A `Lifecycle*` controller class that detects the events during the test lifecycle 
-and calls the `SeleManager` to perform the required actions.
+and calls the `SeleManager` to manage the required actions.
 
 ## Basic usage
 
 To use Selema with your tests you only need:
-- Instantiate a SeleManager object (`sm` in the examples).
+- Instantiate a `SeleManager` object (`sm` in the examples).
 - Configure the test class with a `Lifecycle*` annotation or rule (depending on the test framework).
 
 The appropriate Selenium WebDriver will be instantiated and closed before and after test execution

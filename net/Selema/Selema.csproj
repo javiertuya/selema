@@ -2,7 +2,7 @@
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <InformationalVersion>2.1.1-SNAPSHOT</InformationalVersion>
+    <InformationalVersion>3.0.0</InformationalVersion>
  
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>CS1591</NoWarn>
@@ -10,7 +10,7 @@
   
     <PackageOutputPath>./nupkg</PackageOutputPath>
     <RepositoryUrl>https://github.com/$(GITHUB_REPOSITORY)</RepositoryUrl>
-    <Version>2.1.1-SNAPSHOT</Version>
+    <Version>3.0.0</Version>
     <Authors>Javier Tuya</Authors>
     <Company>GIIS - University of Oviedo, ES</Company>
     <Description>
@@ -47,11 +47,17 @@
     <PackageReference Include="Microsoft.Edge.SeleniumTools" Version="3.141.2" />
     -->
     <PackageReference Include="MSTest.TestFramework" Version="2.2.10" />
+
     <PackageReference Include="DotNetSeleniumExtras.WaitHelpers" Version="3.11.0" />
+
     <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
+
     <PackageReference Include="NLog" Version="4.7.15" />
+
     <PackageReference Include="NUnit" Version="3.13.3" />
+
     <PackageReference Include="VisualAssert" Version="2.2.1" />
+    
     <PackageReference Include="WebDriverManager" Version="2.16.2" />
     <!--
     <PackageReference Include="Selenium.WebDriver" Version="4.1.0" />
