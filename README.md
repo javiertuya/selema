@@ -25,6 +25,10 @@ and integration with CI platforms and Browser services.
   - Visual differences when comparing large strings (Visual Assert)
   - Flaky test handling (Retry failed tests) on all supported frameworks
 
+## Breaking change v3.0.0
+
+As of v3.0.0 the class `SeleniumManager` is renamed `SeleManager` to avoid naming conflics with Selenium >=v4.6
+
 # Getting started
 
 On Java, include the `selema` dependency as indicated in
@@ -53,7 +57,7 @@ Expand/collapse the below items for instructions and examples on each of the sup
 (1) Extend the test class with a `@ExtendWith(LifecycleJunit5.class)` annotation
 and (2) declare a static instance `sm` of `SeleManager`:
 
-```
+```java
 @ExtendWith(LifecycleJunit5.class)
 public class TestSampleJunit5 {
 	private static SeleManager sm=new SeleManager().setBrowser("chrome");
@@ -72,7 +76,7 @@ public class TestSampleJunit5 {
 Declare (1) a static instance `sm` of `SeleManager`
 and (2) a `LifecycleJunit4Test` rule receiving `sm` as argument
 
-```
+```java
 public class TestSampleJunit4 {
 	private static SeleManager sm=new SeleManager().setBrowser("chrome");
 	@Rule public LifecycleJunit4Test tw = new LifecycleJunit4Test(sm);
@@ -87,7 +91,7 @@ public class TestSampleJunit4 {
 NOTE: If SeleManager is confgured to manage one driver per class (see below) 
 an additional rule must be declared just after SeleManager instantiation:
 
-```
+```java
 	@ClassRule public static LifecycleJunit4Class cw = new LifecycleJunit4Class(sm);
 ```
 
@@ -98,7 +102,7 @@ an additional rule must be declared just after SeleManager instantiation:
 Declare (1) an instance `sm` of `SeleManager`
 and (2) a decorate the test class with the `[LifecycleNunit3]` annotation:
 
-```
+```C#
     [LifecycleNunit3]
     public class TestFailedExample
     {
@@ -120,7 +124,7 @@ Declare (1) a static object `sm` of `SeleManager`, (2) instantiate `sm` in the c
 and (3) inherit the test class from `LifecycleMstest2`. 
 See comments in the example for additional explanations:
 
-```
+```C#
     [TestClass]
     public class TestFailedExample : LifecycleMstest2
     {
@@ -232,7 +236,7 @@ To use a remote driver the driver url must be configured by calling `setDriverUr
 
 An example of a Selenoid set up accesible from the `http://localhost:4444/wd/hub` url is shown below:
 
-```
+```bash
 # Creates the required browser configuration file and required folders that will be mapped in the containers
 mkdir -p target/browsers
 echo '{"chrome": {"default": "latest", "versions": {"latest": {"image":"selenoid/chrome:latest","port":"4444","tmpfs": {"/tmp":"size=512m"} } } } }' > target/browsers/browsers.json
