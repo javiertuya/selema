@@ -6,15 +6,15 @@ namespace Giis.Selema.Framework.Mstest2
 {
     /// <summary>
     /// MSTest 2 base class extension to watch for the class and test lifecycle events, keep track of the test class and test name
-    /// and send the appropriate events to the SeleniumManager.
+    /// and send the appropriate events to the SeleManager.
     /// All test classes must derive from this class and propagate the Class/Test Initialize/Cleanup to the corresponding methods defined here.
-    /// SeleniumManager must be created with using the GetManager methods to be bound to this instance
+    /// SeleManager must be created with using the GetManager methods to be bound to this instance
     /// See https://github.com/javiertuya/selema#readme for instructions
     /// </summary>
 	public abstract class LifecycleMstest2
 	{
         static readonly Logger log = LogManager.GetLogger("Giis.Selema.Framework.Mstest2.LifecycleMstest2");
-        private static SeleniumManager sm = null;
+        private static SeleManager sm = null;
         //On MSTest IAfterEachCallback is not defined, it will be executed by subclass in ClassCleanup;
         protected static string className="undefined";
         protected static string methodName="undefined";
@@ -24,16 +24,16 @@ namespace Giis.Selema.Framework.Mstest2
 
         //Call this method from the constructor of a class (using the current sm as parameter)
         //Ensures that this sm is declared in the class and it is instantiated only once
-        public static SeleniumManager GetManager(SeleniumManager manager)
+        public static SeleManager GetManager(SeleManager manager)
         {
-            sm = manager ?? new SeleniumManager();
-            log.Trace("Instance of SeleniumManager is bound");
+            sm = manager ?? new SeleManager();
+            log.Trace("Instance of SeleManager is bound");
             return sm;
         }
-        public static SeleniumManager GetManager(SeleniumManager manager, SelemaConfig config)
+        public static SeleManager GetManager(SeleManager manager, SelemaConfig config)
         {
-            sm = manager ?? new SeleniumManager(config);
-            log.Trace("Instance of SeleniumManager is bound");
+            sm = manager ?? new SeleManager(config);
+            log.Trace("Instance of SeleManager is bound");
             return sm;
         }
 

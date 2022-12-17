@@ -20,7 +20,7 @@ namespace Giis.Selema.Services.Impl
 			this.sva = new SoftVisualAssert();
 		}
 
-		/// <summary>Configures this service, called on attaching the service to a SeleniumManager</summary>
+		/// <summary>Configures this service, called on attaching the service to a SeleManager</summary>
 		public virtual ISoftAssertService Configure(ISelemaLogger logger, bool local, string projectRoot, string reportSubdir)
 		{
 			this.logger = logger;
@@ -28,7 +28,7 @@ namespace Giis.Selema.Services.Impl
 			return this;
 		}
 
-		/// <summary>General soft assertion and log writing, intended to be used from a proxy in the SeleniumManager class</summary>
+		/// <summary>General soft assertion and log writing, intended to be used from a proxy in the SeleManager class</summary>
 		public virtual void AssertEquals(string expected, string actual, string message, IMediaContext context, string testName)
 		{
 			if (!expected.Equals(actual))

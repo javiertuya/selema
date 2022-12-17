@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
 /**
- * Configuracion de logs de las sesiones web para SeleniumManager
+ * Configuracion de logs de las sesiones web para SeleManager
  */
 public class LogConfigurator {
 	public void configure(String loggerName, String logFile) {

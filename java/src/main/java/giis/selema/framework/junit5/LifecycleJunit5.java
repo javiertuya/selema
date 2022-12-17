@@ -14,17 +14,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import giis.selema.manager.IAfterEachCallback;
-import giis.selema.manager.SeleniumManager;
+import giis.selema.manager.SeleManager;
 
 /**
  * JUnit 5 extension to watch for the class and test lifecycle events, keep track of the test class and test name
- * and send the appropriate events to the SeleniumManager.
- * Binding of the SeleniumManager is made using reflection.
+ * and send the appropriate events to the SeleManager.
+ * Binding of the SeleManager is made using reflection.
  * See https://github.com/javiertuya/selema#readme for instructions
  */
 public class LifecycleJunit5 implements TestWatcher, TestInstancePostProcessor, BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback {
 	static final Logger log=LoggerFactory.getLogger(LifecycleJunit5.class);
-	private SeleniumManager sm;
+	private SeleManager sm;
 	private String className="undefined";
 	private String methodName="undefined";
 	private IAfterEachCallback afterCallback;
@@ -40,10 +40,10 @@ public class LifecycleJunit5 implements TestWatcher, TestInstancePostProcessor, 
 	public void beforeAll(ExtensionContext context) throws Exception {
         log.trace("Lifecycle class begin");
     	className=context.getDisplayName();
-    	beforeAllActionsDelayed=true; //pospones to test instance postprocessor the actions to do here that require SeleniumManager
+    	beforeAllActionsDelayed=true; //pospones to test instance postprocessor the actions to do here that require SeleManager
 	}
 	
-	//executed after beforeAll, here the SeleniumManager is bound
+	//executed after beforeAll, here the SeleManager is bound
     @Override
     public void postProcessTestInstance(Object testInstance, ExtensionContext context) {
     	log.trace("Lifecycle test instance postprocessor");
@@ -52,7 +52,7 @@ public class LifecycleJunit5 implements TestWatcher, TestInstancePostProcessor, 
     	if (IAfterEachCallback.class.isAssignableFrom(testInstance.getClass()))
     		afterCallback=(IAfterEachCallback)testInstance;
     	if (sm==null)
-    		sm=findSeleniumManagerInstance(testInstance);
+    		sm=findSeleManagerInstance(testInstance);
     	
     	if (beforeAllActionsDelayed && sm!=null) {
     		log.trace("Lifecycle actions that were postponed on beforeAll");
@@ -125,31 +125,31 @@ public class LifecycleJunit5 implements TestWatcher, TestInstancePostProcessor, 
 	}
 	
 	/**
-	 * Finds the instance of SeleniumManager that is declared in the test instance
+	 * Finds the instance of SeleManager that is declared in the test instance
 	 */
-	private SeleniumManager findSeleniumManagerInstance(Object testInstance) {
-		return findSeleniumManagerInstance(testInstance, testInstance.getClass());
+	private SeleManager findSeleManagerInstance(Object testInstance) {
+		return findSeleManagerInstance(testInstance, testInstance.getClass());
 	}
-	private SeleniumManager findSeleniumManagerInstance(Object testInstance, Class<?> targetClass) {
+	private SeleManager findSeleManagerInstance(Object testInstance, Class<?> targetClass) {
     	// https://www.baeldung.com/java-reflection-class-fields
     	try {
 			Field[] smFields=targetClass.getDeclaredFields();
 			for (Field field : smFields) {
-				if (field.getType().equals(SeleniumManager.class)) {
-					field.setAccessible(true); //NOSONAR required to allow private SeleniumManager instances
+				if (field.getType().equals(SeleManager.class)) {
+					field.setAccessible(true); //NOSONAR required to allow private SeleManager instances
 					Object smInstance=field.get(testInstance);
-					log.trace("Instance of SeleniumManager is bound");
-					return (SeleniumManager)smInstance;
+					log.trace("Instance of SeleManager is bound");
+					return (SeleManager)smInstance;
 				}
 			}
 			//not found, search in superclass recursively (sm declaration must be public or protected)
 			if (targetClass.getSuperclass()!=null)
-				return findSeleniumManagerInstance(testInstance, targetClass.getSuperclass());
+				return findSeleManagerInstance(testInstance, targetClass.getSuperclass());
 			
-			log.warn("Can't bind an instance of SeleniumManager");
+			log.warn("Can't bind an instance of SeleManager");
 			return null;
 		} catch (Exception e) {
-			log.warn("Error binding an instance of SeleniumManager, exception: "+e.getMessage());
+			log.warn("Error binding an instance of SeleManager, exception: "+e.getMessage());
 			return null;
 		}
 	}

@@ -187,7 +187,7 @@ namespace Test4giis.Selema.Core
 			IDictionary<string, object> capsToAdd = new SortedDictionary<string, object>();
 			capsToAdd["key1"] = "value1";
 			capsToAdd["key2"] = "value2";
-			SeleniumManager sm = new SeleniumManager(Config4test.GetConfig()).SetDriverUrl(new Config4test().GetRemoteDriverUrl()).SetOptions(capsToAdd);
+			SeleManager sm = new SeleManager(Config4test.GetConfig()).SetDriverUrl(new Config4test().GetRemoteDriverUrl()).SetOptions(capsToAdd);
 			//can't get options from driver instance, check at the debug log
 			sm.OnSetUp("TestDriver", "TestDriver.testRemoteWebDriverFromManager");
 			sm.OnFailure("TestDriver", "TestDriver.testRemoteWebDriverFromManager");
@@ -203,7 +203,7 @@ namespace Test4giis.Selema.Core
 			{
 				return;
 			}
-			SeleniumManager sm = new SeleniumManager(Config4test.GetConfig()).SetDriverUrl(new Config4test().GetRemoteDriverUrl()).Add(new SelenoidService());
+			SeleManager sm = new SeleManager(Config4test.GetConfig()).SetDriverUrl(new Config4test().GetRemoteDriverUrl()).Add(new SelenoidService());
 			sm.OnSetUp("TestDriver", "TestDriver.testRemoteWebDriverFromManager");
 			sm.OnFailure("TestDriver", "TestDriver.testRemoteWebDriverFromManager");
 			AssertLogRemoteWebDriver();
@@ -214,7 +214,7 @@ namespace Test4giis.Selema.Core
 		{
 			LogReader logReader = new LifecycleAsserts().GetLogReader();
 			logReader.AssertBegin();
-			logReader.AssertContains("Creating SeleniumManager instance");
+			logReader.AssertContains("Creating SeleManager instance");
 			logReader.AssertContains("*** SetUp - TestDriver.testRemoteWebDriverFromManager");
 			logReader.AssertContains("Remote session chrome starting");
 			logReader.AssertContains("Remote session chrome started. Remote web driver at " + new Config4test().GetRemoteDriverUrl());

@@ -207,7 +207,7 @@
       <replacefilter token="public LifecycleNunit3Test" value="//public LifecycleNunit3Test" />
       <replacefilter token="LifecycleNunit3Class." value="LifecycleNunit3." />
       <replacefilter token="public RepeatedTestRule" value="//public RepeatedTestRule" />
-      <replacefilter token="protected internal static SeleniumManager" value="protected internal SeleniumManager" />
+      <replacefilter token="protected internal static SeleManager" value="protected internal SeleManager" />
       <replacefilter token="public class TestLifecycle4" value="[LifecycleNunit3] public class TestLifecycle4" />
       <replacefilter token="public class TestActions" value="[LifecycleNunit3] public class TestActions" />
       <replacefilter token="public class TestExceptions" value="[LifecycleNunit3] public class TestExceptions" />
@@ -273,15 +273,15 @@
     <replace dir="SelemaTest/Translated/Test4giis.Selema.Mstest2">
       <exclude name="**/TestLifecycle4WithoutManager.cs" />
       <replacefilter>
-        <replacetoken>protected internal SeleniumManager</replacetoken>
+        <replacetoken>protected internal SeleManager</replacetoken>
         <replacevalue>
-          <![CDATA[protected internal static SeleniumManager sm;
+          <![CDATA[protected internal static SeleManager sm;
 		public CLASS_CONSTRUCTOR() {
         ]]>
         </replacevalue>
       </replacefilter>
-      <replacefilter token="new SeleniumManager()" value="LifecycleMstest2.GetManager(sm)" />
-      <replacefilter token="new SeleniumManager(Config4test.GetConfig())" value="LifecycleMstest2.GetManager(sm,Config4test.GetConfig())" />
+      <replacefilter token="new SeleManager()" value="LifecycleMstest2.GetManager(sm)" />
+      <replacefilter token="new SeleManager(Config4test.GetConfig())" value="LifecycleMstest2.GetManager(sm,Config4test.GetConfig())" />
       <replacefilter token="//public LifecycleMstest2Class" value="} //public LifecycleMstest2Class" />
     </replace>
     <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4.cs" token="CLASS_CONSTRUCTOR" value="TestLifecycle4" />

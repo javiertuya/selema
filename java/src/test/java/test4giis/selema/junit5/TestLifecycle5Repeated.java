@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import giis.selema.framework.junit5.LifecycleJunit5;
 import giis.selema.manager.IAfterEachCallback;
-import giis.selema.manager.SeleniumManager;
+import giis.selema.manager.SeleManager;
 import giis.selema.services.impl.WatermarkService;
 import io.github.artsok.RepeatedIfExceptionsTest;
 import test4giis.selema.core.AfterEachCallback;
@@ -27,7 +27,7 @@ public class TestLifecycle5Repeated implements IAfterEachCallback {
 	final static Logger log=LoggerFactory.getLogger(TestLifecycle5Repeated.class);
 	protected static LifecycleAsserts lfas=new LifecycleAsserts();
 
-	protected static SeleniumManager sm=new SeleniumManager(Config4test.getConfig()).setManagerDelegate(new Config4test()).add(new WatermarkService());
+	protected static SeleManager sm=new SeleManager(Config4test.getConfig()).setManagerDelegate(new Config4test()).add(new WatermarkService());
 
 	@Override
 	public void runAfterCallback(String testName, boolean success) { 

@@ -5,9 +5,9 @@ using Sharpen;
 
 namespace Giis.Selema.Manager
 {
-	/// <summary>A delegate used to provide additional configurations to the SeleniumManager</summary>
+	/// <summary>A delegate used to provide additional configurations to the SeleManager</summary>
 	public interface IManagerConfigDelegate
 	{
-		void Configure(SeleniumManager sm);
+		void Configure(SeleManager sm);
 	}
 }

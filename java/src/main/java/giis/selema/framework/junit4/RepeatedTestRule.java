@@ -5,19 +5,19 @@ import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
 import giis.selema.manager.IAfterEachCallback;
-import giis.selema.manager.SeleniumManager;
+import giis.selema.manager.SeleManager;
  
 /**
  * JUnit 4 rule to handle repeated tests
  */
 public class RepeatedTestRule implements TestRule {
-	private SeleniumManager sm;
+	private SeleManager sm;
 	private IAfterEachCallback afterCallback;
 	
-	public RepeatedTestRule(SeleniumManager manager) {
+	public RepeatedTestRule(SeleManager manager) {
 		this(manager, null);
 	}
-	public RepeatedTestRule(SeleniumManager manager, IAfterEachCallback afterCallback) {
+	public RepeatedTestRule(SeleManager manager, IAfterEachCallback afterCallback) {
 		this.sm=manager;
 		this.afterCallback=afterCallback;
 	}

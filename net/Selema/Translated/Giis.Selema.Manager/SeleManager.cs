@@ -16,7 +16,7 @@ namespace Giis.Selema.Manager
 	/// also contains methods for configuration and use during the test,
 	/// see https://github.com/javiertuya/selema#readme for instructions
 	/// </summary>
-	public class SeleniumManager
+	public class SeleManager
 	{
 		internal readonly Logger log = LogManager.GetCurrentClassLogger();
 
@@ -37,7 +37,7 @@ namespace Giis.Selema.Manager
 		private string currentTestName = string.Empty;
 
 		//general purpose logger
-		//SeleniumManager html log
+		//SeleManager html log
 		//empty is local
 		//Currently managed driver
 		//Current context, only used for external calls from tests as watermark or getting driver in unmanaged mode
@@ -90,13 +90,13 @@ namespace Giis.Selema.Manager
 		private bool maximizeOnCreate = false;
 
 		/// <summary>Creates an instance with the default configuration</summary>
-		public SeleniumManager()
+		public SeleManager()
 			: this(new SelemaConfig())
 		{
 		}
 
 		/// <summary>Creates an instance with a given configuration</summary>
-		public SeleniumManager(SelemaConfig selemaConfig)
+		public SeleManager(SelemaConfig selemaConfig)
 		{
 			//Driver modes of operation
 			//uniquely identifies each instance of this class
@@ -105,7 +105,7 @@ namespace Giis.Selema.Manager
 			//Behaviour parameters
 			if (selemaConfig == null)
 			{
-				throw new SelemaException("SeleniumManager instance requires an instance of SelemaConfig");
+				throw new SelemaException("SeleManager instance requires an instance of SelemaConfig");
 			}
 			conf = selemaConfig;
 			//ensures report folder is available
@@ -118,7 +118,7 @@ namespace Giis.Selema.Manager
 			softAssertService = new SoftAssertService().Configure(selemaLog, ciService.IsLocal(), conf.GetProjectRoot(), conf.GetReportSubdir());
 			//Other services must be configuresd using add methods
 			instanceCount++;
-			selemaLog.Info("*** Creating SeleniumManager instance " + instanceCount + " on " + ciService.GetName());
+			selemaLog.Info("*** Creating SeleManager instance " + instanceCount + " on " + ciService.GetName());
 		}
 
 		/// <summary>Gets the current configuration used when instantiating this class</summary>
@@ -127,15 +127,15 @@ namespace Giis.Selema.Manager
 			return this.conf;
 		}
 
-		/// <summary>Executes the SeleniumManager configuration actions established by the IManagerConfig delegate passed as parameter</summary>
-		public virtual Giis.Selema.Manager.SeleniumManager SetManagerDelegate(IManagerConfigDelegate configDelegate)
+		/// <summary>Executes the SeleManager configuration actions established by the IManagerConfig delegate passed as parameter</summary>
+		public virtual Giis.Selema.Manager.SeleManager SetManagerDelegate(IManagerConfigDelegate configDelegate)
 		{
 			configDelegate.Configure(this);
 			return this;
 		}
 
 		/// <summary>Sets the WebDriver for the specified browser ("chrome","firefox","edge","safari","opera"), default is chrome</summary>
-		public virtual Giis.Selema.Manager.SeleniumManager SetBrowser(string browser)
+		public virtual Giis.Selema.Manager.SeleManager SetBrowser(string browser)
 		{
 			log.Debug("Set browser: " + browser);
 			this.currentBrowser = browser;
@@ -143,7 +143,7 @@ namespace Giis.Selema.Manager
 		}
 
 		/// <summary>Sets a RemoteWebDriver instead a local one (default); The driverUrl must point to the browser service</summary>
-		public virtual Giis.Selema.Manager.SeleniumManager SetDriverUrl(string driverUrl)
+		public virtual Giis.Selema.Manager.SeleManager SetDriverUrl(string driverUrl)
 		{
 			log.Debug("Set driver url: " + driverUrl);
 			this.currentDriverUrl = driverUrl;
@@ -151,7 +151,7 @@ namespace Giis.Selema.Manager
 		}
 
 		/// <summary>Sets an object that can be used to provide additional configurations to the driver just after its creation</summary>
-		public virtual Giis.Selema.Manager.SeleniumManager SetDriverDelegate(IDriverConfigDelegate driverConfig)
+		public virtual Giis.Selema.Manager.SeleManager SetDriverDelegate(IDriverConfigDelegate driverConfig)
 		{
 			log.Debug("Set driver Config instance");
 			this.driverConfig = driverConfig;
@@ -164,7 +164,7 @@ namespace Giis.Selema.Manager
 		}
 
 		/// <summary>Adds the specific capabilities to the WebDriver prior to its creation</summary>
-		public virtual Giis.Selema.Manager.SeleniumManager SetOptions(IDictionary<string, object> options)
+		public virtual Giis.Selema.Manager.SeleManager SetOptions(IDictionary<string, object> options)
 		{
 			log.Debug("Set options: " + options.ToString());
 			this.currentOptions = options;
@@ -172,7 +172,7 @@ namespace Giis.Selema.Manager
 		}
 
 		/// <summary>Adds the specific arguments to the WebDriver execution</summary>
-		public virtual Giis.Selema.Manager.SeleniumManager SetArguments(string[] arguments)
+		public virtual Giis.Selema.Manager.SeleManager SetArguments(string[] arguments)
 		{
 			log.Debug("Set arguments: " + JavaCs.DeepToString(arguments));
 			this.currentArguments = arguments;
@@ -180,14 +180,14 @@ namespace Giis.Selema.Manager
 		}
 
 		/// <summary>Starts the created drivers as maximized</summary>
-		public virtual Giis.Selema.Manager.SeleniumManager SetMaximize(bool doMaximize)
+		public virtual Giis.Selema.Manager.SeleManager SetMaximize(bool doMaximize)
 		{
 			maximizeOnCreate = doMaximize;
 			return this;
 		}
 
 		/// <summary>Returns to the default behaviour (a driver per each test)</summary>
-		public virtual Giis.Selema.Manager.SeleniumManager SetManageAtTest()
+		public virtual Giis.Selema.Manager.SeleManager SetManageAtTest()
 		{
 			log.Debug("Set manage at test");
 			this.manageAtTest = true;
@@ -196,7 +196,7 @@ namespace Giis.Selema.Manager
 		}
 
 		/// <summary>Starts a WebDriver before the first test at each class, and quits after all tests in the class</summary>
-		public virtual Giis.Selema.Manager.SeleniumManager SetManageAtClass()
+		public virtual Giis.Selema.Manager.SeleManager SetManageAtClass()
 		{
 			log.Debug("Set manage at class");
 			this.manageAtTest = false;
@@ -206,9 +206,9 @@ namespace Giis.Selema.Manager
 
 		/// <summary>
 		/// Do not start/quit a webdriver, if needed, you can control the driver instantiation by calling the `createDriver()`
-		/// and `quitDriver(WebDriver driver)` on the SeleniumManager Instance
+		/// and `quitDriver(WebDriver driver)` on the SeleManager Instance
 		/// </summary>
-		public virtual Giis.Selema.Manager.SeleniumManager SetManageNone()
+		public virtual Giis.Selema.Manager.SeleManager SetManageNone()
 		{
 			log.Debug("Set unmanaged");
 			this.manageAtTest = false;
@@ -227,7 +227,7 @@ namespace Giis.Selema.Manager
 		}
 
 		/// <summary>Attaches a browser service (eg selenoid)</summary>
-		public virtual Giis.Selema.Manager.SeleniumManager Add(IBrowserService browserSvc)
+		public virtual Giis.Selema.Manager.SeleManager Add(IBrowserService browserSvc)
 		{
 			log.Debug("Add browser service");
 			browserService = browserSvc;
@@ -241,7 +241,7 @@ namespace Giis.Selema.Manager
 		}
 
 		/// <summary>Attaches a watermark service that inserts a text at the top left side of the browser with the name of test being executed and the failure status.</summary>
-		public virtual Giis.Selema.Manager.SeleniumManager Add(IWatermarkService watermark)
+		public virtual Giis.Selema.Manager.SeleManager Add(IWatermarkService watermark)
 		{
 			log.Debug("Add watermark service");
 			this.watermark = watermark;
@@ -249,7 +249,7 @@ namespace Giis.Selema.Manager
 		}
 
 		/// <summary>Attaches a javascript coverage service</summary>
-		public virtual Giis.Selema.Manager.SeleniumManager Add(IJsCoverageService recorder)
+		public virtual Giis.Selema.Manager.SeleManager Add(IJsCoverageService recorder)
 		{
 			log.Debug("Add js coverage service");
 			coverageRecorder = recorder.Configure(selemaLog, conf.GetReportDir());

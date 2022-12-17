@@ -57,7 +57,7 @@ namespace Giis.Selema.Services.Impl
 			return instance;
 		}
 
-		/// <summary>Configures this service, called on attaching the service to a SeleniumManager</summary>
+		/// <summary>Configures this service, called on attaching the service to a SeleManager</summary>
 		public virtual IJsCoverageService Configure(ISelemaLogger thisLog, string reportDir)
 		{
 			this.selemaLog = thisLog;

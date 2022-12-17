@@ -23,7 +23,7 @@ public class SelenoidVideoService implements IVideoService {
 	private long lastSessionStartedTimestamp=0;
 	
 	/**
-	 * Configures this service, called on attaching the service to a SeleniumManager
+	 * Configures this service, called on attaching the service to a SeleManager
 	 */
 	@Override
 	public IVideoService configure(ISelemaLogger thisLog) {

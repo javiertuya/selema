@@ -24,7 +24,7 @@ namespace Test4giis.Selema.Nunit3
 			return "TestLifecycle4Unmanaged";
 		}
 
-		protected internal SeleniumManager sm = new SeleniumManager(Config4test.GetConfig()).SetManagerDelegate(new Config4test()).SetManageNone();
+		protected internal SeleManager sm = new SeleManager(Config4test.GetConfig()).SetManagerDelegate(new Config4test()).SetManageNone();
 
 		
 		//public LifecycleNunit3Class cw = new LifecycleNunit3Class(sm);

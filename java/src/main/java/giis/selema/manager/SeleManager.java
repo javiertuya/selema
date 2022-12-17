@@ -30,9 +30,9 @@ import giis.selema.services.impl.VisualAssertService;
  * also contains methods for configuration and use during the test, 
  * see https://github.com/javiertuya/selema#readme for instructions
  */
-public class SeleniumManager {
+public class SeleManager {
 	final Logger log=LoggerFactory.getLogger(this.getClass()); //general purpose logger
-	private ISelemaLogger selemaLog; //SeleniumManager html log
+	private ISelemaLogger selemaLog; //SeleManager html log
 	
 	private String currentBrowser="chrome";
 	private String currentDriverUrl=""; //empty is local
@@ -74,15 +74,15 @@ public class SeleniumManager {
     /**
      * Creates an instance with the default configuration
      */
-	public SeleniumManager() { 
+	public SeleManager() { 
 		this(new SelemaConfig());
 	}
 	/**
 	 * Creates an instance with a given configuration
 	 */
-	public SeleniumManager(SelemaConfig selemaConfig) { 
+	public SeleManager(SelemaConfig selemaConfig) { 
 		if (selemaConfig==null)
-			throw new SelemaException("SeleniumManager instance requires an instance of SelemaConfig");
+			throw new SelemaException("SeleManager instance requires an instance of SelemaConfig");
 		conf = selemaConfig;
 		//ensures report folder is available
 		FileUtil.createDirectory(conf.getReportDir());
@@ -96,7 +96,7 @@ public class SeleniumManager {
 		//Other services must be configuresd using add methods
 		
 		instanceCount++;
-		selemaLog.info("*** Creating SeleniumManager instance " + instanceCount + " on " + ciService.getName());
+		selemaLog.info("*** Creating SeleManager instance " + instanceCount + " on " + ciService.getName());
 	}
 	
 	/**
@@ -107,9 +107,9 @@ public class SeleniumManager {
 	}
 	
 	/**
-	 * Executes the SeleniumManager configuration actions established by the IManagerConfig delegate passed as parameter
+	 * Executes the SeleManager configuration actions established by the IManagerConfig delegate passed as parameter
 	 */
-	public SeleniumManager setManagerDelegate(IManagerConfigDelegate configDelegate) {
+	public SeleManager setManagerDelegate(IManagerConfigDelegate configDelegate) {
 		configDelegate.configure(this);
 		return this;
 	}
@@ -117,7 +117,7 @@ public class SeleniumManager {
 	/**
 	 * Sets the WebDriver for the specified browser ("chrome","firefox","edge","safari","opera"), default is chrome
 	 */
-	public SeleniumManager setBrowser(String browser) {
+	public SeleManager setBrowser(String browser) {
 		log.debug("Set browser: "+browser);
 		this.currentBrowser=browser;
 		return this;
@@ -125,7 +125,7 @@ public class SeleniumManager {
 	/**
 	 * Sets a RemoteWebDriver instead a local one (default); The driverUrl must point to the browser service
 	 */
-	public SeleniumManager setDriverUrl(String driverUrl) {
+	public SeleManager setDriverUrl(String driverUrl) {
 		log.debug("Set driver url: "+driverUrl);
 		this.currentDriverUrl=driverUrl;
 		return this;
@@ -133,7 +133,7 @@ public class SeleniumManager {
 	/**
 	 * Sets an object that can be used to provide additional configurations to the driver just after its creation
 	 */
-	public SeleniumManager setDriverDelegate(IDriverConfigDelegate driverConfig) {
+	public SeleManager setDriverDelegate(IDriverConfigDelegate driverConfig) {
 		log.debug("Set driver Config instance");
 		this.driverConfig=driverConfig;
 		return this;
@@ -144,7 +144,7 @@ public class SeleniumManager {
 	/**
 	 * Adds the specific capabilities to the WebDriver prior to its creation
 	 */
-	public SeleniumManager setOptions(Map<String,Object> options) {
+	public SeleManager setOptions(Map<String,Object> options) {
 		log.debug("Set options: "+options.toString());
 		this.currentOptions=options;
 		return this;
@@ -152,7 +152,7 @@ public class SeleniumManager {
 	/**
 	 * Adds the specific arguments to the WebDriver execution
 	 */
-	public SeleniumManager setArguments(String[] arguments) {
+	public SeleManager setArguments(String[] arguments) {
 		log.debug("Set arguments: "+JavaCs.deepToString(arguments));
 		this.currentArguments=arguments;
 		return this;
@@ -160,7 +160,7 @@ public class SeleniumManager {
 	/**
 	 * Starts the created drivers as maximized
 	 */
-	public SeleniumManager setMaximize(boolean doMaximize) {
+	public SeleManager setMaximize(boolean doMaximize) {
 		maximizeOnCreate=doMaximize;
 		return this;
 	}
@@ -168,7 +168,7 @@ public class SeleniumManager {
 	/**
 	 * Returns to the default behaviour (a driver per each test)
 	 */
-	public SeleniumManager setManageAtTest() {
+	public SeleManager setManageAtTest() {
 		log.debug("Set manage at test");
 		this.manageAtTest=true;
 		this.manageAtClass=false;
@@ -177,7 +177,7 @@ public class SeleniumManager {
 	/**
 	 * Starts a WebDriver before the first test at each class, and quits after all tests in the class
 	 */
-	public SeleniumManager setManageAtClass() {
+	public SeleManager setManageAtClass() {
 		log.debug("Set manage at class");
 		this.manageAtTest=false;
 		this.manageAtClass=true;
@@ -185,9 +185,9 @@ public class SeleniumManager {
 	}
 	/**
 	 * Do not start/quit a webdriver, if needed, you can control the driver instantiation by calling the `createDriver()`
-	 * and `quitDriver(WebDriver driver)` on the SeleniumManager Instance
+	 * and `quitDriver(WebDriver driver)` on the SeleManager Instance
 	 */
-	public SeleniumManager setManageNone() {
+	public SeleManager setManageNone() {
 		log.debug("Set unmanaged");
 		this.manageAtTest=false;
 		this.manageAtClass=false;
@@ -203,7 +203,7 @@ public class SeleniumManager {
 	/** 
 	 * Attaches a browser service (eg selenoid)
 	 */
-	public SeleniumManager add(IBrowserService browserSvc) {
+	public SeleManager add(IBrowserService browserSvc) {
 		log.debug("Add browser service");
 		browserService=browserSvc;
 		//when creating this service a compatible video recorder service is created too
@@ -215,7 +215,7 @@ public class SeleniumManager {
 	/** 
 	 * Attaches a watermark service that inserts a text at the top left side of the browser with the name of test being executed and the failure status. 
 	 */
-	public SeleniumManager add(IWatermarkService watermark) {
+	public SeleManager add(IWatermarkService watermark) {
 		log.debug("Add watermark service");
 		this.watermark=watermark;
 		return this;
@@ -223,7 +223,7 @@ public class SeleniumManager {
 	/** 
 	 * Attaches a javascript coverage service
 	 */
-	public SeleniumManager add(IJsCoverageService recorder) {
+	public SeleManager add(IJsCoverageService recorder) {
 		log.debug("Add js coverage service");
 		coverageRecorder=recorder.configure(selemaLog, conf.getReportDir());
 		return this;

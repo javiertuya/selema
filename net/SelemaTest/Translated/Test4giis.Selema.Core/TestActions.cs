@@ -12,7 +12,7 @@ namespace Test4giis.Selema.Core
 {
 	[LifecycleNunit3] public class TestActions
 	{
-		protected internal SeleniumManager sm = new SeleniumManager(Config4test.GetConfig()).SetManagerDelegate(new Config4test()).SetManageAtClass();
+		protected internal SeleManager sm = new SeleManager(Config4test.GetConfig()).SetManagerDelegate(new Config4test()).SetManageAtClass();
 
 		
 		//public LifecycleNunit3Class cw = new LifecycleNunit3Class(sm);

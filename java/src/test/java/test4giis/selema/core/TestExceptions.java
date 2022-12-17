@@ -16,7 +16,7 @@ import giis.selema.framework.junit4.LifecycleJunit4Class;
 import giis.selema.framework.junit4.LifecycleJunit4Test;
 import giis.selema.manager.IAfterEachCallback;
 import giis.selema.manager.SelemaConfig;
-import giis.selema.manager.SeleniumManager;
+import giis.selema.manager.SeleManager;
 import giis.selema.portable.SelemaException;
 import giis.selema.services.IMediaContext;
 import giis.selema.services.impl.MediaContext;
@@ -39,7 +39,7 @@ public class TestExceptions implements IAfterEachCallback {
 	protected static int thisTestCount=0;
 
 	//this sm includes a configuration of the driver (check that driver runs maximized)
-	protected static SeleniumManager sm=new SeleniumManager(Config4test.getConfig())
+	protected static SeleManager sm=new SeleManager(Config4test.getConfig())
 			.setManagerDelegate(new Config4test(false))
 			.setManageAtClass()
 			.setDriverDelegate(new DriverConfigMaximize());
@@ -71,25 +71,25 @@ public class TestExceptions implements IAfterEachCallback {
 
 	@Test
 	public void testManagerWithoutConfig() {
-		try { new SeleniumManager(null);
+		try { new SeleManager(null);
 			fail("Should fail");
 		} catch (SelemaException e) {
-			assertEquals("SeleniumManager instance requires an instance of SelemaConfig", e.getMessage());
+			assertEquals("SeleManager instance requires an instance of SelemaConfig", e.getMessage());
 		}
 	}
 	
 	//uses a different report subdir to do not include wrong named files/folders that cause error when published as artifacts
 	@Test
 	public void testManagerWrongName() {
-		try { new SeleniumManager(new SelemaConfig().setReportSubdir("dat/tmp").setName("ab?cd")); fail("Should fail"); } catch(RuntimeException e) {};
+		try { new SeleManager(new SelemaConfig().setReportSubdir("dat/tmp").setName("ab?cd")); fail("Should fail"); } catch(RuntimeException e) {};
 	}
 	@Test
 	public void testManagerWrongReportSubdir() {
-		try { new SeleniumManager(new SelemaConfig().setReportSubdir("dat/tmp/ab?cd")); fail("Should fail"); } catch(RuntimeException e) {};
+		try { new SeleManager(new SelemaConfig().setReportSubdir("dat/tmp/ab?cd")); fail("Should fail"); } catch(RuntimeException e) {};
 	}
 	@Test
 	public void testManagerWrongProjectRoot() {
-		try { new SeleniumManager(new SelemaConfig().setProjectRoot("dat/tmp/ab?cd")); fail("Should fail"); } catch(RuntimeException e) {};
+		try { new SeleManager(new SelemaConfig().setProjectRoot("dat/tmp/ab?cd")); fail("Should fail"); } catch(RuntimeException e) {};
 	}
 	@Test
 	public void testScreenshotExceptionByDriver() {

@@ -8,12 +8,12 @@ import org.openqa.selenium.WebElement;
 
 import giis.selema.framework.junit4.LifecycleJunit4Class;
 import giis.selema.framework.junit4.LifecycleJunit4Test;
-import giis.selema.manager.SeleniumManager;
+import giis.selema.manager.SeleManager;
 import giis.selema.portable.selenium.SeleniumActions;
 
 public class TestActions { //interface only to generate compatible NUnit3 translation
 
-	protected static SeleniumManager sm=new SeleniumManager(Config4test.getConfig()).setManagerDelegate(new Config4test()).setManageAtClass();
+	protected static SeleManager sm=new SeleManager(Config4test.getConfig()).setManagerDelegate(new Config4test()).setManageAtClass();
 	@ClassRule public static LifecycleJunit4Class cw = new LifecycleJunit4Class(sm);
 	@Rule public LifecycleJunit4Test tw = new LifecycleJunit4Test(sm);
 	

@@ -4,7 +4,7 @@ import java.util.Properties;
 
 import giis.selema.manager.IManagerConfigDelegate;
 import giis.selema.manager.SelemaConfig;
-import giis.selema.manager.SeleniumManager;
+import giis.selema.manager.SeleManager;
 import giis.selema.portable.FileUtil;
 import giis.selema.portable.Parameters;
 import giis.selema.portable.PropertiesFactory;
@@ -31,7 +31,7 @@ public class Config4test implements IManagerConfigDelegate {
 	}
 	
 	//implements the interface IManagerConfig to establish the default configuration for test
-	public void configure(SeleniumManager sm) {
+	public void configure(SeleManager sm) {
 		sm.setBrowser(getCurrentBrowser()).setDriverUrl(getCurrentDriverUrl());
 		if (useWatermark)
 			sm.add(new WatermarkService());

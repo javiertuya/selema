@@ -8,7 +8,7 @@ import org.openqa.selenium.WebDriver;
 public interface IScreenshotService {
 
 	/**
-	 * Configures this service, called on attaching the service to a SeleniumManager
+	 * Configures this service, called on attaching the service to a SeleManager
 	 */
 	public IScreenshotService configure(ISelemaLogger thisLog);
 	

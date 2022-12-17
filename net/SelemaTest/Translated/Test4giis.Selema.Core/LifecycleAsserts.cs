@@ -44,12 +44,12 @@ namespace Test4giis.Selema.Core
 		}
 
 		//to check inside the test body at the beginning
-		public virtual void AssertAfterSetup(SeleniumManager sm, bool browserAfter)
+		public virtual void AssertAfterSetup(SeleManager sm, bool browserAfter)
 		{
 			AssertAfterSetup(sm, browserAfter, false);
 		}
 
-		public virtual void AssertAfterSetup(SeleniumManager sm, bool browserAfter, bool browserBefore)
+		public virtual void AssertAfterSetup(SeleManager sm, bool browserAfter, bool browserBefore)
 		{
 			logReader.AssertBegin();
 			if (browserBefore)
@@ -65,7 +65,7 @@ namespace Test4giis.Selema.Core
 		}
 
 		//checks when simulating failure for failed test in test body
-		public virtual void AssertAfterFail(SeleniumManager sm)
+		public virtual void AssertAfterFail(SeleManager sm)
 		{
 			logReader.AssertBegin();
 			logReader.AssertContains("FAIL " + sm.CurrentTestName());
@@ -80,7 +80,7 @@ namespace Test4giis.Selema.Core
 
 		//videos generated independently if there are any failure, checked in the after teardown callback
 		//checks made when lifecycle calls the after tear down callback
-		public virtual void AssertAfterTeardown(SeleniumManager sm, string fullTestName, bool success)
+		public virtual void AssertAfterTeardown(SeleManager sm, string fullTestName, bool success)
 		{
 			string normalizedTestName = NormalizeTestName(fullTestName);
 			logReader.AssertBegin();

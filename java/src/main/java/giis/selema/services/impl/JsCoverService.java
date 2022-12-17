@@ -46,7 +46,7 @@ public class JsCoverService implements IJsCoverageService {
 	}
 	
 	/**
-	 * Configures this service, called on attaching the service to a SeleniumManager
+	 * Configures this service, called on attaching the service to a SeleManager
 	 */
 	@Override 
 	public IJsCoverageService configure(ISelemaLogger thisLog, String reportDir) {

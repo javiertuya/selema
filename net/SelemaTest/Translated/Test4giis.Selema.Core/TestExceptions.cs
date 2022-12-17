@@ -37,7 +37,7 @@ namespace Test4giis.Selema.Core
 
 		protected internal static int thisTestCount = 0;
 
-		protected internal SeleniumManager sm = new SeleniumManager(Config4test.GetConfig()).SetManagerDelegate(new Config4test(false)).SetManageAtClass().SetDriverDelegate(new DriverConfigMaximize());
+		protected internal SeleManager sm = new SeleManager(Config4test.GetConfig()).SetManagerDelegate(new Config4test(false)).SetManageAtClass().SetDriverDelegate(new DriverConfigMaximize());
 
 		
 		//public LifecycleNunit3Class cw = new LifecycleNunit3Class(sm);
@@ -83,12 +83,12 @@ namespace Test4giis.Selema.Core
 		{
 			try
 			{
-				new SeleniumManager(null);
+				new SeleManager(null);
 				NUnit.Framework.Assert.Fail("Should fail");
 			}
 			catch (SelemaException e)
 			{
-				NUnit.Framework.Assert.AreEqual("SeleniumManager instance requires an instance of SelemaConfig", e.Message);
+				NUnit.Framework.Assert.AreEqual("SeleManager instance requires an instance of SelemaConfig", e.Message);
 			}
 		}
 
@@ -98,7 +98,7 @@ namespace Test4giis.Selema.Core
 		{
 			try
 			{
-				new SeleniumManager(new SelemaConfig().SetReportSubdir("dat/tmp").SetName("ab?cd"));
+				new SeleManager(new SelemaConfig().SetReportSubdir("dat/tmp").SetName("ab?cd"));
 				NUnit.Framework.Assert.Fail("Should fail");
 			}
 			catch (Exception)
@@ -111,7 +111,7 @@ namespace Test4giis.Selema.Core
 		{
 			try
 			{
-				new SeleniumManager(new SelemaConfig().SetReportSubdir("dat/tmp/ab?cd"));
+				new SeleManager(new SelemaConfig().SetReportSubdir("dat/tmp/ab?cd"));
 				NUnit.Framework.Assert.Fail("Should fail");
 			}
 			catch (Exception)
@@ -124,7 +124,7 @@ namespace Test4giis.Selema.Core
 		{
 			try
 			{
-				new SeleniumManager(new SelemaConfig().SetProjectRoot("dat/tmp/ab?cd"));
+				new SeleManager(new SelemaConfig().SetProjectRoot("dat/tmp/ab?cd"));
 				NUnit.Framework.Assert.Fail("Should fail");
 			}
 			catch (Exception)

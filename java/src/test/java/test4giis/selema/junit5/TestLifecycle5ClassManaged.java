@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import giis.selema.framework.junit5.LifecycleJunit5;
 import giis.selema.manager.IAfterEachCallback;
-import giis.selema.manager.SeleniumManager;
+import giis.selema.manager.SeleManager;
 import giis.selema.portable.Parameters;
 import test4giis.selema.core.AfterEachCallback;
 import test4giis.selema.core.LifecycleAsserts;
@@ -23,7 +23,7 @@ public class TestLifecycle5ClassManaged implements IAfterEachCallback {
 	protected String currentName() { return "TestLifecycle5ClassManaged"; }
 	protected static int thisTestCount=0;
 
-	protected static SeleniumManager sm=new SeleniumManager(Config4test.getConfig()).setManagerDelegate(new Config4test()).setManageAtClass();
+	protected static SeleManager sm=new SeleManager(Config4test.getConfig()).setManagerDelegate(new Config4test()).setManageAtClass();
 
 	@Override
 	public void runAfterCallback(String testName, boolean success) { 

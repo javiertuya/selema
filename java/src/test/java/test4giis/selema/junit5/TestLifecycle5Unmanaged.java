@@ -13,7 +13,7 @@ import org.openqa.selenium.WebDriver;
 
 import giis.selema.framework.junit5.LifecycleJunit5;
 import giis.selema.manager.IAfterEachCallback;
-import giis.selema.manager.SeleniumManager;
+import giis.selema.manager.SeleManager;
 import test4giis.selema.core.Config4test;
 import test4giis.selema.core.AfterEachCallback;
 import test4giis.selema.core.LifecycleAsserts;
@@ -24,7 +24,7 @@ public class TestLifecycle5Unmanaged implements IAfterEachCallback {
 	protected static LifecycleAsserts lfas=new LifecycleAsserts();
 	protected String currentName() { return "TestLifecycle5Unmanaged"; }
 	
-	protected static SeleniumManager sm=new SeleniumManager(Config4test.getConfig()).setManagerDelegate(new Config4test()).setManageNone();
+	protected static SeleManager sm=new SeleManager(Config4test.getConfig()).setManagerDelegate(new Config4test()).setManageNone();
 
 	@Override
 	public void runAfterCallback(String testName, boolean success) { 

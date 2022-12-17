@@ -18,7 +18,7 @@ namespace Test4giis.Selema.Core
 
 		private static IJsCoverageService recorder = JsCoverService.GetInstance(new Config4test().GetCoverageRoot());
 
-		protected internal SeleniumManager sm = new SeleniumManager(Config4test.GetConfig()).SetManagerDelegate(new Config4test()).SetManageNone().Add(recorder);
+		protected internal SeleManager sm = new SeleManager(Config4test.GetConfig()).SetManagerDelegate(new Config4test()).SetManageNone().Add(recorder);
 
 		
 		//public LifecycleNunit3Class cw = new LifecycleNunit3Class(sm);
@@ -65,7 +65,7 @@ namespace Test4giis.Selema.Core
 		}
 
 		/// <summary>Ejecucion sucesiva de acciones que aumentan progresivamente la cobertura</summary>
-		private void RunCoverageSession1(SeleniumManager sm, IWebDriver driver)
+		private void RunCoverageSession1(SeleManager sm, IWebDriver driver)
 		{
 			string CoverageOutFile = FileUtil.GetPath(Config4test.GetConfig().GetReportDir(), "jscoverage.json");
 			//fichero cobertura generado
@@ -86,7 +86,7 @@ namespace Test4giis.Selema.Core
 		/// Ejecucion de una segunda sesion tras haber abandonado la sesion y reabierto,
 		/// comprueba que la cobertura de la primera sesion no se pierde
 		/// </summary>
-		private void RunCoverageSession2(SeleniumManager sm, IWebDriver driver)
+		private void RunCoverageSession2(SeleManager sm, IWebDriver driver)
 		{
 			string CoverageOutFile = FileUtil.GetPath(Config4test.GetConfig().GetReportDir(), "jscoverage.json");
 			//fichero cobertura generado

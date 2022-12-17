@@ -35,7 +35,7 @@ namespace Test4giis.Selema.Mstest2
 		}
 
 		
-          protected internal static SeleniumManager sm;
+          protected internal static SeleManager sm;
 		public TestLifecycle4() {
         
          sm = LifecycleMstest2.GetManager(sm,Config4test.GetConfig()).SetManagerDelegate(new Config4test()).SetManageAtTest();

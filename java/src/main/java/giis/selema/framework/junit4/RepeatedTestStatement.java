@@ -7,19 +7,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import giis.selema.manager.IAfterEachCallback;
-import giis.selema.manager.SeleniumManager;
+import giis.selema.manager.SeleManager;
  
 /**
  * Statement to be used in the JUnit 4 rule that handles repeated tests
  */
 public class RepeatedTestStatement extends Statement {
 	static final Logger log=LoggerFactory.getLogger(RepeatedTestStatement.class);
-	private final SeleniumManager sm;
+	private final SeleManager sm;
 	private IAfterEachCallback afterCallback;
 	private final int retryCount;
 	private final Statement statement;
  
-	RepeatedTestStatement(SeleniumManager manager, int retryCount, Statement statement, IAfterEachCallback afterCallback)
+	RepeatedTestStatement(SeleManager manager, int retryCount, Statement statement, IAfterEachCallback afterCallback)
 	{
 		this.sm = manager;
 		this.afterCallback = afterCallback;

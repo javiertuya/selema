@@ -17,7 +17,7 @@ public class VisualAssertService implements IVisualAssertService {
 	    this.va = new VisualAssert();
 	}
 	/**
-	 * Configures this service, called on attaching the service to a SeleniumManager
+	 * Configures this service, called on attaching the service to a SeleManager
 	 */
 	@Override
 	public IVisualAssertService configure(ISelemaLogger logger, boolean local, String projectRoot, String reportSubdir) {
@@ -26,7 +26,7 @@ public class VisualAssertService implements IVisualAssertService {
 		return this;
 	}
 	/**
-	 * General assertion and log writing, intended to be used from a proxy in the SeleniumManager class
+	 * General assertion and log writing, intended to be used from a proxy in the SeleManager class
 	 */
 	@Override
 	public void assertEquals(String expected, String actual, String message, IMediaContext context, String testName) {

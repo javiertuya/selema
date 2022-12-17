@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import giis.selema.framework.junit4.LifecycleJunit4Class;
 import giis.selema.framework.junit4.LifecycleJunit4Test;
 import giis.selema.manager.IAfterEachCallback;
-import giis.selema.manager.SeleniumManager;
+import giis.selema.manager.SeleManager;
 import test4giis.selema.core.AfterEachCallback;
 import test4giis.selema.core.LifecycleAsserts;
 import test4giis.selema.core.Config4test;
@@ -26,7 +26,7 @@ public class TestLifecycle4ClassManaged implements IAfterEachCallback {
 	protected static int thisTestCount=0;
 
 	//this sm includes a configuration of the driver (check that driver runs maximized)
-	protected static SeleniumManager sm=new SeleniumManager(Config4test.getConfig()).setManagerDelegate(new Config4test()).setManageAtClass().setDriverDelegate(new DriverConfigMaximize());
+	protected static SeleManager sm=new SeleManager(Config4test.getConfig()).setManagerDelegate(new Config4test()).setManageAtClass().setDriverDelegate(new DriverConfigMaximize());
 	@ClassRule public static LifecycleJunit4Class cw = new LifecycleJunit4Class(sm);
 	@Rule public LifecycleJunit4Test tw = new LifecycleJunit4Test(sm, new AfterEachCallback(lfas, log, sm));
 

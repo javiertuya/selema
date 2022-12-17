@@ -15,7 +15,7 @@ import giis.selema.framework.junit4.LifecycleJunit4Test;
 import giis.selema.framework.junit4.RepeatedIfExceptionsTest;
 import giis.selema.framework.junit4.RepeatedTestRule;
 import giis.selema.manager.IAfterEachCallback;
-import giis.selema.manager.SeleniumManager;
+import giis.selema.manager.SeleManager;
 import giis.selema.services.impl.WatermarkService;
 import test4giis.selema.core.AfterEachCallback;
 import test4giis.selema.core.LifecycleAsserts;
@@ -25,7 +25,7 @@ public class TestLifecycle4Repeated implements IAfterEachCallback {
 	final static Logger log=LoggerFactory.getLogger(TestLifecycle4Repeated.class);
 	protected static LifecycleAsserts lfas=new LifecycleAsserts();
 
-	protected static SeleniumManager sm=new SeleniumManager(Config4test.getConfig())
+	protected static SeleManager sm=new SeleManager(Config4test.getConfig())
 			.setManagerDelegate(new Config4test())
 			.add(new WatermarkService())
 			.setMaximize(true);

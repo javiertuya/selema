@@ -9,7 +9,7 @@ namespace Giis.Selema.Services
 	/// <summary>Additional support to measure javascript coverage</summary>
 	public interface IJsCoverageService
 	{
-		/// <summary>Configures this service, called on attaching the service to a SeleniumManager</summary>
+		/// <summary>Configures this service, called on attaching the service to a SeleManager</summary>
 		IJsCoverageService Configure(ISelemaLogger thisLog, string reportDir);
 
 		/// <summary>To be executed after driver creation</summary>

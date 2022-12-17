@@ -22,7 +22,7 @@ namespace Giis.Selema.Services.Impl
 
 		public MediaContext(string reportFolder, string qualifier, int instanceCount, int sessionCount)
 		{
-			//uniquely dentifies each SeleniumManager instance
+			//uniquely dentifies each SeleManager instance
 			//uniquely identifies each new driver session created by this instance
 			//given a session, gets unique identifiers, if needed
 			this.reportFolder = reportFolder;

@@ -4,7 +4,7 @@ using NLog;
 namespace Giis.Selema.Portable
 {
     /// <summary>
-    /// Configuracion de logs de las sesiones web para SeleniumManager
+    /// Configuracion de logs de las sesiones web para SeleManager
     /// </summary>
     public class LogConfigurator
     {
@@ -32,7 +32,7 @@ namespace Giis.Selema.Portable
                 LogManager.Configuration = config;
 
                 Logger thisLogger = LogManager.GetLogger(loggerName);
-                thisLogger.Info("SeleniumManager logger created, writing to file " + logName);
+                thisLogger.Info("SeleManager logger created, writing to file " + logName);
             }
             catch (Exception e)
             {

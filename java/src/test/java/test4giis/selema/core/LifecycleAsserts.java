@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import giis.selema.manager.SeleniumManager;
+import giis.selema.manager.SeleManager;
 import giis.selema.portable.FileUtil;
 import giis.selema.portable.JavaCs;
 
@@ -35,10 +35,10 @@ public class LifecycleAsserts {
 	}
 	
 	//to check inside the test body at the beginning
-	public void assertAfterSetup(SeleniumManager sm, boolean browserAfter) {
+	public void assertAfterSetup(SeleManager sm, boolean browserAfter) {
 		assertAfterSetup(sm, browserAfter, false);
 	}
-	public void assertAfterSetup(SeleniumManager sm, boolean browserAfter, boolean browserBefore) {
+	public void assertAfterSetup(SeleManager sm, boolean browserAfter, boolean browserBefore) {
 		logReader.assertBegin();
 		if (browserBefore)
 			checkBrowserSetup(sm.usesRemoteDriver());
@@ -49,7 +49,7 @@ public class LifecycleAsserts {
 	}
 
 	//checks when simulating failure for failed test in test body
-	public void assertAfterFail(SeleniumManager sm) {
+	public void assertAfterFail(SeleManager sm) {
 		logReader.assertBegin();
 		logReader.assertContains("FAIL "+sm.currentTestName());
 		logReader.assertContains("Taking screenshot", sm.currentTestName().replace(".", "-")+".png");
@@ -61,7 +61,7 @@ public class LifecycleAsserts {
 	}
 
 	//checks made when lifecycle calls the after tear down callback
-	public void assertAfterTeardown(SeleniumManager sm, String fullTestName, boolean success) {
+	public void assertAfterTeardown(SeleManager sm, String fullTestName, boolean success) {
 		String normalizedTestName=normalizeTestName(fullTestName);
 		logReader.assertBegin();
 		if (success)

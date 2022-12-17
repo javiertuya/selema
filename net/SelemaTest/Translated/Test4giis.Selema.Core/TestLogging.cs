@@ -19,12 +19,12 @@ namespace Test4giis.Selema.Core
 		{
 			//dos loggers de sm y uno adicional, no se mezclan los mensajes
 			//usa la carpeta de log por defecto, por lo que no apareceran bajo selema como el resto de tests.
-			SeleniumManager sm0 = new SeleniumManager().SetManagerDelegate(new Config4test());
+			SeleManager sm0 = new SeleManager().SetManagerDelegate(new Config4test());
 			LogReader lr0 = new LogReader(new SelemaConfig().GetReportDir());
 			sm0.GetLogger().Info("test log1 a principal");
 			lr0.AssertBegin();
 			lr0.AssertContains("test log1 a principal");
-			SeleniumManager sm1 = new SeleniumManager(new SelemaConfig().SetName("independent")).SetManagerDelegate(new Config4test());
+			SeleManager sm1 = new SeleManager(new SelemaConfig().SetName("independent")).SetManagerDelegate(new Config4test());
 			LogReader lr1 = new LogReader(new SelemaConfig().GetReportDir(), "independent-log.log");
 			sm1.GetLogger().Info("test log1 a secundario");
 			lr1.AssertBegin();

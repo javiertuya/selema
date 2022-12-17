@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.junit.*;
 
 import giis.selema.manager.SelemaConfig;
-import giis.selema.manager.SeleniumManager;
+import giis.selema.manager.SeleManager;
 
 /**
  * Otras pruebas unitarias necesarias, cada uno con su propio selenium manager, 
@@ -17,13 +17,13 @@ public class TestLogging {
 	public void testLoggersAreIndependent() {
 		//dos loggers de sm y uno adicional, no se mezclan los mensajes
 		//usa la carpeta de log por defecto, por lo que no apareceran bajo selema como el resto de tests.
-		SeleniumManager sm0=new SeleniumManager().setManagerDelegate(new Config4test());
+		SeleManager sm0=new SeleManager().setManagerDelegate(new Config4test());
 		LogReader lr0=new LogReader(new SelemaConfig().getReportDir());
 		sm0.getLogger().info("test log1 a principal");
 		lr0.assertBegin();
 		lr0.assertContains("test log1 a principal");
 		
-		SeleniumManager sm1=new SeleniumManager(new SelemaConfig().setName("independent")).setManagerDelegate(new Config4test());
+		SeleManager sm1=new SeleManager(new SelemaConfig().setName("independent")).setManagerDelegate(new Config4test());
 		LogReader lr1=new LogReader(new SelemaConfig().getReportDir(), "independent-log.log");
 		sm1.getLogger().info("test log1 a secundario");
 		lr1.assertBegin();

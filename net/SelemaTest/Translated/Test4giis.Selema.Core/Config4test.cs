@@ -41,7 +41,7 @@ namespace Test4giis.Selema.Core
 		}
 
 		//implements the interface IManagerConfig to establish the default configuration for test
-		public virtual void Configure(SeleniumManager sm)
+		public virtual void Configure(SeleManager sm)
 		{
 			sm.SetBrowser(GetCurrentBrowser()).SetDriverUrl(GetCurrentDriverUrl());
 			if (useWatermark)

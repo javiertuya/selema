@@ -19,7 +19,7 @@
 -maxColumns 280 
 
 #Selema
--propertyMapping giis.selema.manager.SeleniumManager.driver() Driver
+-propertyMapping giis.selema.manager.SeleManager.driver() Driver
 
 #Varias librerias de Java
 -typeMapping java.lang.StringBuilder System.Text.StringBuilder

@@ -51,7 +51,7 @@ namespace Test4giis.Selema.Core
 			NUnit.Framework.Assert.AreEqual("screen-08-09-01-Class-Method.png", ctx.GetScreenshotFileName("Class.Method"));
 			NUnit.Framework.Assert.AreEqual("diff-08-09-02-Class-Method.html", ctx.GetDiffFileName("Class.Method"));
 			NUnit.Framework.Assert.AreEqual("diff-08-09-03-Class-Method.html", ctx.GetDiffFileName("Class.Method"));
-			//Named SeleniumManager
+			//Named SeleManager
 			conf = new SelemaConfig().SetName("xxx");
 			ctx = new MediaContext(conf.GetReportDir(), conf.GetQualifier(), 6, 7);
 			NUnit.Framework.Assert.AreEqual("video-xxx-06-07-Class-Method.mp4", ctx.GetVideoFileName("Class.Method"));

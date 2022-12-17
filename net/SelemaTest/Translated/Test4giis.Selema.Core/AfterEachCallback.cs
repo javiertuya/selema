@@ -13,9 +13,9 @@ namespace Test4giis.Selema.Core
 
 		private Logger log;
 
-		private SeleniumManager sm;
+		private SeleManager sm;
 
-		public AfterEachCallback(LifecycleAsserts steps, Logger log, SeleniumManager sm)
+		public AfterEachCallback(LifecycleAsserts steps, Logger log, SeleManager sm)
 		{
 			this.steps = steps;
 			this.log = log;

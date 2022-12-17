@@ -8,7 +8,7 @@ import org.openqa.selenium.WebDriver;
 public interface IJsCoverageService {
 
 	/**
-	 * Configures this service, called on attaching the service to a SeleniumManager
+	 * Configures this service, called on attaching the service to a SeleManager
 	 */
 	IJsCoverageService configure(ISelemaLogger thisLog, String reportDir);
 	

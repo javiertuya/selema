@@ -15,7 +15,7 @@ namespace Giis.Selema.Services.Impl
 	{
 		private ISelemaLogger log;
 
-		/// <summary>Configures this service, called on attaching the service to a SeleniumManager</summary>
+		/// <summary>Configures this service, called on attaching the service to a SeleManager</summary>
 		public virtual IScreenshotService Configure(ISelemaLogger thisLog)
 		{
 			log = thisLog;

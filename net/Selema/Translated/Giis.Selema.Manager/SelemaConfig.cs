@@ -6,7 +6,7 @@ using Sharpen;
 
 namespace Giis.Selema.Manager
 {
-	/// <summary>Static configuration parameters at the instantiation of a SeleniumManager (location, name, etc)</summary>
+	/// <summary>Static configuration parameters at the instantiation of a SeleManager (location, name, etc)</summary>
 	public class SelemaConfig
 	{
 		private const string DefaultName = "selema";
@@ -79,7 +79,7 @@ namespace Giis.Selema.Manager
 			return logName;
 		}
 
-		/// <summary>Sets the name of the SeleniumManager (default is selema), useful when logs from different instances must be kept separated</summary>
+		/// <summary>Sets the name of the SeleManager (default is selema), useful when logs from different instances must be kept separated</summary>
 		public virtual SelemaConfig SetName(string name)
 		{
 			logName = name;

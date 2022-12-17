@@ -9,7 +9,7 @@ import org.openqa.selenium.WebDriver;
 public interface IVideoService {
 
 	/**
-	 * Configures this service, called on attaching the service to a SeleniumManager
+	 * Configures this service, called on attaching the service to a SeleManager
 	 */
 	IVideoService configure(ISelemaLogger thisLog);
 	

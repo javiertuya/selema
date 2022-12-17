@@ -10,7 +10,7 @@ import giis.selema.services.IMediaContext;
 public class MediaContext implements IMediaContext {
 	private String reportFolder;
 	private String qualifier;
-	private int instanceCount; //uniquely dentifies each SeleniumManager instance
+	private int instanceCount; //uniquely dentifies each SeleManager instance
 	private int sessionCount; //uniquely identifies each new driver session created by this instance
 	private int inSessionCount; //given a session, gets unique identifiers, if needed
 

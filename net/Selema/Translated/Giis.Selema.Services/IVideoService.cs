@@ -10,7 +10,7 @@ namespace Giis.Selema.Services
 	/// <summary>Support for video recording from a browser service</summary>
 	public interface IVideoService
 	{
-		/// <summary>Configures this service, called on attaching the service to a SeleniumManager</summary>
+		/// <summary>Configures this service, called on attaching the service to a SeleManager</summary>
 		IVideoService Configure(ISelemaLogger thisLog);
 
 		void BeforeCreateDriver();

@@ -34,12 +34,12 @@ On .NET, include the `Selema` package in you project as indicated in
 
 Selema works around two main components: 
 A `Lifecycle*` controller class that detects the events during the test lifecycle 
-and calls the `SeleniumManager` to perform the required actions.
+and calls the `SeleManager` to perform the required actions.
 
 ## Basic usage
 
 To use Selema with your tests you only need:
-- Instantiate a SeleniumManager object (`sm` in the examples).
+- Instantiate a SeleManager object (`sm` in the examples).
 - Configure the test class with a `Lifecycle*` annotation or rule (depending on the test framework).
 
 The appropriate Selenium WebDriver will be instantiated and closed before and after test execution
@@ -51,12 +51,12 @@ Expand/collapse the below items for instructions and examples on each of the sup
 <details open><summary><strong>JUnit 5</strong></summary>
 
 (1) Extend the test class with a `@ExtendWith(LifecycleJunit5.class)` annotation
-and (2) declare a static instance `sm` of `SeleniumManager`:
+and (2) declare a static instance `sm` of `SeleManager`:
 
 ```
 @ExtendWith(LifecycleJunit5.class)
 public class TestSampleJunit5 {
-	private static SeleniumManager sm=new SeleniumManager().setBrowser("chrome");
+	private static SeleManager sm=new SeleManager().setBrowser("chrome");
 	@Test
 	public void testFailMethod() {
 		sm.driver().get("https://en.wikipedia.org/");
@@ -69,12 +69,12 @@ public class TestSampleJunit5 {
 
 <details><summary><strong>JUnit 4</strong></summary>
 
-Declare (1) a static instance `sm` of `SeleniumManager`
+Declare (1) a static instance `sm` of `SeleManager`
 and (2) a `LifecycleJunit4Test` rule receiving `sm` as argument
 
 ```
 public class TestSampleJunit4 {
-	private static SeleniumManager sm=new SeleniumManager().setBrowser("chrome");
+	private static SeleManager sm=new SeleManager().setBrowser("chrome");
 	@Rule public LifecycleJunit4Test tw = new LifecycleJunit4Test(sm);
 	@Test
 	public void testFailMethod() {
@@ -84,8 +84,8 @@ public class TestSampleJunit4 {
 }
 ```
 
-NOTE: If SeleniumManager is confgured to manage one driver per class (see below) 
-an additional rule must be declared just after SeleniumManager instantiation:
+NOTE: If SeleManager is confgured to manage one driver per class (see below) 
+an additional rule must be declared just after SeleManager instantiation:
 
 ```
 	@ClassRule public static LifecycleJunit4Class cw = new LifecycleJunit4Class(sm);
@@ -95,14 +95,14 @@ an additional rule must be declared just after SeleniumManager instantiation:
 
 <details><summary><strong>NUnit 3</strong></summary>
 
-Declare (1) an instance `sm` of `SeleniumManager`
+Declare (1) an instance `sm` of `SeleManager`
 and (2) a decorate the test class with the `[LifecycleNunit3]` annotation:
 
 ```
     [LifecycleNunit3]
     public class TestFailedExample
     {
-        protected SeleniumManager sm = new SeleniumManager().SetBrowser("chrome");
+        protected SeleManager sm = new SeleManager().SetBrowser("chrome");
         [Test]
         public void TestFailMethod()
         {
@@ -116,7 +116,7 @@ and (2) a decorate the test class with the `[LifecycleNunit3]` annotation:
 
 <details><summary><strong>MSTest 2</strong></summary>
 
-Declare (1) a static object `sm` of `SeleniumManager`, (2) instantiate `sm` in the class constructor
+Declare (1) a static object `sm` of `SeleManager`, (2) instantiate `sm` in the class constructor
 and (3) inherit the test class from `LifecycleMstest2`. 
 See comments in the example for additional explanations:
 
@@ -124,7 +124,7 @@ See comments in the example for additional explanations:
     [TestClass]
     public class TestFailedExample : LifecycleMstest2
     {
-        protected static SeleniumManager sm;
+        protected static SeleManager sm;
         public TestFailedExample()
         {
             sm = LifecycleMstest2.GetManager(sm).SetBrowser("edge");
@@ -155,7 +155,7 @@ Log info is also sent to the configured application logger (if any): slf4j on Ja
 
 # Basic configuration
 
-Basic configuration is made using setter methods on the SeleniumManager instance. 
+Basic configuration is made using setter methods on the SeleManager instance. 
 All `set*` methods follow a fluent style, so they can be concatenated in a single statement.
 
 NOTE: The below sections use the the Java syntax. 
@@ -168,7 +168,7 @@ Unless otherwise stated, on .NET, all packages, classes and methods have the sam
 - **Modes of Operation**: By default, Selema starts a WebDriver before each test executions and quits after each test execution, but this behaviour can be modified:
   - `setManageAtClass()`: Starts a WebDriver before the first test at each class, and quits after all tests in the class
   - `setManageNone()`: Do not start/quit automatically any webdriver. Useful to test scenarios that involve users closing browsers.
-    If needed, tester can instantiate and close a driver by calling `createDriver()` and `quitDriver(WebDriver driver)` on the SeleniumManager Instance.
+    If needed, tester can instantiate and close a driver by calling `createDriver()` and `quitDriver(WebDriver driver)` on the SeleManager Instance.
     Method `hasDriver()` indicates if an instance of the driver has been created (accesing a non instantiated driver thwows an exception).
   - `setManagedAtTest()`: Returns to the default behaviour.
 - **WebDriver Capabilities (options)**: `setOptions(Map<String,Object> options)` adds the specific capabilities to the WebDriver prior to its creation.
@@ -177,7 +177,7 @@ Unless otherwise stated, on .NET, all packages, classes and methods have the sam
 
 ## Log file location
 
-Default location of selema log file and log file name can be overriden by pasing a `SelemaConfig` instance as argument at the SeleniumManager instantiation. 
+Default location of selema log file and log file name can be overriden by pasing a `SelemaConfig` instance as argument at the SeleManager instantiation. 
 `SelemaConfig` admits the following fluent style customization methods:
 
 - `setReportSubdir(String subdir)`: changes the name of the report folder (relative to the project root). Default is `target` (on Java) and `reports` (on .NET).
@@ -185,8 +185,8 @@ Default location of selema log file and log file name can be overriden by pasing
   Default is `.` on Java and `../../../..` on .NET (this is the solution folder provided that the test project is located just below the solution folder).
 - `setName(String name)`: changes the name of the log and the log file. Useful when you need to separate logs in different files.
 
-For instance, `new SeleniumManager(new SelemaConfig().setReportSubdir("target/site").setName("custom"))` 
-instantiates a SeleniumManager that places the reports in the `target/site` folder 
+For instance, `new SeleManager(new SelemaConfig().setReportSubdir("target/site").setName("custom"))` 
+instantiates a SeleManager that places the reports in the `target/site` folder 
 and produces a log file named `selema-custom-log.html`.
 
 ## Delegated configurations
@@ -202,8 +202,8 @@ and establishes these configurations in its `configure` method:
 
 # Advanced configuration and services
 
-Most of actions performed by the SeleniumManager instance are implemented as services that are attached to the instance using a set of overloaded `add` methods. 
-Some services are predefined (attached during the SeleniumManager instantiation) 
+Most of actions performed by the SeleManager instance are implemented as services that are attached to the instance using a set of overloaded `add` methods. 
+Some services are predefined (attached during the SeleManager instantiation) 
 and others are optional (attached by calling to `add(<service-instance>)` on the SelenimManager instance). 
 All `add` methods and service configuration methods follow a fluent style.
 
@@ -215,7 +215,7 @@ Use `add(new WatermarkService())` to attach an instance. The service instance ca
 - `setBackground(String color)`: Sets a background color to better differentiate the watermark from the web content (by default watermark has no background).
 
 Watermarks are automatically inserted after a test fails.
-Additional watermark with the test name can be inserted by the tester using the `watermark()` method of the SeleniumManager instance (tipically just after moving to an url). 
+Additional watermark with the test name can be inserted by the tester using the `watermark()` method of the SeleManager instance (tipically just after moving to an url). 
 During test execution the user can also write arbitrary text using the `watermarkText(String value)` method.
 
 ## Browser service (Selenoid)
@@ -228,7 +228,7 @@ The Selenoid service instance can be cusomized with these methods:
 - `setVnc()`: Activates the VNC capabilities to be able to watch the test execution in real time (e.g. using selenoid-ui). 
   Note that Selenoid requires special driver containers to allow this capability.
 
-To use a remote driver the driver url must be configured by calling `setDriverUrl(String driverUrl)` on the SeleniumManager instance.
+To use a remote driver the driver url must be configured by calling `setDriverUrl(String driverUrl)` on the SeleManager instance.
 
 An example of a Selenoid set up accesible from the `http://localhost:4444/wd/hub` url is shown below:
 
@@ -274,16 +274,16 @@ Important notes:
 ## Predefined services
 
 - **CI/CD Services**: `ICiService` defines this interface. 
-  At the instantiation, the SeleniumManager detects if tests are running under one of the recognized CI platforms and attaches the corresponding service instance. 
+  At the instantiation, the SeleManager detects if tests are running under one of the recognized CI platforms and attaches the corresponding service instance. 
   Method `getCiService()`  retrieves the attached service, allowing access to a number of methods useful to perform conditional actions depending on the run platform:
   - `isLocal()`: Returns true if tests are not running in any of the recognized CI platforms.
   - `getName()`: Returns the name of the platform (local for local mode, jenkins pr github)
   - `getJobId()`: Returns an unique job identifier including the build number.
   - `getJobName()`: Returns the job identifier without the build number.
 - **Screenshot service**: To take screenshots of the browser state and place the picture accesible from the log. 
-  Usually, the tests do not access directly to this service, but can use the `screenshot(String fileName)` method on the SeleniumManager instance to take a picture at any time.
+  Usually, the tests do not access directly to this service, but can use the `screenshot(String fileName)` method on the SeleManager instance to take a picture at any time.
 - **Visual Assert service**: To compare large strings. Places an html file with the differences accesible from the log.
-  - The Methods `visualAssertEquals(...)` can be invoked on the SeleniumManager instance to perform the assert on the strings.
+  - The Methods `visualAssertEquals(...)` can be invoked on the SeleManager instance to perform the assert on the strings.
   - See the [Visual Assert documentation](https://github.com/javiertuya/visual-assert) for more information.
 - **Soft Assert service**: A variant of Visual Assert that implements soft assertions.
   - The methods `softAssertEquals(...)` that fail record the message and the diff files instead of throwing an exception.

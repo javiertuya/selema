@@ -24,7 +24,7 @@ namespace Giis.Selema.Services.Impl
 		private long lastSessionStartedTimestamp = 0;
 
 		//los timestamps no se miden de forma precisa, pero se tomara como referencia el intervalo que se conoce
-		/// <summary>Configures this service, called on attaching the service to a SeleniumManager</summary>
+		/// <summary>Configures this service, called on attaching the service to a SeleManager</summary>
 		public virtual IVideoService Configure(ISelemaLogger thisLog)
 		{
 			log = thisLog;

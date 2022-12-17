@@ -16,7 +16,7 @@ import giis.selema.framework.junit4.Asserts;
 import giis.selema.manager.CiServiceFactory;
 import giis.selema.manager.SelemaConfig;
 import giis.selema.manager.SeleniumDriverFactory;
-import giis.selema.manager.SeleniumManager;
+import giis.selema.manager.SeleManager;
 import giis.selema.portable.SelemaException;
 import giis.selema.services.impl.SelenoidService;
 
@@ -143,7 +143,7 @@ public class TestDriver {
 		Map<String,Object> capsToAdd=new TreeMap<String,Object>();
 		capsToAdd.put("key1","value1");
 		capsToAdd.put("key2","value2");
-		SeleniumManager sm=new SeleniumManager(Config4test.getConfig())
+		SeleManager sm=new SeleManager(Config4test.getConfig())
 				.setDriverUrl(new Config4test().getRemoteDriverUrl())
 				.setOptions(capsToAdd); //can't get options from driver instance, check at the debug log
 		sm.onSetUp("TestDriver", "TestDriver.testRemoteWebDriverFromManager");
@@ -155,7 +155,7 @@ public class TestDriver {
 	@Test
 	public void testRemoteWebDriverFromManagerNoVideoService() {
 		if (!onRemote()) return;
-		SeleniumManager sm=new SeleniumManager(Config4test.getConfig()).setDriverUrl(new Config4test().getRemoteDriverUrl()).add(new SelenoidService());
+		SeleManager sm=new SeleManager(Config4test.getConfig()).setDriverUrl(new Config4test().getRemoteDriverUrl()).add(new SelenoidService());
 		sm.onSetUp("TestDriver", "TestDriver.testRemoteWebDriverFromManager");
 		sm.onFailure("TestDriver", "TestDriver.testRemoteWebDriverFromManager");
 		assertLogRemoteWebDriver();
@@ -164,7 +164,7 @@ public class TestDriver {
 	private void assertLogRemoteWebDriver() {
 		LogReader logReader=new LifecycleAsserts().getLogReader();
 		logReader.assertBegin();
-		logReader.assertContains("Creating SeleniumManager instance");
+		logReader.assertContains("Creating SeleManager instance");
 		logReader.assertContains("*** SetUp - TestDriver.testRemoteWebDriverFromManager");
 		logReader.assertContains("Remote session chrome starting");
 		logReader.assertContains("Remote session chrome started. Remote web driver at "+new Config4test().getRemoteDriverUrl());

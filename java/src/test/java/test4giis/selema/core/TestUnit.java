@@ -44,7 +44,7 @@ public class TestUnit {
 		assertEquals("screen-08-09-01-Class-Method.png", ctx.getScreenshotFileName("Class.Method"));
 		assertEquals("diff-08-09-02-Class-Method.html", ctx.getDiffFileName("Class.Method"));
 		assertEquals("diff-08-09-03-Class-Method.html", ctx.getDiffFileName("Class.Method"));
-		//Named SeleniumManager
+		//Named SeleManager
 		conf=new SelemaConfig().setName("xxx");
 		ctx=new MediaContext(conf.getReportDir(), conf.getQualifier(),  6, 7);
 		assertEquals("video-xxx-06-07-Class-Method.mp4", ctx.getVideoFileName("Class.Method"));

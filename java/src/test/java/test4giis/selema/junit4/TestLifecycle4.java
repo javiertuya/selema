@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import giis.selema.framework.junit4.LifecycleJunit4Class;
 import giis.selema.framework.junit4.LifecycleJunit4Test;
 import giis.selema.manager.IAfterEachCallback;
-import giis.selema.manager.SeleniumManager;
+import giis.selema.manager.SeleManager;
 import test4giis.selema.core.Config4test;
 import test4giis.selema.core.AfterEachCallback;
 import test4giis.selema.core.LifecycleAsserts;
@@ -29,7 +29,7 @@ public class TestLifecycle4 implements IAfterEachCallback {
 	protected static LifecycleAsserts lfas=new LifecycleAsserts();
 	protected String currentName() { return "TestLifecycle4"; }
 	
-	protected static SeleniumManager sm=new SeleniumManager(Config4test.getConfig()).setManagerDelegate(new Config4test()).setManageAtTest();
+	protected static SeleManager sm=new SeleManager(Config4test.getConfig()).setManagerDelegate(new Config4test()).setManageAtTest();
 	@ClassRule public static LifecycleJunit4Class cw = new LifecycleJunit4Class(sm);
 	@Rule public LifecycleJunit4Test tw = new LifecycleJunit4Test(sm, new AfterEachCallback(lfas, log, sm));
 

@@ -6,22 +6,22 @@ import org.junit.runners.model.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import giis.selema.manager.SeleniumManager;
+import giis.selema.manager.SeleManager;
 
 /**
  * JUnit 4 rule to watch for the class lifecycle events, keep track of the test class
- * and send the appropriate events to the SeleniumManager.
- * Binding of the SeleniumManager is made by a parameter passed in the instantiation.
+ * and send the appropriate events to the SeleManager.
+ * Binding of the SeleManager is made by a parameter passed in the instantiation.
  * See https://github.com/javiertuya/selema#readme for instructions
  */
 public class LifecycleJunit4Class extends ExternalResource {
 	static final Logger log=LoggerFactory.getLogger(LifecycleJunit4Class.class);
-	private SeleniumManager sm;
+	private SeleManager sm;
 	private String className="undefined";
 
-	public LifecycleJunit4Class(SeleniumManager smgr) {
+	public LifecycleJunit4Class(SeleManager smgr) {
 		sm=smgr;
-		log.trace("Instance of SeleniumManager is bound to class rule");
+		log.trace("Instance of SeleManager is bound to class rule");
 	}
 	
     public Statement apply(Statement base, Description description) {

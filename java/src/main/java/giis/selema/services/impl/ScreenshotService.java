@@ -15,7 +15,7 @@ public class ScreenshotService implements IScreenshotService {
 	private ISelemaLogger log;
 
 	/**
-	 * Configures this service, called on attaching the service to a SeleniumManager
+	 * Configures this service, called on attaching the service to a SeleManager
 	 */
 	@Override
 	public IScreenshotService configure(ISelemaLogger thisLog) {

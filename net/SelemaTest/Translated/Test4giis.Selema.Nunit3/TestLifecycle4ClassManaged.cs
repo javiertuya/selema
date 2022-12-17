@@ -25,7 +25,7 @@ namespace Test4giis.Selema.Nunit3
 
 		protected internal static int thisTestCount = 0;
 
-		protected internal SeleniumManager sm = new SeleniumManager(Config4test.GetConfig()).SetManagerDelegate(new Config4test()).SetManageAtClass().SetDriverDelegate(new DriverConfigMaximize());
+		protected internal SeleManager sm = new SeleManager(Config4test.GetConfig()).SetManagerDelegate(new Config4test()).SetManageAtClass().SetDriverDelegate(new DriverConfigMaximize());
 
 		
 		//public LifecycleNunit3Class cw = new LifecycleNunit3Class(sm);

@@ -4,7 +4,7 @@ import giis.selema.portable.FileUtil;
 import giis.selema.portable.Parameters;
 
 /**
- * Static configuration parameters at the instantiation of a SeleniumManager (location, name, etc)
+ * Static configuration parameters at the instantiation of a SeleManager (location, name, etc)
  */
 public class SelemaConfig { //NOSONAR
 	
@@ -69,7 +69,7 @@ public class SelemaConfig { //NOSONAR
 		return logName;
 	}
 	/**
-	 * Sets the name of the SeleniumManager (default is selema), useful when logs from different instances must be kept separated
+	 * Sets the name of the SeleManager (default is selema), useful when logs from different instances must be kept separated
 	 */
 	public SelemaConfig setName(String name) {
 		logName=name;

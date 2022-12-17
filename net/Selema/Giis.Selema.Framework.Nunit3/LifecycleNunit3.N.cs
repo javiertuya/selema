@@ -9,8 +9,8 @@ namespace Giis.Selema.Framework.Nunit3
 {
     /// <summary>
     /// NUnit 3 extension to watch for the class and test lifecycle events, keep track of the test class and test name
-    /// and send the appropriate events to the SeleniumManager.
-    /// Binding of the SeleniumManager is made using reflection.
+    /// and send the appropriate events to the SeleManager.
+    /// Binding of the SeleManager is made using reflection.
     /// See https://github.com/javiertuya/selema#readme for instructions
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
@@ -18,7 +18,7 @@ namespace Giis.Selema.Framework.Nunit3
     {
         static readonly Logger log = LogManager.GetLogger("Giis.Selema.Framework.Nunit3.LifecycleNunit3");
 
-        private SeleniumManager sm;
+        private SeleManager sm;
         private IAfterEachCallback afterCallback;
         private string className = "undefined";
         private string testName = "undefined";
@@ -53,7 +53,7 @@ namespace Giis.Selema.Framework.Nunit3
                 className = test.Name;
 
                 if (sm==null)
-                    sm = FindSeleniumManagerInstance(test.Fixture);
+                    sm = FindSeleManagerInstance(test.Fixture);
 
                 //prevents cast exception if test class has not defined any of these interfaces
                 if (typeof(IAfterEachCallback).IsAssignableFrom(test.Fixture.GetType()))
@@ -112,24 +112,24 @@ namespace Giis.Selema.Framework.Nunit3
         /// <summary>
         /// Finds the instance of SeleniumManage that is declared in the test instance
         /// </summary>
-        private SeleniumManager FindSeleniumManagerInstance(Object testInstance)
+        private SeleManager FindSeleManagerInstance(Object testInstance)
         {
             try
             {
                 FieldInfo[] smFields = testInstance.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Default);
                 foreach (FieldInfo field in smFields)
-                    if (field.FieldType == typeof(SeleniumManager))
+                    if (field.FieldType == typeof(SeleManager))
                     {
                         object smInstance = field.GetValue(testInstance);
-                        log.Trace("Instance of SeleniumManager is bound");
-                        return (SeleniumManager)smInstance;
+                        log.Trace("Instance of SeleManager is bound");
+                        return (SeleManager)smInstance;
                     }
-                log.Warn("Can't bind an instance of SeleniumManager");
+                log.Warn("Can't bind an instance of SeleManager");
                 return null;
             }
             catch (Exception e)
             {
-                log.Warn("Error binding an instance of SeleniumManager, exception: " + e.Message);
+                log.Warn("Error binding an instance of SeleManager, exception: " + e.Message);
                 return null;
             }
         }
