@@ -122,6 +122,18 @@ jobs:
           path: |
             java/target/surefire-reports
             java/target/site/jacoco/jacoco.xml
+            
+      # Samples: only check if no compilation errors
+      - name: JAVA - compile samples
+        if: ${{ matrix.platform=='java' && matrix.mode=='headless' }}
+        run: |
+          cd ../samples/samples-selema-junit4 && mvn test-compile -U --no-transfer-progress
+          cd ../samples-selema-junit5 && mvn test-compile -U --no-transfer-progress
+      - name: NET - compile samples
+        if: ${{ matrix.platform=='net' && matrix.mode=='headless' }}
+        run: |
+          cd ../samples/samples-selema-mstest2 && dotnet build
+          cd ../samples-selema-nunit3 && dotnet build
 
   sonarqube:
     needs: [test]
