@@ -1,6 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>io.github.javiertuya</groupId>
@@ -22,18 +20,20 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
+
 		<junit-jupiter.version>5.9.1</junit-jupiter.version>
+
 		<junit.version>4.13.2</junit.version>
 	</properties>
 	<dependencies>
 		<!-- Workaround for selenium 4.1.2 issue: https://github.com/SeleniumHQ/selenium/issues/10324 -->
-    	<dependency>
-        	<groupId>com.google.guava</groupId>
-        	<artifactId>guava</artifactId>
-        	<version>31.1-jre</version>
-    	</dependency>
-    	
-    	<dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>31.1-jre</version>
+		</dependency>
+
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
@@ -58,9 +58,9 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-		    <groupId>io.github.artsok</groupId>
-		    <artifactId>rerunner-jupiter</artifactId>
-		    <version>2.1.6</version>
+			<groupId>io.github.artsok</groupId>
+			<artifactId>rerunner-jupiter</artifactId>
+			<version>2.1.6</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -70,54 +70,34 @@
 			<version>4.7.2</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- selenium 3
 		<dependency>
-			<groupId>org.seleniumhq.selenium</groupId>
-			<artifactId>selenium-java</artifactId>
-			<version>3.141.59</version>
-		</dependency>
-		<dependency>
-		    <groupId>com.microsoft.edge</groupId>
-		    <artifactId>msedge-selenium-tools-java</artifactId>
-		    <version>3.141.0</version>
-		</dependency>
- 		-->
-		<dependency>
-    		<groupId>io.github.bonigarcia</groupId>
-    		<artifactId>webdrivermanager</artifactId>
-    		<version>5.3.1</version>
+			<groupId>io.github.bonigarcia</groupId>
+			<artifactId>webdrivermanager</artifactId>
+			<version>5.3.1</version>
 		</dependency>
 
 		<dependency>
-		  <groupId>io.github.javiertuya</groupId>
-		  <artifactId>visual-assert</artifactId>
-		  <version>2.2.1</version>
+			<groupId>io.github.javiertuya</groupId>
+			<artifactId>visual-assert</artifactId>
+			<version>2.2.1</version>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>org.slf4j</groupId>
-		    <artifactId>slf4j-api</artifactId>
-		    <version>2.0.6</version>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>2.0.6</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.slf4j</groupId>
-		    <artifactId>slf4j-log4j12</artifactId>
-		    <version>1.7.33</version>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.33</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- 		
+
 		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>1.2.3</version>
-			<scope>test</scope>
-		</dependency>
-		 -->
-		
-		<dependency>
-		    <groupId>commons-io</groupId>
-		    <artifactId>commons-io</artifactId>
-		    <version>2.11.0</version>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.11.0</version>
 		</dependency>
 	</dependencies>
 
@@ -145,8 +125,8 @@
 					evita fallo con jenkins slave linux y openjdk:
 					https://stackoverflow.com/questions/23260057/the-forked-vm-terminated-without-saying-properly-goodbye-vm-crash-or-system-exi/53070605
 					-->
-                	<useSystemClassLoader>false</useSystemClassLoader>
-          			<skipTests>${skipTests}</skipTests>
+					<useSystemClassLoader>false</useSystemClassLoader>
+					<skipTests>${skipTests}</skipTests>
 				</configuration>
 			</plugin>
 
