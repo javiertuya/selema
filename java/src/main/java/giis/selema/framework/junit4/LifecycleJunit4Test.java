@@ -1,8 +1,5 @@
 package giis.selema.framework.junit4;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.AfterClass;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 import org.slf4j.Logger;

@@ -20,11 +20,6 @@ import giis.selema.manager.SeleManager;
 import giis.selema.portable.SelemaException;
 import giis.selema.services.IMediaContext;
 import giis.selema.services.impl.MediaContext;
-import giis.visualassert.portable.FileUtil;
-import test4giis.selema.core.AfterEachCallback;
-import test4giis.selema.core.LifecycleAsserts;
-import test4giis.selema.core.Config4test;
-import test4giis.selema.core.DriverConfigMaximize;
 
 /**
  * Checks exceptional situations: Some of them do not raise exceptions, but write in the selema log, 

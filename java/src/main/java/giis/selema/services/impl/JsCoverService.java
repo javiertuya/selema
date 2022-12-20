@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import giis.selema.portable.FileUtil;
-import giis.selema.portable.JavaCs;
 import giis.selema.portable.selenium.SeleniumActions;
 import giis.selema.services.IJsCoverageService;
 import giis.selema.services.ISelemaLogger;

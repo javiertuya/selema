@@ -3,11 +3,7 @@ package giis.selema.portable;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
-import java.util.UUID;
-
-import org.slf4j.Logger;
 
 /**
  * Miscelaneous utilities for compatibility Java/C#

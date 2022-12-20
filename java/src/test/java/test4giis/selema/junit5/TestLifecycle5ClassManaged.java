@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import giis.selema.framework.junit5.LifecycleJunit5;
 import giis.selema.manager.IAfterEachCallback;
 import giis.selema.manager.SeleManager;
-import giis.selema.portable.Parameters;
 import test4giis.selema.core.AfterEachCallback;
 import test4giis.selema.core.LifecycleAsserts;
 import test4giis.selema.core.Config4test;

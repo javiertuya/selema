@@ -6,7 +6,8 @@ import org.slf4j.Logger;
  * Generic custom exception for compatibility Java/C#
  */
 public class SelemaException extends RuntimeException {
-    public SelemaException(Throwable e) {
+	private static final long serialVersionUID = -160856912671600396L;
+	public SelemaException(Throwable e) {
         super(e);
     }
     public SelemaException(String message) {
