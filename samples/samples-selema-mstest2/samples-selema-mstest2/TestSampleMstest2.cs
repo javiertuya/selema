@@ -11,7 +11,7 @@ namespace Giis.Samples.Selema.Mstest2
     [TestClass]
     public class TestSampleMstest2 : LifecycleMstest2
     {
-        protected static SeleniumManager sm;
+        protected static SeleManager sm;
         public TestSampleMstest2()
         {
             sm = LifecycleMstest2.GetManager(sm).SetBrowser("chrome");

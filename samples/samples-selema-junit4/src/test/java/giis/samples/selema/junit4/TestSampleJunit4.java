@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
-import giis.selema.manager.SeleniumManager;
+import giis.selema.manager.SeleManager;
 import giis.selema.framework.junit4.LifecycleJunit4Class;
 import giis.selema.framework.junit4.LifecycleJunit4Test;
 import giis.selema.framework.junit4.RepeatedIfExceptionsTest;
@@ -15,7 +15,7 @@ import giis.selema.framework.junit4.RepeatedTestRule;
  * see usage at https://github.com/javiertuya/selema#readme
  */
 public class TestSampleJunit4 {
-	private static SeleniumManager sm=new SeleniumManager().setBrowser("chrome");
+	private static SeleManager sm=new SeleManager().setBrowser("chrome");
 	//ClassRule is needed when driver is managed at the class level
 	@ClassRule public static LifecycleJunit4Class cw = new LifecycleJunit4Class(sm); //required only if using a driver per class
 	@Rule public LifecycleJunit4Test tw = new LifecycleJunit4Test(sm);

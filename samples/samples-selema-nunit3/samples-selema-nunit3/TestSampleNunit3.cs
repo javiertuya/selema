@@ -11,7 +11,7 @@ namespace Giis.Samples.Selema.Nunit3
     [LifecycleNunit3]
     public class SampleNunit3
     {
-        protected SeleniumManager sm = new SeleniumManager().SetBrowser("chrome");
+        protected SeleManager sm = new SeleManager().SetBrowser("chrome");
         //More customizations of sm can be made in the OneTimeSetUp method 
         //or in the class constructor (as NUnit only creates a class instance for all tests)
 

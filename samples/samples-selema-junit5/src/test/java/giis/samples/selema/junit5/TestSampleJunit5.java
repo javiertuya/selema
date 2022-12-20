@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import giis.selema.framework.junit5.LifecycleJunit5;
-import giis.selema.manager.SeleniumManager;
+import giis.selema.manager.SeleManager;
 import io.github.artsok.RepeatedIfExceptionsTest;
 
 /**
@@ -14,7 +14,7 @@ import io.github.artsok.RepeatedIfExceptionsTest;
  */
 @ExtendWith(LifecycleJunit5.class)
 public class TestSampleJunit5 {
-	private static SeleniumManager sm=new SeleniumManager().setBrowser("chrome");
+	private static SeleManager sm=new SeleManager().setBrowser("chrome");
 	
 	@Test
 	public void testFailMethod() {
