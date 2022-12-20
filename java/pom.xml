@@ -26,13 +26,6 @@
 		<junit.version>4.13.2</junit.version>
 	</properties>
 	<dependencies>
-		<!-- Workaround for selenium 4.1.2 issue: https://github.com/SeleniumHQ/selenium/issues/10324 -->
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>31.1-jre</version>
-		</dependency>
-
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
