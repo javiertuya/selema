@@ -29,13 +29,25 @@ updates:
     open-pull-requests-limit: 20
 
   - package-ecosystem: maven
-    directory: "/samples"
+    directory: "/samples/samples-selema-junit4"
+    schedule:
+      interval: daily
+    assignees:
+      - "javiertuya" 
+  - package-ecosystem: maven
+    directory: "/samples/samples-selema/junit5"
     schedule:
       interval: daily
     assignees:
       - "javiertuya" 
   - package-ecosystem: nuget
-    directory: "/samples"
+    directory: "/samples/samples-selema-mstest2"
+    schedule:
+      interval: daily
+    assignees:
+      - "javiertuya" 
+  - package-ecosystem: nuget
+    directory: "/samples/samples-selema-nunit3"
     schedule:
       interval: daily
     assignees:
