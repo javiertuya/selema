@@ -35,7 +35,7 @@ updates:
     assignees:
       - "javiertuya" 
   - package-ecosystem: maven
-    directory: "/samples/samples-selema/junit5"
+    directory: "/samples/samples-selema-junit5"
     schedule:
       interval: daily
     assignees:
