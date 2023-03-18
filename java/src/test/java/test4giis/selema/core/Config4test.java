@@ -35,8 +35,13 @@ public class Config4test implements IManagerConfigDelegate {
 		sm.setBrowser(getCurrentBrowser()).setDriverUrl(getCurrentDriverUrl());
 		if (useWatermark)
 			sm.add(new WatermarkService());
-		if (useHeadlessDriver())
-			sm.setArguments(new String[] { "--headless" });
+		//As of Chrome Driver V 111, remote-allow-origins argument is required, if not connection fails
+		if (useHeadlessDriver()) //headless argument supported by chrome and edge (at least)
+			sm.setArguments("chrome".equals(getCurrentBrowser()) 
+					? new String[] { "--headless", "--remote-allow-origins=*" }
+					: new String[] { "--headless" });
+		else if (useLocalDriver() && "chrome".equals(getCurrentBrowser()))
+			sm.setArguments(new String[] { "--remote-allow-origins=*" });
 		if (useRemoteWebDriver())
 			sm.add(new SelenoidService().setVideo().setVnc());
 	}
@@ -46,6 +51,9 @@ public class Config4test implements IManagerConfigDelegate {
 	}
 	public boolean useHeadlessDriver() {
 		return "headless".equals(prop.getProperty("selema.test.mode"));
+	}
+	public boolean useLocalDriver() {
+		return "local".equals(prop.getProperty("selema.test.mode"));
 	}
 	public String getRemoteDriverUrl() {
 		return prop.getProperty("selema.test.remote.webdriver");

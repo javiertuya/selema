@@ -56,6 +56,8 @@ public class SeleniumDriverFactory {
 				return (RemoteWebDriver)reflect.getRemoteDriverObj(remoteUrl, opt);
 			}
 		} catch (Exception e) { //NOSONAR
+			if ("chrome".equals(browser) && "".equals(remoteUrl))
+				log.warn("Note that since Chrome Driver 111 the argument --remote-allow-origins=* may be needed to connect with the browser");
 			throw new SelemaException(log, "Can't instantiate "
 					+ objectToInstantiate + " for browser: " + browser 
 					+ ("".equals(url)?"":" at url: "+url), e);

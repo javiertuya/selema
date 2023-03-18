@@ -12,19 +12,29 @@ using Sharpen;
 
 namespace Test4giis.Selema.Core
 {
-	/// <summary>Some detailed tests for the driver instantiation features</summary>
+	/// <summary>
+	/// Main tests to check that drivers are created
+	/// for diferent browsers, modes, arguments and parameters
+	/// </summary>
 	public class TestDriver
 	{
-		private string[] headlesArgument = new string[] { "--headless" };
+		private string[] chromeHeadlesArgument = new string[] { "--headless", "--remote-allow-origins=*" };
 
+		//As of Chrome Driver V 111, we need to include remote-allow-origins argument, 
+		//if not connection with driver fails
 		//Not all tests can be executed in all test modes,
-		//all in local, remote driver on selenoid, local driver on headless
-		private bool OnRemote()
+		//all in local plus remote driver in CI, headless in local
+		private bool IsLocal()
+		{
+			return new CiServiceFactory().GetCurrent().IsLocal();
+		}
+
+		private bool UseRemote()
 		{
 			return new CiServiceFactory().GetCurrent().IsLocal() || new Config4test().UseRemoteWebDriver();
 		}
 
-		private bool OnLocal()
+		private bool UseHeadless()
 		{
 			return new CiServiceFactory().GetCurrent().IsLocal() || new Config4test().UseHeadlessDriver();
 		}
@@ -40,26 +50,66 @@ namespace Test4giis.Selema.Core
 		}
 
 		[Test]
-		public virtual void TestLocalWebDriverDefault()
+		public virtual void TestLocalWebDriverChrome()
 		{
-			if (!OnLocal())
+			if (!IsLocal())
 			{
 				return;
 			}
 			SeleniumDriverFactory factory = new SeleniumDriverFactory();
-			IWebDriver driver = factory.GetSeleniumDriver("chrome", string.Empty, null, headlesArgument);
-			AssertOptions(factory, "{browserName:chrome,goog:chromeOptions:{args:[--headless]}}");
-			driver.Close();
-			//browser name is case insensitive, browser already downloaded, null remote url
-			driver = factory.GetSeleniumDriver("CHRome", null, null, headlesArgument);
-			AssertOptions(factory, "{browserName:chrome,goog:chromeOptions:{args:[--headless]}}");
+			IWebDriver driver = factory.GetSeleniumDriver("chrome", string.Empty, null, new string[] { "--remote-allow-origins=*" });
+			AssertOptions(factory, "{browserName:chrome,goog:chromeOptions:{args:[--remote-allow-origins=*]}}");
 			driver.Close();
 		}
 
 		[Test]
-		public virtual void TestLocalWebDriverWithOptions()
+		public virtual void TestLocalWebDriverEdge()
 		{
-			if (!OnLocal())
+			if (!IsLocal())
+			{
+				return;
+			}
+			SeleniumDriverFactory factory = new SeleniumDriverFactory();
+			IWebDriver driver = factory.GetSeleniumDriver("edge", string.Empty, null, null);
+			AssertOptions(factory, new SelemaConfig().IsJava() ? "{browserName:MicrosoftEdge,ms:edgeOptions:{args:[]}}" : "{browserName:MicrosoftEdge,ms:edgeOptions:{}}");
+			driver.Close();
+		}
+
+		[Test]
+		public virtual void TestLocalWebDriverFirefox()
+		{
+			if (!IsLocal())
+			{
+				return;
+			}
+			SeleniumDriverFactory factory = new SeleniumDriverFactory();
+			IWebDriver driver = factory.GetSeleniumDriver("firefox", string.Empty, null, null);
+			AssertOptions(factory, "{browserName:firefox,moz:firefoxOptions:{}}");
+			driver.Close();
+		}
+
+		//next tests use chrome
+		[Test]
+		public virtual void TestHeadlessWebDriverDefault()
+		{
+			if (!UseHeadless())
+			{
+				return;
+			}
+			SeleniumDriverFactory factory = new SeleniumDriverFactory();
+			IWebDriver driver = factory.GetSeleniumDriver("chrome", string.Empty, null, chromeHeadlesArgument);
+			AssertOptions(factory, "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]}}");
+			driver.Close();
+			//browser name is case insensitive, browser already downloaded, null remote url
+			driver = factory.GetSeleniumDriver("CHRome", null, null, chromeHeadlesArgument);
+			AssertOptions(factory, "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]}}");
+			driver.Close();
+		}
+
+		[Test]
+		public virtual void TestHeadlessWebDriverWithOptions()
+		{
+			if (!UseHeadless())
 			{
 				return;
 			}
@@ -67,23 +117,23 @@ namespace Test4giis.Selema.Core
 			IDictionary<string, object> caps = new SortedDictionary<string, object>();
 			caps["key1"] = "value1";
 			caps["key2"] = "value2";
-			IWebDriver driver = factory.GetSeleniumDriver("chrome", string.Empty, caps, headlesArgument);
-			AssertOptions(factory, new SelemaConfig().IsJava() ? "{browserName:chrome,goog:chromeOptions:{args:[--headless]},key1:value1,key2:value2}" : "{browserName:chrome,key1:value1,key2:value2,goog:chromeOptions:{args:[--headless]}}");
+			IWebDriver driver = factory.GetSeleniumDriver("chrome", string.Empty, caps, chromeHeadlesArgument);
+			AssertOptions(factory, new SelemaConfig().IsJava() ? "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]},key1:value1,key2:value2}" : "{browserName:chrome,key1:value1,key2:value2,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]}}");
 			//different order on net
 			driver.Close();
 		}
 
 		[Test]
-		public virtual void TestLocalWebDriverNotFound()
+		public virtual void TestHeadlessWebDriverNotFound()
 		{
-			if (!OnLocal())
+			if (!UseHeadless())
 			{
 				return;
 			}
 			SeleniumDriverFactory factory = new SeleniumDriverFactory();
 			try
 			{
-				factory.GetSeleniumDriver("carome", string.Empty, null, headlesArgument);
+				factory.GetSeleniumDriver("carome", string.Empty, null, chromeHeadlesArgument);
 				NUnit.Framework.Assert.Fail("Should fail");
 			}
 			catch (SelemaException e)
@@ -93,9 +143,9 @@ namespace Test4giis.Selema.Core
 		}
 
 		[Test]
-		public virtual void TestLocalWebDriverUnloadable()
+		public virtual void TestHeadlessWebDriverUnloadable()
 		{
-			if (!OnLocal())
+			if (!UseHeadless())
 			{
 				return;
 			}
@@ -131,7 +181,7 @@ namespace Test4giis.Selema.Core
 		[Test]
 		public virtual void TestRemoteWebDriverDefault()
 		{
-			if (!OnRemote())
+			if (!UseRemote())
 			{
 				return;
 			}
@@ -144,7 +194,7 @@ namespace Test4giis.Selema.Core
 		[Test]
 		public virtual void TestRemoteWebDriverWithArguments()
 		{
-			if (!OnRemote())
+			if (!UseRemote())
 			{
 				return;
 			}
@@ -158,7 +208,7 @@ namespace Test4giis.Selema.Core
 		[Test]
 		public virtual void TestRemoteWebDriverWrongUrl()
 		{
-			if (!OnRemote())
+			if (!UseRemote())
 			{
 				return;
 			}
@@ -180,7 +230,7 @@ namespace Test4giis.Selema.Core
 		[Test]
 		public virtual void TestRemoteWebDriverFromManagerNoBrowserService()
 		{
-			if (!OnRemote())
+			if (!UseRemote())
 			{
 				return;
 			}
@@ -199,7 +249,7 @@ namespace Test4giis.Selema.Core
 		[Test]
 		public virtual void TestRemoteWebDriverFromManagerNoVideoService()
 		{
-			if (!OnRemote())
+			if (!UseRemote())
 			{
 				return;
 			}

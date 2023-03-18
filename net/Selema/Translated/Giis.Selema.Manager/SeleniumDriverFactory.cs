@@ -75,6 +75,10 @@ namespace Giis.Selema.Manager
 			catch (Exception e)
 			{
 				//
+				if ("chrome".Equals(browser) && string.Empty.Equals(remoteUrl))
+				{
+					log.Warn("Note that since Chrome Driver 111 the argument --remote-allow-origins=* may be needed to connect with the browser");
+				}
 				throw new SelemaException(log, "Can't instantiate " + objectToInstantiate + " for browser: " + browser + (string.Empty.Equals(url) ? string.Empty : " at url: " + url), e);
 			}
 		}

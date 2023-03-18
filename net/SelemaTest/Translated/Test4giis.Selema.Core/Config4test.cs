@@ -48,9 +48,18 @@ namespace Test4giis.Selema.Core
 			{
 				sm.Add(new WatermarkService());
 			}
+			//As of Chrome Driver V 111, remote-allow-origins argument is required, if not connection fails
 			if (UseHeadlessDriver())
 			{
-				sm.SetArguments(new string[] { "--headless" });
+				//headless argument supported by chrome and edge (at least)
+				sm.SetArguments("chrome".Equals(GetCurrentBrowser()) ? new string[] { "--headless", "--remote-allow-origins=*" } : new string[] { "--headless" });
+			}
+			else
+			{
+				if (UseLocalDriver() && "chrome".Equals(GetCurrentBrowser()))
+				{
+					sm.SetArguments(new string[] { "--remote-allow-origins=*" });
+				}
 			}
 			if (UseRemoteWebDriver())
 			{
@@ -66,6 +75,11 @@ namespace Test4giis.Selema.Core
 		public virtual bool UseHeadlessDriver()
 		{
 			return "headless".Equals(prop.GetProperty("selema.test.mode"));
+		}
+
+		public virtual bool UseLocalDriver()
+		{
+			return "local".Equals(prop.GetProperty("selema.test.mode"));
 		}
 
 		public virtual string GetRemoteDriverUrl()
