@@ -2,7 +2,7 @@ package giis.selema.services.impl;
 
 import org.openqa.selenium.WebDriver;
 
-import giis.selema.portable.JavaCs;
+import giis.portable.util.JavaCs;
 import giis.selema.portable.selenium.SeleniumActions;
 import giis.selema.services.IWatermarkService;
 

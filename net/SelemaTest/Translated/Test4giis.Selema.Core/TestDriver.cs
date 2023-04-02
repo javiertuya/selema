@@ -2,9 +2,9 @@
 /////// THIS FILE HAS BEEN AUTOMATICALLY CONVERTED FROM THE JAVA SOURCES. DO NOT EDIT ///////
 /////////////////////////////////////////////////////////////////////////////////////////////
 using System.Collections.Generic;
+using Giis.Portable.Util;
 using Giis.Selema.Framework.Nunit3;
 using Giis.Selema.Manager;
-using Giis.Selema.Portable;
 using Giis.Selema.Services.Impl;
 using NUnit.Framework;
 using OpenQA.Selenium;
@@ -71,7 +71,7 @@ namespace Test4giis.Selema.Core
 			}
 			SeleniumDriverFactory factory = new SeleniumDriverFactory();
 			IWebDriver driver = factory.GetSeleniumDriver("edge", string.Empty, null, null);
-			AssertOptions(factory, new SelemaConfig().IsJava() ? "{browserName:MicrosoftEdge,ms:edgeOptions:{args:[]}}" : "{browserName:MicrosoftEdge,ms:edgeOptions:{}}");
+			AssertOptions(factory, Parameters.IsJava() ? "{browserName:MicrosoftEdge,ms:edgeOptions:{args:[]}}" : "{browserName:MicrosoftEdge,ms:edgeOptions:{}}");
 			driver.Close();
 		}
 
@@ -118,7 +118,7 @@ namespace Test4giis.Selema.Core
 			caps["key1"] = "value1";
 			caps["key2"] = "value2";
 			IWebDriver driver = factory.GetSeleniumDriver("chrome", string.Empty, caps, chromeHeadlesArgument);
-			AssertOptions(factory, new SelemaConfig().IsJava() ? "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]},key1:value1,key2:value2}" : "{browserName:chrome,key1:value1,key2:value2,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]}}");
+			AssertOptions(factory, Parameters.IsJava() ? "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]},key1:value1,key2:value2}" : "{browserName:chrome,key1:value1,key2:value2,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]}}");
 			//different order on net
 			driver.Close();
 		}
@@ -164,14 +164,13 @@ namespace Test4giis.Selema.Core
 		//Custom assertion to allow same comparisons in java and net
 		private void AssertOptions(SeleniumDriverFactory factory, string expected)
 		{
-			SelemaConfig conf = new SelemaConfig();
 			expected = expected.Replace(" ", string.Empty);
 			string actual = factory.GetLastOptionString().Replace(" ", string.Empty);
-			if (conf.IsJava())
+			if (Parameters.IsJava())
 			{
 				actual = actual.Replace("Capabilities{", "{").Replace(",extensions:[]", string.Empty).Replace("acceptInsecureCerts:true,", string.Empty).Replace("moz:debuggerAddress:true,", string.Empty);
 			}
-			if (conf.IsNet())
+			if (Parameters.IsNetCore())
 			{
 				actual = actual.Replace("\n", string.Empty).Replace("\r", string.Empty).Replace("\"", string.Empty);
 			}
@@ -188,7 +187,7 @@ namespace Test4giis.Selema.Core
 			SeleniumDriverFactory factory = new SeleniumDriverFactory();
 			IWebDriver driver = factory.GetSeleniumDriver("chrome", new Config4test().GetRemoteDriverUrl(), null, null);
 			//NOTE: Selenium 4.8.2/3 (java) adds --remote-allow-origins=* to prevent the Chrome Driver 111 breaking change
-			AssertOptions(factory, new SelemaConfig().IsJava() ? "{browserName:chrome,goog:chromeOptions:{args:[--remote-allow-origins=*]}}" : "{browserName:chrome,goog:chromeOptions:{}}");
+			AssertOptions(factory, Parameters.IsJava() ? "{browserName:chrome,goog:chromeOptions:{args:[--remote-allow-origins=*]}}" : "{browserName:chrome,goog:chromeOptions:{}}");
 			driver.Close();
 		}
 
@@ -203,7 +202,7 @@ namespace Test4giis.Selema.Core
 			SeleniumDriverFactory factory = new SeleniumDriverFactory();
 			IWebDriver driver = factory.GetSeleniumDriver("chrome", new Config4test().GetRemoteDriverUrl(), null, new string[] { "--start-maximized" });
 			//NOTE: Selenium 4.8.2/3 (java) adds --remote-allow-origins=* to prevent the Chrome Driver 111 breaking change
-			AssertOptions(factory, new SelemaConfig().IsJava() ? "{browserName:chrome,goog:chromeOptions:{args:[--remote-allow-origins=*,--start-maximized]}}" : "{browserName:chrome,goog:chromeOptions:{args:[--start-maximized]}}");
+			AssertOptions(factory, Parameters.IsJava() ? "{browserName:chrome,goog:chromeOptions:{args:[--remote-allow-origins=*,--start-maximized]}}" : "{browserName:chrome,goog:chromeOptions:{args:[--start-maximized]}}");
 			driver.Close();
 		}
 

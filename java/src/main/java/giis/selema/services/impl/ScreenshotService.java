@@ -2,7 +2,7 @@ package giis.selema.services.impl;
 
 import org.openqa.selenium.WebDriver;
 
-import giis.selema.portable.FileUtil;
+import giis.portable.util.FileUtil;
 import giis.selema.portable.selenium.SeleniumActions;
 import giis.selema.services.IMediaContext;
 import giis.selema.services.IScreenshotService;

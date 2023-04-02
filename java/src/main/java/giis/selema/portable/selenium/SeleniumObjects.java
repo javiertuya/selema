@@ -6,7 +6,7 @@ import org.openqa.selenium.Capabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import giis.selema.portable.SelemaException;
+import giis.selema.manager.SelemaException;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import io.github.bonigarcia.wdm.config.DriverManagerType;
 

@@ -1,3 +1,4 @@
+using Giis.Selema.Manager;
 using NLog;
 using System;
 using System.IO;

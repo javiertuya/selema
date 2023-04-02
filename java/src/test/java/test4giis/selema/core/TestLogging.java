@@ -24,7 +24,7 @@ public class TestLogging {
 		lr0.assertContains("test log1 a principal");
 		
 		SeleManager sm1=new SeleManager(new SelemaConfig().setName("independent")).setManagerDelegate(new Config4test());
-		LogReader lr1=new LogReader(new SelemaConfig().getReportDir(), "independent-log.log");
+		LogReader lr1=new LogReader(new SelemaConfig().getReportDir(), "selema-log-independent.html");
 		sm1.getLogger().info("test log1 a secundario");
 		lr1.assertBegin();
 		lr1.assertContains("test log1 a secundario");

@@ -1,9 +1,9 @@
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// THIS FILE HAS BEEN AUTOMATICALLY CONVERTED FROM THE JAVA SOURCES. DO NOT EDIT ///////
 /////////////////////////////////////////////////////////////////////////////////////////////
+using Giis.Portable.Util;
 using Giis.Selema.Framework.Nunit3;
 using Giis.Selema.Manager;
-using Giis.Selema.Portable;
 using Giis.Selema.Services;
 using Giis.Selema.Services.Impl;
 using NUnit.Framework;

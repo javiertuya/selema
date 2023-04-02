@@ -2,8 +2,8 @@
 /////// THIS FILE HAS BEEN AUTOMATICALLY CONVERTED FROM THE JAVA SOURCES. DO NOT EDIT ///////
 /////////////////////////////////////////////////////////////////////////////////////////////
 using System.Collections.Generic;
+using Giis.Portable.Util;
 using Giis.Selema.Manager;
-using Giis.Selema.Portable;
 using Sharpen;
 
 namespace Test4giis.Selema.Core
@@ -140,7 +140,7 @@ namespace Test4giis.Selema.Core
 		private void CheckScreenShotFile(string reportDir, string fullTestName)
 		{
 			string screenShotName = "screen-*-" + fullTestName.Replace(".", "-") + "*";
-			logReader.AssertIsTrue(FileUtil.ListFilesMatchingWildcard(reportDir, screenShotName).Length >= 1, "No hay ningun archivo de nombre " + screenShotName);
+			logReader.AssertIsTrue(FileUtil.GetFilesMatchingWildcard(reportDir, screenShotName).Count >= 1, "No hay ningun archivo de nombre " + screenShotName);
 		}
 
 		//no =1 pues puede haber de otras ejecucione interactivas

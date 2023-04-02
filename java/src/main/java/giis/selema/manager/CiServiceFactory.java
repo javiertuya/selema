@@ -1,6 +1,6 @@
 package giis.selema.manager;
 
-import giis.selema.portable.JavaCs;
+import giis.portable.util.JavaCs;
 import giis.selema.services.ICiService;
 import giis.selema.services.impl.GithubService;
 import giis.selema.services.impl.JenkinsService;

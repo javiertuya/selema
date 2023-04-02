@@ -5,9 +5,9 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
-import giis.selema.portable.SelemaException;
+import giis.portable.util.FileUtil;
+import giis.selema.manager.SelemaException;
 import giis.selema.services.impl.SelemaLogger;
-import giis.selema.portable.FileUtil;
 
 /**
  * Utilidad para examinar el log del test y realizar asserts del contenido.

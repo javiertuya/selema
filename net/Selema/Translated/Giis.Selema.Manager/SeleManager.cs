@@ -2,7 +2,7 @@
 /////// THIS FILE HAS BEEN AUTOMATICALLY CONVERTED FROM THE JAVA SOURCES. DO NOT EDIT ///////
 /////////////////////////////////////////////////////////////////////////////////////////////
 using System.Collections.Generic;
-using Giis.Selema.Portable;
+using Giis.Portable.Util;
 using Giis.Selema.Services;
 using Giis.Selema.Services.Impl;
 using NLog;

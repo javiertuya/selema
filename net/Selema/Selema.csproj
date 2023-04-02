@@ -52,9 +52,11 @@
 
     <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
 
-    <PackageReference Include="NLog" Version="4.7.15" />
+    <PackageReference Include="NLog" Version="5.1.2" />
 
     <PackageReference Include="NUnit" Version="3.13.3" />
+
+    <PackageReference Include="PortableCs" Version="2.1.2" />
 
     <PackageReference Include="VisualAssert" Version="2.2.2" />
 

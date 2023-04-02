@@ -2,8 +2,8 @@
 /////// THIS FILE HAS BEEN AUTOMATICALLY CONVERTED FROM THE JAVA SOURCES. DO NOT EDIT ///////
 /////////////////////////////////////////////////////////////////////////////////////////////
 using System;
+using Giis.Portable.Util;
 using Giis.Selema.Manager;
-using Giis.Selema.Portable;
 using Giis.Selema.Services.Impl;
 using Java.Util;
 using Sharpen;

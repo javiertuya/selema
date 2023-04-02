@@ -12,12 +12,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 
+import giis.portable.util.Parameters;
 import giis.selema.framework.junit4.Asserts;
 import giis.selema.manager.CiServiceFactory;
-import giis.selema.manager.SelemaConfig;
+import giis.selema.manager.SelemaException;
 import giis.selema.manager.SeleniumDriverFactory;
 import giis.selema.manager.SeleManager;
-import giis.selema.portable.SelemaException;
 import giis.selema.services.impl.SelenoidService;
 
 /**
@@ -61,7 +61,7 @@ public class TestDriver {
 		if (!isLocal()) return;
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
 		WebDriver driver=factory.getSeleniumDriver("edge", "", null, null);
-		assertOptions(factory, new SelemaConfig().isJava()
+		assertOptions(factory, Parameters.isJava()
 				? "{browserName:MicrosoftEdge,ms:edgeOptions:{args:[]}}"
 				: "{browserName:MicrosoftEdge,ms:edgeOptions:{}}");
 		driver.close();
@@ -98,7 +98,7 @@ public class TestDriver {
 		caps.put("key1", "value1");
 		caps.put("key2", "value2");
 		WebDriver driver=factory.getSeleniumDriver("chrome", "", caps, chromeHeadlesArgument);
-		assertOptions(factory, new SelemaConfig().isJava() //different order on net
+		assertOptions(factory, Parameters.isJava() //different order on net
 			? "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]},key1:value1,key2:value2}"
 			: "{browserName:chrome,key1:value1,key2:value2,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]}}");
 		driver.close();
@@ -127,13 +127,12 @@ public class TestDriver {
 	}
 	//Custom assertion to allow same comparisons in java and net
 	private void assertOptions(SeleniumDriverFactory factory, String expected) {
-		SelemaConfig conf=new SelemaConfig();
 		expected=expected.replace(" ", "");
 		String actual=factory.getLastOptionString().replace(" ", "");
-		if (conf.isJava())
+		if (Parameters.isJava())
 			actual=actual.replace("Capabilities{", "{").replace(",extensions:[]", "")
 					.replace("acceptInsecureCerts:true,", "").replace("moz:debuggerAddress:true,", "");
-		if (conf.isNet())
+		if (Parameters.isNetCore())
 			actual=actual.replace("\n", "").replace("\r", "").replace("\"", "");
 		assertEquals(expected, actual);
 	}
@@ -144,7 +143,7 @@ public class TestDriver {
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
 		WebDriver driver=factory.getSeleniumDriver("chrome", new Config4test().getRemoteDriverUrl(), null, null);
 		//NOTE: Selenium 4.8.2/3 (java) adds --remote-allow-origins=* to prevent the Chrome Driver 111 breaking change
-		assertOptions(factory, new SelemaConfig().isJava()
+		assertOptions(factory, Parameters.isJava()
 				? "{browserName:chrome,goog:chromeOptions:{args:[--remote-allow-origins=*]}}"
 				: "{browserName:chrome,goog:chromeOptions:{}}");
 		driver.close();
@@ -156,7 +155,7 @@ public class TestDriver {
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
 		WebDriver driver=factory.getSeleniumDriver("chrome", new Config4test().getRemoteDriverUrl(), null, new String[] {"--start-maximized"});
 		//NOTE: Selenium 4.8.2/3 (java) adds --remote-allow-origins=* to prevent the Chrome Driver 111 breaking change
-		assertOptions(factory, new SelemaConfig().isJava()
+		assertOptions(factory, Parameters.isJava()
 				? "{browserName:chrome,goog:chromeOptions:{args:[--remote-allow-origins=*,--start-maximized]}}"
 				: "{browserName:chrome,goog:chromeOptions:{args:[--start-maximized]}}");
 		driver.close();

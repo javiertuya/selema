@@ -1,7 +1,7 @@
 package giis.selema.manager;
 
-import giis.selema.portable.FileUtil;
-import giis.selema.portable.Parameters;
+import giis.portable.util.FileUtil;
+import giis.portable.util.Parameters;
 
 /**
  * Static configuration parameters at the instantiation of a SeleManager (location, name, etc)
@@ -16,24 +16,6 @@ public class SelemaConfig { //NOSONAR
 	
 	private String logName=DEFAULT_NAME;
 
-	/** 
-	 * Gets the platform name (java or net), useful if conditional execution of tests is needed
-	 */
-	public String getPlatformName() {
-		return Parameters.PLATFORM_NAME;
-	}
-	/**
-	 * True if running in java platform
-	 */
-	public boolean isJava() {
-		return "java".equals(getPlatformName());
-	}
-	/**
-	 * True if running in net platform
-	 */
-	public boolean isNet() {
-		return "net".equals(getPlatformName());
-	}
 	/**
 	 * Gets the project root currently configured
 	 */

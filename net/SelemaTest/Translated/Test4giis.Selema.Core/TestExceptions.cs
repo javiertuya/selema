@@ -4,7 +4,6 @@
 using System;
 using Giis.Selema.Framework.Nunit3;
 using Giis.Selema.Manager;
-using Giis.Selema.Portable;
 using Giis.Selema.Services;
 using Giis.Selema.Services.Impl;
 using NLog;
@@ -98,7 +97,7 @@ namespace Test4giis.Selema.Core
 		{
 			try
 			{
-				new SeleManager(new SelemaConfig().SetReportSubdir("dat/tmp").SetName("ab?cd"));
+				new SeleManager(new SelemaConfig().SetReportSubdir("dat/tmp").SetName("ab\x0"));
 				NUnit.Framework.Assert.Fail("Should fail");
 			}
 			catch (Exception)
@@ -111,7 +110,7 @@ namespace Test4giis.Selema.Core
 		{
 			try
 			{
-				new SeleManager(new SelemaConfig().SetReportSubdir("dat/tmp/ab?cd"));
+				new SeleManager(new SelemaConfig().SetReportSubdir("dat/tmp/ab\x0"));
 				NUnit.Framework.Assert.Fail("Should fail");
 			}
 			catch (Exception)
@@ -124,7 +123,7 @@ namespace Test4giis.Selema.Core
 		{
 			try
 			{
-				new SeleManager(new SelemaConfig().SetProjectRoot("dat/tmp/ab?cd"));
+				new SeleManager(new SelemaConfig().SetProjectRoot("dat/tmp/ab\x0"));
 				NUnit.Framework.Assert.Fail("Should fail");
 			}
 			catch (Exception)
@@ -148,7 +147,7 @@ namespace Test4giis.Selema.Core
 		public virtual void TestScreenshotExceptionWriting()
 		{
 			//forces exception writing by pasing an invalid report dir
-			IMediaContext context = new MediaContext(sm.GetConfig().GetProjectRoot() + "/dat/tmp/ab?cd", sm.GetConfig().GetQualifier(), 99, 99);
+			IMediaContext context = new MediaContext(sm.GetConfig().GetProjectRoot() + "/dat/tmp/ab\x0", sm.GetConfig().GetQualifier(), 99, 99);
 			sm.GetScreenshotService().TakeScreenshot(sm.Driver, context, "TestExceptions.testScreenshotInternalException");
 			lfas.AssertLast("[ERROR]", "Can't take screenshot or write the content to file", "TestExceptions-testScreenshotInternalException.png");
 		}

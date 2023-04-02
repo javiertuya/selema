@@ -2,12 +2,12 @@ package test4giis.selema.core;
 
 import java.util.Properties;
 
+import giis.portable.util.FileUtil;
+import giis.portable.util.Parameters;
+import giis.portable.util.PropertiesFactory;
 import giis.selema.manager.IManagerConfigDelegate;
 import giis.selema.manager.SelemaConfig;
 import giis.selema.manager.SeleManager;
-import giis.selema.portable.FileUtil;
-import giis.selema.portable.Parameters;
-import giis.selema.portable.PropertiesFactory;
 import giis.selema.services.impl.SelenoidService;
 import giis.selema.services.impl.WatermarkService;
 

@@ -3,7 +3,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////
 using System;
 using System.Collections.Generic;
-using Giis.Selema.Portable;
 using Giis.Selema.Portable.Selenium;
 using NLog;
 using OpenQA.Selenium;

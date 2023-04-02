@@ -4,9 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import giis.portable.util.FileUtil;
+import giis.portable.util.JavaCs;
 import giis.selema.manager.SeleManager;
-import giis.selema.portable.FileUtil;
-import giis.selema.portable.JavaCs;
 
 public class LifecycleAsserts {
 	private LogReader logReader=new LogReader(Config4test.getConfig().getReportDir());
@@ -108,7 +108,7 @@ public class LifecycleAsserts {
 	}
 	private void checkScreenShotFile(String reportDir, String fullTestName) {
 		String screenShotName="screen-*-"+fullTestName.replace(".","-")+"*";
-		logReader.assertIsTrue(FileUtil.listFilesMatchingWildcard(reportDir, screenShotName).length >= 1,
+		logReader.assertIsTrue(FileUtil.getFilesMatchingWildcard(reportDir, screenShotName).size() >= 1,
 				"No hay ningun archivo de nombre "+screenShotName); //no =1 pues puede haber de otras ejecucione interactivas
 	}
 	

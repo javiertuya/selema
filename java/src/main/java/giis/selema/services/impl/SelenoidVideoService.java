@@ -5,8 +5,8 @@ import java.util.Map;
 
 import org.openqa.selenium.WebDriver;
 
-import giis.selema.portable.FileUtil;
-import giis.selema.portable.JavaCs;
+import giis.portable.util.FileUtil;
+import giis.portable.util.JavaCs;
 import giis.selema.services.IMediaContext;
 import giis.selema.services.ISelemaLogger;
 import giis.selema.services.IVideoService;

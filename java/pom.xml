@@ -73,6 +73,11 @@
 
 		<dependency>
 			<groupId>io.github.javiertuya</groupId>
+			<artifactId>portable-java</artifactId>
+			<version>2.1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>io.github.javiertuya</groupId>
 			<artifactId>visual-assert</artifactId>
 			<version>2.3.0</version>
 		</dependency>

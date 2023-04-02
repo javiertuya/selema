@@ -7,9 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.openqa.selenium.WebDriver;
 
-import giis.selema.portable.FileUtil;
-import giis.selema.portable.JavaCs;
-import giis.selema.portable.SelemaException;
+import giis.portable.util.FileUtil;
+import giis.portable.util.JavaCs;
 import giis.selema.services.IBrowserService;
 import giis.selema.services.ICiService;
 import giis.selema.services.IJsCoverageService;

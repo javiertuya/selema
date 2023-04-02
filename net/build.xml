@@ -90,6 +90,7 @@
       <get src="https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.32/slf4j-api-1.7.32.jar" dest="sharpen-temp/lib/slf4j-api-1.7.32.jar" usetimestamp="true" />
       <get src="https://repo1.maven.org/maven2/commons-io/commons-io/2.6/commons-io-2.6.jar" dest="sharpen-temp/lib/commons-io-2.6.jar" usetimestamp="true" />
       <get src="https://repo1.maven.org/maven2/org/bitbucket/cowwoc/diff-match-patch/1.2/diff-match-patch-1.2.jar" dest="sharpen-temp/lib/diff-match-patch-1.2.jar" usetimestamp="true" />
+      <get src="https://repo1.maven.org/maven2/io/github/javiertuya/portable-java/2.1.2/portable-java-2.1.2.jar" dest="sharpen-temp/lib/portable-java-2.1.2.jar" usetimestamp="true" />
       <get src="https://repo1.maven.org/maven2/io/github/javiertuya/visual-assert/2.2.1/visual-assert-2.2.1.jar" dest="sharpen-temp/lib/visual-assert-2.2.1.jar" usetimestamp="true" />
       <property name="selenium-url" value="https://repo1.maven.org/maven2/org/seleniumhq/selenium" />
       <get src="${selenium-url}/selenium-api/3.141.59/selenium-api-3.141.59.jar" dest="sharpen-temp/lib/selenium-api-3.141.59.jar" usetimestamp="true" />

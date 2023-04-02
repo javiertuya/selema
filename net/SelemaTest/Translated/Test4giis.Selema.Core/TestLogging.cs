@@ -25,7 +25,7 @@ namespace Test4giis.Selema.Core
 			lr0.AssertBegin();
 			lr0.AssertContains("test log1 a principal");
 			SeleManager sm1 = new SeleManager(new SelemaConfig().SetName("independent")).SetManagerDelegate(new Config4test());
-			LogReader lr1 = new LogReader(new SelemaConfig().GetReportDir(), "independent-log.log");
+			LogReader lr1 = new LogReader(new SelemaConfig().GetReportDir(), "selema-log-independent.html");
 			sm1.GetLogger().Info("test log1 a secundario");
 			lr1.AssertBegin();
 			lr1.AssertContains("test log1 a secundario");

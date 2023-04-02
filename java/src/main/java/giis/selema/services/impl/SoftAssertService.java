@@ -1,6 +1,6 @@
 package giis.selema.services.impl;
 
-import giis.selema.portable.FileUtil;
+import giis.portable.util.FileUtil;
 import giis.selema.services.IMediaContext;
 import giis.selema.services.ISelemaLogger;
 import giis.selema.services.ISoftAssertService;

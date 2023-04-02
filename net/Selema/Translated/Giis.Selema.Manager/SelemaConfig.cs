@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// THIS FILE HAS BEEN AUTOMATICALLY CONVERTED FROM THE JAVA SOURCES. DO NOT EDIT ///////
 /////////////////////////////////////////////////////////////////////////////////////////////
-using Giis.Selema.Portable;
+using Giis.Portable.Util;
 using Sharpen;
 
 namespace Giis.Selema.Manager
@@ -20,24 +20,6 @@ namespace Giis.Selema.Manager
 		//
 		//Path to the project root (depends on the platform)
 		//Path to the selema reports folder relative to projectRoot (depends on the platform)
-		/// <summary>Gets the platform name (java or net), useful if conditional execution of tests is needed</summary>
-		public virtual string GetPlatformName()
-		{
-			return Parameters.PlatformName;
-		}
-
-		/// <summary>True if running in java platform</summary>
-		public virtual bool IsJava()
-		{
-			return "java".Equals(GetPlatformName());
-		}
-
-		/// <summary>True if running in net platform</summary>
-		public virtual bool IsNet()
-		{
-			return "net".Equals(GetPlatformName());
-		}
-
 		/// <summary>Gets the project root currently configured</summary>
 		public virtual string GetProjectRoot()
 		{

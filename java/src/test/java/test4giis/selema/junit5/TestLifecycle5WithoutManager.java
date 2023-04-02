@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import giis.selema.framework.junit5.LifecycleJunit5;
-import giis.selema.portable.SelemaException;
+import giis.selema.manager.SelemaException;
 import test4giis.selema.core.LifecycleAsserts;
 import test4giis.selema.core.LogReader;
 

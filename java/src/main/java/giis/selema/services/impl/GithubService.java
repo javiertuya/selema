@@ -1,6 +1,6 @@
 package giis.selema.services.impl;
 
-import giis.selema.portable.JavaCs;
+import giis.portable.util.JavaCs;
 import giis.selema.services.ICiService;
 
 /**

@@ -3,7 +3,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////
 using System.Collections.Generic;
 using System.Text;
-using Giis.Selema.Portable;
+using Giis.Portable.Util;
+using Giis.Selema.Manager;
 using Giis.Selema.Services.Impl;
 using Sharpen;
 

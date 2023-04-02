@@ -14,8 +14,8 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import giis.selema.portable.FileUtil;
-import giis.selema.portable.JavaCs;
+import giis.portable.util.FileUtil;
+import giis.portable.util.JavaCs;
 
 /*
  * Miscelaneous utilites to perform some common Selenium actions

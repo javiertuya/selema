@@ -2,7 +2,7 @@
 /////// THIS FILE HAS BEEN AUTOMATICALLY CONVERTED FROM THE JAVA SOURCES. DO NOT EDIT ///////
 /////////////////////////////////////////////////////////////////////////////////////////////
 using Giis.Selema.Framework.Nunit3;
-using Giis.Selema.Portable;
+using Giis.Selema.Manager;
 using NUnit.Framework;
 using Sharpen;
 using Test4giis.Selema.Core;

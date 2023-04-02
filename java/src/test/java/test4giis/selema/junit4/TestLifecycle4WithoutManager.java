@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import giis.selema.framework.junit4.LifecycleJunit4Class;
 import giis.selema.framework.junit4.LifecycleJunit4Test;
-import giis.selema.portable.SelemaException;
+import giis.selema.manager.SelemaException;
 import test4giis.selema.core.LifecycleAsserts;
 import test4giis.selema.core.LogReader;
 

@@ -3,8 +3,8 @@ package giis.selema.services.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import giis.selema.portable.FileUtil;
-import giis.selema.portable.JavaCs;
+import giis.portable.util.FileUtil;
+import giis.portable.util.JavaCs;
 import giis.selema.services.ISelemaLogger;
 
 /**

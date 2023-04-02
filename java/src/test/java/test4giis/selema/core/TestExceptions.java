@@ -12,12 +12,13 @@ import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import giis.portable.util.Parameters;
 import giis.selema.framework.junit4.LifecycleJunit4Class;
 import giis.selema.framework.junit4.LifecycleJunit4Test;
 import giis.selema.manager.IAfterEachCallback;
 import giis.selema.manager.SelemaConfig;
+import giis.selema.manager.SelemaException;
 import giis.selema.manager.SeleManager;
-import giis.selema.portable.SelemaException;
 import giis.selema.services.IMediaContext;
 import giis.selema.services.impl.MediaContext;
 
@@ -76,15 +77,15 @@ public class TestExceptions implements IAfterEachCallback {
 	//uses a different report subdir to do not include wrong named files/folders that cause error when published as artifacts
 	@Test
 	public void testManagerWrongName() {
-		try { new SeleManager(new SelemaConfig().setReportSubdir("dat/tmp").setName("ab?cd")); fail("Should fail"); } catch(RuntimeException e) {};
+		try { new SeleManager(new SelemaConfig().setReportSubdir("dat/tmp").setName("ab\0")); fail("Should fail"); } catch(RuntimeException e) {};
 	}
 	@Test
 	public void testManagerWrongReportSubdir() {
-		try { new SeleManager(new SelemaConfig().setReportSubdir("dat/tmp/ab?cd")); fail("Should fail"); } catch(RuntimeException e) {};
+		try { new SeleManager(new SelemaConfig().setReportSubdir("dat/tmp/ab\0")); fail("Should fail"); } catch(RuntimeException e) {};
 	}
-	@Test
+	@Test 
 	public void testManagerWrongProjectRoot() {
-		try { new SeleManager(new SelemaConfig().setProjectRoot("dat/tmp/ab?cd")); fail("Should fail"); } catch(RuntimeException e) {};
+		try { new SeleManager(new SelemaConfig().setProjectRoot("dat/tmp/ab\0")); fail("Should fail"); } catch(RuntimeException e) {};
 	}
 	@Test
 	public void testScreenshotExceptionByDriver() {
@@ -99,7 +100,7 @@ public class TestExceptions implements IAfterEachCallback {
 	@Test
 	public void testScreenshotExceptionWriting() {
 		//forces exception writing by pasing an invalid report dir
-		IMediaContext context=new MediaContext(sm.getConfig().getProjectRoot() + "/dat/tmp/ab?cd", sm.getConfig().getQualifier(), 99, 99);
+		IMediaContext context=new MediaContext(sm.getConfig().getProjectRoot() + "/dat/tmp/ab\0", sm.getConfig().getQualifier(), 99, 99);
 		sm.getScreenshotService().takeScreenshot(sm.driver(), context, "TestExceptions.testScreenshotInternalException");
 		lfas.assertLast("[ERROR]", "Can't take screenshot or write the content to file", "TestExceptions-testScreenshotInternalException.png");
 	}

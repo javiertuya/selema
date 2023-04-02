@@ -1,8 +1,7 @@
 package giis.selema.services.impl;
 
-import giis.selema.portable.JavaCs;
+import giis.portable.util.JavaCs;
 import giis.selema.services.IMediaContext;
-
 
 /**
  * Manages the filenames of media files produced durint testing (screenshots, videos, diff files)
