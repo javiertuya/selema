@@ -187,7 +187,8 @@ namespace Test4giis.Selema.Core
 			}
 			SeleniumDriverFactory factory = new SeleniumDriverFactory();
 			IWebDriver driver = factory.GetSeleniumDriver("chrome", new Config4test().GetRemoteDriverUrl(), null, null);
-			AssertOptions(factory, new SelemaConfig().IsJava() ? "{browserName:chrome,goog:chromeOptions:{args:[]}}" : "{browserName:chrome,goog:chromeOptions:{}}");
+			//NOTE: Selenium 4.8.2/3 (java) adds --remote-allow-origins=* to prevent the Chrome Driver 111 breaking change
+			AssertOptions(factory, new SelemaConfig().IsJava() ? "{browserName:chrome,goog:chromeOptions:{args:[--remote-allow-origins=*]}}" : "{browserName:chrome,goog:chromeOptions:{}}");
 			driver.Close();
 		}
 
@@ -201,7 +202,8 @@ namespace Test4giis.Selema.Core
 			//setting options has been tested with local
 			SeleniumDriverFactory factory = new SeleniumDriverFactory();
 			IWebDriver driver = factory.GetSeleniumDriver("chrome", new Config4test().GetRemoteDriverUrl(), null, new string[] { "--start-maximized" });
-			AssertOptions(factory, "{browserName:chrome,goog:chromeOptions:{args:[--start-maximized]}}");
+			//NOTE: Selenium 4.8.2/3 (java) adds --remote-allow-origins=* to prevent the Chrome Driver 111 breaking change
+			AssertOptions(factory, new SelemaConfig().IsJava() ? "{browserName:chrome,goog:chromeOptions:{args:[--remote-allow-origins=*,--start-maximized]}}" : "{browserName:chrome,goog:chromeOptions:{args:[--start-maximized]}}");
 			driver.Close();
 		}
 

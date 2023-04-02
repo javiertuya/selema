@@ -35,13 +35,10 @@ public class Config4test implements IManagerConfigDelegate {
 		sm.setBrowser(getCurrentBrowser()).setDriverUrl(getCurrentDriverUrl());
 		if (useWatermark)
 			sm.add(new WatermarkService());
-		//As of Chrome Driver V 111, remote-allow-origins argument is required, if not connection fails
+		//As of Chrome Driver V 111, remote-allow-origins argument is required, 
+		//but Selenium 4.8.2/3 had fixed this breaking change by including this argument
 		if (useHeadlessDriver()) //headless argument supported by chrome and edge (at least)
-			sm.setArguments("chrome".equals(getCurrentBrowser()) 
-					? new String[] { "--headless", "--remote-allow-origins=*" }
-					: new String[] { "--headless" });
-		else if (useLocalDriver() && "chrome".equals(getCurrentBrowser()))
-			sm.setArguments(new String[] { "--remote-allow-origins=*" });
+			sm.setArguments(new String[] { "--headless" });
 		if (useRemoteWebDriver())
 			sm.add(new SelenoidService().setVideo().setVnc());
 	}

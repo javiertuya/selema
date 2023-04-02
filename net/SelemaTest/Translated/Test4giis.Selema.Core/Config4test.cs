@@ -48,18 +48,12 @@ namespace Test4giis.Selema.Core
 			{
 				sm.Add(new WatermarkService());
 			}
-			//As of Chrome Driver V 111, remote-allow-origins argument is required, if not connection fails
+			//As of Chrome Driver V 111, remote-allow-origins argument is required, 
+			//but Selenium 4.8.2/3 had fixed this breaking change by including this argument
 			if (UseHeadlessDriver())
 			{
 				//headless argument supported by chrome and edge (at least)
-				sm.SetArguments("chrome".Equals(GetCurrentBrowser()) ? new string[] { "--headless", "--remote-allow-origins=*" } : new string[] { "--headless" });
-			}
-			else
-			{
-				if (UseLocalDriver() && "chrome".Equals(GetCurrentBrowser()))
-				{
-					sm.SetArguments(new string[] { "--remote-allow-origins=*" });
-				}
+				sm.SetArguments(new string[] { "--headless" });
 			}
 			if (UseRemoteWebDriver())
 			{
