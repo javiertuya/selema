@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <InformationalVersion>3.0.3-SNAPSHOT</InformationalVersion>
+    <InformationalVersion>3.0.3</InformationalVersion>
  
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>CS1591</NoWarn>
@@ -10,7 +10,7 @@
   
     <PackageOutputPath>./nupkg</PackageOutputPath>
     <RepositoryUrl>https://github.com/$(GITHUB_REPOSITORY)</RepositoryUrl>
-    <Version>3.0.3-SNAPSHOT</Version>
+    <Version>3.0.3</Version>
     <Authors>Javier Tuya</Authors>
     <Company>GIIS - University of Oviedo, ES</Company>
     <Description>
