@@ -80,6 +80,7 @@
       </fileset>
       <fileset dir="../java/src/test/java" >
         <exclude name="**/*junit5/**" />
+        <exclude name="**/TestDriverPlatformDependent.*" />
       </fileset>
     </copy>
     <mkdir dir="sharpen-temp/lib" />

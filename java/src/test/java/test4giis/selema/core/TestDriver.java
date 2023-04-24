@@ -27,17 +27,17 @@ import giis.selema.services.impl.SelenoidService;
 public class TestDriver {
 	//As of Chrome Driver V 111, we need to include remote-allow-origins argument, 
 	//if not connection with driver fails
-	private String[] chromeHeadlesArgument=new String[] {"--headless", "--remote-allow-origins=*"};
+	public static String[] chromeHeadlesArgument=new String[] {"--headless", "--remote-allow-origins=*"};
 	
 	//Not all tests can be executed in all test modes,
 	//all in local plus remote driver in CI, headless in local
-	private boolean isLocal() {
+	public static boolean isLocal() {
 		return new CiServiceFactory().getCurrent().isLocal();
 	}
-	private boolean useRemote() {
+	public static boolean useRemote() {
 		return new CiServiceFactory().getCurrent().isLocal() || new Config4test().useRemoteWebDriver();
 	}
-	private boolean useHeadless() {
+	public static boolean useHeadless() {
 		return new CiServiceFactory().getCurrent().isLocal() || new Config4test().useHeadlessDriver();
 	}
 
@@ -52,7 +52,7 @@ public class TestDriver {
 	public void testLocalWebDriverChrome() {
 		if (!isLocal()) return;
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
-		WebDriver driver=factory.getSeleniumDriver("chrome", "", null, new String[] {"--remote-allow-origins=*"});
+		WebDriver driver=factory.getSeleniumDriver("chrome", "", null, new String[] {"--remote-allow-origins=*"}, null);
 		assertOptions(factory, "{browserName:chrome,goog:chromeOptions:{args:[--remote-allow-origins=*]}}");
 		driver.close();
 	}
@@ -60,9 +60,9 @@ public class TestDriver {
 	public void testLocalWebDriverEdge() {
 		if (!isLocal()) return;
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
-		WebDriver driver=factory.getSeleniumDriver("edge", "", null, null);
+		WebDriver driver=factory.getSeleniumDriver("edge", "", null, null, null);
 		assertOptions(factory, Parameters.isJava()
-				? "{browserName:MicrosoftEdge,ms:edgeOptions:{args:[]}}"
+				? "{browserName:MicrosoftEdge,ms:edgeOptions:{args:[--remote-allow-origins=*]}}"
 				: "{browserName:MicrosoftEdge,ms:edgeOptions:{}}");
 		driver.close();
 	}
@@ -70,7 +70,7 @@ public class TestDriver {
 	public void testLocalWebDriverFirefox() {
 		if (!isLocal()) return;
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
-		WebDriver driver=factory.getSeleniumDriver("firefox", "", null, null);
+		WebDriver driver=factory.getSeleniumDriver("firefox", "", null, null, null);
 		assertOptions(factory, "{browserName:firefox,moz:firefoxOptions:{}}");
 		driver.close();
 	}
@@ -81,11 +81,11 @@ public class TestDriver {
 	public void testHeadlessWebDriverDefault() {
 		if (!useHeadless()) return;
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
-		WebDriver driver=factory.getSeleniumDriver("chrome", "", null, chromeHeadlesArgument);
+		WebDriver driver=factory.getSeleniumDriver("chrome", "", null, chromeHeadlesArgument, null);
 		assertOptions(factory, "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]}}");
 		driver.close();
 		//browser name is case insensitive, browser already downloaded, null remote url
-		driver=factory.getSeleniumDriver("CHRome", null, null, chromeHeadlesArgument);
+		driver=factory.getSeleniumDriver("CHRome", null, null, chromeHeadlesArgument, null);
 		assertOptions(factory, "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]}}");
 		driver.close();
 	}
@@ -95,20 +95,25 @@ public class TestDriver {
 		if (!useHeadless()) return;
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
 		Map<String, Object> caps=new TreeMap<String, Object>();
-		caps.put("key1", "value1");
-		caps.put("key2", "value2");
-		WebDriver driver=factory.getSeleniumDriver("chrome", "", caps, chromeHeadlesArgument);
+		//As of Selenium 4.9.0 non standard capabilities must have a prefix
+		caps.put("testprefix:key1", "value1");
+		caps.put("testprefix:key2", "value2");
+		//caps.put("unhandledPromptBehavior", "ignore");
+		WebDriver driver=factory.getSeleniumDriver("chrome", "", caps, chromeHeadlesArgument, null);
 		assertOptions(factory, Parameters.isJava() //different order on net
-			? "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]},key1:value1,key2:value2}"
-			: "{browserName:chrome,key1:value1,key2:value2,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]}}");
+			? "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]},testprefix:key1:value1,testprefix:key2:value2}"
+			: "{browserName:chrome,testprefix:key1:value1,testprefix:key2:value2,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]}}");
 		driver.close();
 	}
+	
+	//testHeadlessWebDriverWithOptionsAndOptionsInstance tested in separate class (transformed manually to C#)
+	
 	@Test
 	public void testHeadlessWebDriverNotFound() {
 		if (!useHeadless()) return;
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
 		try {
-			factory.getSeleniumDriver("carome", "", null, chromeHeadlesArgument);
+			factory.getSeleniumDriver("carome", "", null, chromeHeadlesArgument, null);
 			fail("Should fail");
 		} catch (SelemaException e) {
 			assertTrue(e.getMessage().startsWith("Can't instantiate WebDriver Options for browser: carome"));
@@ -141,7 +146,7 @@ public class TestDriver {
 	public void testRemoteWebDriverDefault() {
 		if (!useRemote()) return;
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
-		WebDriver driver=factory.getSeleniumDriver("chrome", new Config4test().getRemoteDriverUrl(), null, null);
+		WebDriver driver=factory.getSeleniumDriver("chrome", new Config4test().getRemoteDriverUrl(), null, null, null);
 		//NOTE: Selenium 4.8.2/3 (java) adds --remote-allow-origins=* to prevent the Chrome Driver 111 breaking change
 		assertOptions(factory, Parameters.isJava()
 				? "{browserName:chrome,goog:chromeOptions:{args:[--remote-allow-origins=*]}}"
@@ -153,7 +158,7 @@ public class TestDriver {
 		if (!useRemote()) return;
 		//setting options has been tested with local
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
-		WebDriver driver=factory.getSeleniumDriver("chrome", new Config4test().getRemoteDriverUrl(), null, new String[] {"--start-maximized"});
+		WebDriver driver=factory.getSeleniumDriver("chrome", new Config4test().getRemoteDriverUrl(), null, new String[] {"--start-maximized"}, null);
 		//NOTE: Selenium 4.8.2/3 (java) adds --remote-allow-origins=* to prevent the Chrome Driver 111 breaking change
 		assertOptions(factory, Parameters.isJava()
 				? "{browserName:chrome,goog:chromeOptions:{args:[--remote-allow-origins=*,--start-maximized]}}"
@@ -166,7 +171,7 @@ public class TestDriver {
 		String wrongUrl=new Config4test().getRemoteDriverUrl() + "/notexist";
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
 		try {
-			factory.getSeleniumDriver("chrome", wrongUrl, null, null);
+			factory.getSeleniumDriver("chrome", wrongUrl, null, null, null);
 			fail("Should fail");
 		} catch (SelemaException e) {
 			Asserts.assertIsTrue(
@@ -181,8 +186,8 @@ public class TestDriver {
 	public void testRemoteWebDriverFromManagerNoBrowserService() {
 		if (!useRemote()) return;
 		Map<String,Object> capsToAdd=new TreeMap<String,Object>();
-		capsToAdd.put("key1","value1");
-		capsToAdd.put("key2","value2");
+		capsToAdd.put("testprefix:key1","value1");
+		capsToAdd.put("testprefix:key2","value2");
 		SeleManager sm=new SeleManager(Config4test.getConfig())
 				.setDriverUrl(new Config4test().getRemoteDriverUrl())
 				.setOptions(capsToAdd); //can't get options from driver instance, check at the debug log

@@ -6,6 +6,7 @@ using Giis.Portable.Util;
 using Giis.Selema.Services;
 using Giis.Selema.Services.Impl;
 using NLog;
+using OpenQA;
 using OpenQA.Selenium;
 using Sharpen;
 
@@ -29,6 +30,8 @@ namespace Giis.Selema.Manager
 		private IDictionary<string, object> currentOptions = null;
 
 		private string[] currentArguments = null;
+
+		private DriverOptions currentOptionsInstance = null;
 
 		private IWebDriver currentDriver = null;
 
@@ -168,6 +171,19 @@ namespace Giis.Selema.Manager
 		{
 			log.Debug("Set options: " + options.ToString());
 			this.currentOptions = options;
+			return this;
+		}
+
+		/// <summary>Adds a browser dependent instance of options to set the W3C WebDriver standard capabilities.</summary>
+		/// <remarks>
+		/// Adds a browser dependent instance of options to set the W3C WebDriver standard capabilities.
+		/// The capabilities specified with setOptions and setArguments
+		/// will be added as well to the WebDriver prior to its creation
+		/// </remarks>
+		public virtual Giis.Selema.Manager.SeleManager SetOptionsInstance(DriverOptions optionsInstance)
+		{
+			log.Debug("Set options instance: " + optionsInstance.GetType().FullName);
+			this.currentOptionsInstance = optionsInstance;
 			return this;
 		}
 
@@ -556,7 +572,7 @@ namespace Giis.Selema.Manager
 		private IWebDriver GetLocalSeleniumDriver()
 		{
 			log.Trace("Get local Selenium Driver");
-			return new SeleniumDriverFactory().GetSeleniumDriver(currentBrowser, string.Empty, currentOptions, currentArguments);
+			return new SeleniumDriverFactory().GetSeleniumDriver(currentBrowser, string.Empty, currentOptions, currentArguments, currentOptionsInstance);
 		}
 
 		private IWebDriver GetRemoteSeleniumDriver(string driverScope)
@@ -586,7 +602,7 @@ namespace Giis.Selema.Manager
 			{
 				allOptions["selenoid:options"] = selenoidOptions;
 			}
-			return new SeleniumDriverFactory().GetSeleniumDriver(currentBrowser, currentDriverUrl, allOptions, currentArguments);
+			return new SeleniumDriverFactory().GetSeleniumDriver(currentBrowser, currentDriverUrl, allOptions, currentArguments, currentOptionsInstance);
 		}
 	}
 }

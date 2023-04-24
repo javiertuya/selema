@@ -53,6 +53,7 @@
 
 #Selenium
 -namespaceMapping org.openqa.selenium OpenQA.Selenium
+-typeMapping org.openqa.selenium.Capabilities OpenQA.DriverOptions
 -namespaceMapping org.openqa.selenium.phantomjs OpenQA.Selenium.PhantomJS
 -typeMapping org.openqa.selenium.phantomjs.PhantomJSDriver OpenQA.Selenium.PhantomJS.PhantomJSDriver
 -typeMapping org.openqa.selenium.WebDriver OpenQA.Selenium.IWebDriver

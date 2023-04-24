@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 
 import giis.portable.util.FileUtil;
@@ -37,6 +38,7 @@ public class SeleManager {
 	private String currentDriverUrl=""; //empty is local
 	private Map<String, Object> currentOptions=null;
 	private String[] currentArguments=null;
+	private Capabilities currentOptionsInstance=null;
 	
 	//Currently managed driver
 	private WebDriver currentDriver=null;
@@ -146,6 +148,16 @@ public class SeleManager {
 	public SeleManager setOptions(Map<String,Object> options) {
 		log.debug("Set options: "+options.toString());
 		this.currentOptions=options;
+		return this;
+	}
+	/**
+	 * Adds a browser dependent instance of options to set the W3C WebDriver standard capabilities.
+	 * The capabilities specified with setOptions and setArguments
+	 * will be added as well to the WebDriver prior to its creation
+	 */
+	public SeleManager setOptionsInstance(Capabilities optionsInstance) {
+		log.debug("Set options instance: "+optionsInstance.getClass().getName());
+		this.currentOptionsInstance=optionsInstance;
 		return this;
 	}
 	/**
@@ -463,7 +475,7 @@ public class SeleManager {
 	
 	private WebDriver getLocalSeleniumDriver() { 
 		log.trace("Get local Selenium Driver");
-		return new SeleniumDriverFactory().getSeleniumDriver(currentBrowser, "", currentOptions, currentArguments);
+		return new SeleniumDriverFactory().getSeleniumDriver(currentBrowser, "", currentOptions, currentArguments, currentOptionsInstance);
 	}
 	private WebDriver getRemoteSeleniumDriver(String driverScope) {
 		log.trace("Get remote Selenium Driver");
@@ -485,7 +497,7 @@ public class SeleManager {
 		if (browserService!=null)
 			allOptions.put("selenoid:options",selenoidOptions);
 		
-		return new SeleniumDriverFactory().getSeleniumDriver(currentBrowser, currentDriverUrl, allOptions, currentArguments);
+		return new SeleniumDriverFactory().getSeleniumDriver(currentBrowser, currentDriverUrl, allOptions, currentArguments, currentOptionsInstance);
 	}
 	
 }

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using Giis.Selema.Portable.Selenium;
 using NLog;
+using OpenQA;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 using Sharpen;
@@ -30,7 +31,7 @@ namespace Giis.Selema.Manager
 		/// if the remoteUrl is empty or null returns a WebDriver (downloading the driver executable if needed),
 		/// if not, returns a RemoteWebDriver
 		/// </summary>
-		public virtual IWebDriver GetSeleniumDriver(string browser, string remoteUrl, IDictionary<string, object> caps, string[] args)
+		public virtual IWebDriver GetSeleniumDriver(string browser, string remoteUrl, IDictionary<string, object> caps, string[] args, DriverOptions optInstance)
 		{
 			SeleniumObjects reflect = new SeleniumObjects();
 			string objectToInstantiate = string.Empty;
@@ -41,7 +42,7 @@ namespace Giis.Selema.Manager
 				objectToInstantiate = "WebDriver Options";
 				//Sets capabilities and arguments by create an options object
 				log.Debug("Setting up WebDriver Options, browser: " + browser);
-				object opt = reflect.GetOptionsObj(browser, args);
+				object opt = optInstance == null ? reflect.GetOptionsObj(browser, args) : optInstance;
 				if (caps != null)
 				{
 					foreach (string key in caps.Keys)
@@ -74,10 +75,6 @@ namespace Giis.Selema.Manager
 			catch (Exception e)
 			{
 				//
-				if ("chrome".Equals(browser) && string.Empty.Equals(remoteUrl))
-				{
-					log.Warn("Note that since Chrome Driver 111 the argument --remote-allow-origins=* may be needed to connect with the browser");
-				}
 				throw new SelemaException(log, "Can't instantiate " + objectToInstantiate + " for browser: " + browser + (string.Empty.Equals(url) ? string.Empty : " at url: " + url), e);
 			}
 		}

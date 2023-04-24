@@ -178,6 +178,12 @@ Unless otherwise stated, on .NET, all packages, classes and methods have the sam
 - **WebDriver Capabilities (options)**: `setOptions(Map<String,Object> options)` adds the specific capabilities to the WebDriver prior to its creation.
 - **WebDriver Arguments**: `setArguments(String[] arguments)` adds the specific arguments to the WebDriver execution. 
   For example, use `setArguments(new String[] {"--headless"})` to run the browser in headless mode
+- **Browser dependent WebDriver Capabilities (options)**: `setOptionsInstance(Capabilities optionsInstance)`
+  adds a browser dependent instance of options to set the W3C WebDriver standard capabilities.
+
+NOTE: As of Selenium v4.9.0 no standard capabilities need to include a vendor prefix:
+https://www.selenium.dev/documentation/webdriver/getting_started/upgrade_to_selenium_4/#after. 
+If using `setOptionsInstance` the capabilities specified with `setOptions` and `setArguments` will be added as well to the WebDriver prior to its creation.
 
 ## Log file location
 
@@ -256,7 +262,7 @@ When a test fails a timestamp of the approximate time in which the filure appear
 
 ## Browser service (Selenium Server)
 
-(Planned)
+(Planned #36 #37)
 
 ## Javascript coverage service (JSCover)
 

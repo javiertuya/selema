@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.slf4j.Logger;
@@ -26,7 +27,7 @@ public class SeleniumDriverFactory {
 	 * if the remoteUrl is empty or null returns a WebDriver (downloading the driver executable if needed),
 	 * if not, returns a RemoteWebDriver 
 	 */
-	public WebDriver getSeleniumDriver(String browser, String remoteUrl, Map<String, Object> caps, String[] args) {
+	public WebDriver getSeleniumDriver(String browser, String remoteUrl, Map<String, Object> caps, String[] args, Capabilities optInstance) {
 		SeleniumObjects reflect=new SeleniumObjects();
 		String objectToInstantiate=""; //to enhance error messages
 		String url="";
@@ -34,7 +35,7 @@ public class SeleniumDriverFactory {
 			objectToInstantiate="WebDriver Options";
 			//Sets capabilities and arguments by create an options object
 			log.debug("Setting up WebDriver Options, browser: "+browser);
-			Object opt=reflect.getOptionsObj(browser, args) ;
+			Object opt = optInstance==null ? reflect.getOptionsObj(browser, args) : optInstance;
 			if (caps!=null)
 				for (String key: caps.keySet()) //NOSONAR compatibility with .NET
 					reflect.setCapability(opt, key, caps.get(key));
@@ -55,8 +56,6 @@ public class SeleniumDriverFactory {
 				return (RemoteWebDriver)reflect.getRemoteDriverObj(remoteUrl, opt);
 			}
 		} catch (Exception e) { //NOSONAR
-			if ("chrome".equals(browser) && "".equals(remoteUrl))
-				log.warn("Note that since Chrome Driver 111 the argument --remote-allow-origins=* may be needed to connect with the browser");
 			throw new SelemaException(log, "Can't instantiate "
 					+ objectToInstantiate + " for browser: " + browser 
 					+ ("".equals(url)?"":" at url: "+url), e);
