@@ -56,13 +56,13 @@
 
     <PackageReference Include="NUnit" Version="3.13.3" />
 
-    <PackageReference Include="PortableCs" Version="2.1.3" />
+    <PackageReference Include="PortableCs" Version="2.2.0" />
 
     <PackageReference Include="VisualAssert" Version="2.2.2" />
 
     <PackageReference Include="WebDriverManager" Version="2.16.2" />
 
-    <PackageReference Include="Selenium.WebDriver" Version="4.9.0" />
+    <PackageReference Include="Selenium.WebDriver" Version="4.9.1" />
   </ItemGroup>
 
 </Project>
