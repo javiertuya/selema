@@ -30,7 +30,7 @@ jobs:
           java-version: '8'
           cache: 'maven'
       - if: ${{ matrix.platform=='net' }}
-        uses: actions/setup-dotnet@v3.1.0
+        uses: actions/setup-dotnet@v3.2.0
         with:
             dotnet-version: '3.1.x'
 
