@@ -154,3 +154,20 @@ jobs:
           restore-artifact-path1: "target-headless"
           restore-artifact-name2: "sonar-java-selenoid"
           restore-artifact-path2: "target-selenoid"
+
+  publish-java-snapshot:
+    #avoid publishing PRs and dependabot branches
+    if: ${{ github.event_name != 'pull_request' && !contains('/head/refs/dependabot/', github.ref) }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: java
+    steps:
+      - uses: javiertuya/branch-snapshots-action@v1.1.0
+        with: 
+          token: ${{ secrets.GITHUB_TOKEN }}
+          working-directory: java
+          java-version: '8'
+          mvn-deploy-args: '-P publish-github -DskipTests=true -Dmaven.test.failure.ignore=false -U --no-transfer-progress'
+          delete-old-snapshots: true
+          min-snapshots-to-keep: 4
