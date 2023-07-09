@@ -145,7 +145,7 @@ jobs:
     if: ${{ github.actor != 'dependabot[bot]' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: javiertuya/sonarqube-action@v1.0.0
+      - uses: javiertuya/sonarqube-action@v1.1.0
         with: 
           github-token: ${{ secrets.GITHUB_TOKEN }}
           sonar-token: ${{ secrets.SONAR_TOKEN }}
@@ -163,7 +163,7 @@ jobs:
       run:
         working-directory: java
     steps:
-      - uses: javiertuya/branch-snapshots-action@v1.1.0
+      - uses: javiertuya/branch-snapshots-action@v1.2.0
         with: 
           token: ${{ secrets.GITHUB_TOKEN }}
           working-directory: java
