@@ -95,7 +95,7 @@ jobs:
       #    skip_publishing: ${{ github.actor != 'javiertuya' }} #avoids failure on dependabot or other user PRs
       - name: Generate report checks1
         if: always()
-        uses: mikepenz/action-junit-report@v3.7.8
+        uses: mikepenz/action-junit-report@v3.8.0
         with:
           check_name: "test-result-${{ matrix.platform }}-${{ matrix.mode }}"
           report_paths: "**/${{ env.REPORT_FOLDER }}/surefire-reports/TEST-*.xml"
