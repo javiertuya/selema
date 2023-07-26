@@ -88,7 +88,7 @@ namespace Giis.Selema.Portable.Selenium
 			log.Debug("Getting instance of class: " + className);
 			return className;
 		}
-		private void SetUpWebDriver(IDriverConfig Config, bool matchCurrentBrowser)
+		private void SetUpWebDriver(IDriverConfig Config)
 		{
 			//Executing several concurrent processes raises exceptions in some cases.
 			//Perform retries to recover from this problem
@@ -96,7 +96,9 @@ namespace Giis.Selema.Portable.Selenium
 			{
 				try
 				{
-					new DriverManager().SetUpDriver(Config, matchCurrentBrowser ? VersionResolveStrategy.MatchingBrowser : VersionResolveStrategy.Latest);
+					// Jul 2023 removed match current browser, if chrome 115, selema try to find that version that does not exist
+					// Using latest available driver gives a more consistent behaviour
+					new DriverManager().SetUpDriver(Config, VersionResolveStrategy.Latest);
 					string driverPath = GetSeleniumDriverPath(Config, true);
 					log.Debug("Downloaded web driver at: " + driverPath);
 					return;
@@ -128,7 +130,7 @@ namespace Giis.Selema.Portable.Selenium
 				string clasName = GetDrivermanagerClassName(browser);
 				object browserConfig = Activator.CreateInstance(Type.GetType(clasName));
 				//second parametr indicates that browser version will be used, available only for chrome
-				SetUpWebDriver((IDriverConfig)browserConfig, browser.ToLower() == "chrome");
+				SetUpWebDriver((IDriverConfig)browserConfig);
 			}
 			catch (Exception e)
             {
