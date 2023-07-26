@@ -33,14 +33,14 @@ jobs:
           gpg-passphrase: MAVEN_GPG_PASSPHRASE # env variable for GPG private key passphrase
 
       - name: Publish to Apache Maven Central
-        run: mvn deploy --no-transfer-progress -DskipTests=true
+        run: mvn deploy -P publish-maven --no-transfer-progress -DskipTests=true
         env:
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
           MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
   release-net:
-    #if: ${{ false }}  # disable for now
+    if: ${{ false }}  # disable for now
     runs-on: ubuntu-latest 
     defaults:
       run:
