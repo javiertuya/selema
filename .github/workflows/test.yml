@@ -32,7 +32,7 @@ jobs:
       - if: ${{ matrix.platform=='net' }}
         uses: actions/setup-dotnet@v3.2.0
         with:
-            dotnet-version: '3.1.x'
+            dotnet-version: '6.0.x'
 
       - name: JAVA - Platform dependent report location
         if: ${{ matrix.platform == 'java' }}
@@ -107,7 +107,7 @@ jobs:
 
       - if: always()
         name: Publish test report files
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3.1.2
         with:
           name: "test-report-${{ matrix.platform }}-${{ matrix.mode }}-files"
           path: |
@@ -116,7 +116,7 @@ jobs:
             net/reports
       - name: JAVA - Reports for Sonar
         if: ${{ always() && matrix.platform=='java' }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3.1.2
         with:
           name: "sonar-${{ matrix.platform }}-${{ matrix.mode }}"
           path: |
