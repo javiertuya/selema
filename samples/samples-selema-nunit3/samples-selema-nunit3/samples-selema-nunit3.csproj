@@ -14,9 +14,9 @@
 
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.3" />
 
-    <PackageReference Include="Selenium.WebDriver" Version="4.10.0" />
+    <PackageReference Include="Selenium.WebDriver" Version="4.11.0" />
 
-    <PackageReference Include="Selema" Version="3.0.3" />
+    <PackageReference Include="Selema" Version="3.0.4" />
   </ItemGroup>
 
 </Project>
