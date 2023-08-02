@@ -3,10 +3,9 @@ updates:
   - package-ecosystem: maven
     directory: "/java"
     schedule:
-      interval: daily
+      interval: weekly
+      day: friday
     open-pull-requests-limit: 20
-    assignees:
-      - "javiertuya" 
 
   - package-ecosystem: nuget
     directory: "/net"
@@ -23,40 +22,38 @@ updates:
       - dependency-name: "NLog"
         update-types: ["version-update:semver-major"]
     schedule:
-      interval: daily
-    assignees:
-      - "javiertuya" 
+      interval: weekly
+      day: friday
     open-pull-requests-limit: 20
 
   - package-ecosystem: maven
     directory: "/samples/samples-selema-junit4"
     schedule:
-      interval: daily
-    assignees:
-      - "javiertuya" 
+      interval: weekly
+      day: friday
+    open-pull-requests-limit: 20
   - package-ecosystem: maven
     directory: "/samples/samples-selema-junit5"
     schedule:
-      interval: daily
-    assignees:
-      - "javiertuya" 
+      interval: weekly
+      day: friday
+    open-pull-requests-limit: 20
   - package-ecosystem: nuget
     directory: "/samples/samples-selema-mstest2"
     schedule:
-      interval: daily
-    assignees:
-      - "javiertuya" 
+      interval: weekly
+      day: friday
+    open-pull-requests-limit: 20
   - package-ecosystem: nuget
     directory: "/samples/samples-selema-nunit3"
     schedule:
-      interval: daily
-    assignees:
-      - "javiertuya" 
+      interval: weekly
+      day: friday
+    open-pull-requests-limit: 20
 
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
-      interval: daily
+      interval: weekly
+      day: friday
     open-pull-requests-limit: 20
-    assignees:
-      - "javiertuya" 
