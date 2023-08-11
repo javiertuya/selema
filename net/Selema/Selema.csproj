@@ -52,7 +52,7 @@
 
     <PackageReference Include="HtmlAgilityPack" Version="1.11.51" />
 
-    <PackageReference Include="NLog" Version="5.2.2" />
+    <PackageReference Include="NLog" Version="5.2.3" />
 
     <PackageReference Include="NUnit" Version="3.13.3" />
 
@@ -60,7 +60,7 @@
 
     <PackageReference Include="VisualAssert" Version="2.4.1" />
 
-    <PackageReference Include="WebDriverManager" Version="2.17.0" />
+    <PackageReference Include="WebDriverManager" Version="2.17.1" />
 
     <PackageReference Include="Selenium.WebDriver" Version="4.11.0" />
   </ItemGroup>
