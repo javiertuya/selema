@@ -57,7 +57,7 @@ namespace Test4giis.Selema.Core
 				return;
 			}
 			SeleniumDriverFactory factory = new SeleniumDriverFactory();
-			IWebDriver driver = factory.GetSeleniumDriver("chrome", string.Empty, null, new string[] { "--remote-allow-origins=*" }, null);
+			IWebDriver driver = factory.GetSeleniumDriver("chrome", string.Empty, string.Empty, null, new string[] { "--remote-allow-origins=*" }, null);
 			AssertOptions(factory, "{browserName:chrome,goog:chromeOptions:{args:[--remote-allow-origins=*]}}");
 			driver.Close();
 		}
@@ -70,7 +70,7 @@ namespace Test4giis.Selema.Core
 				return;
 			}
 			SeleniumDriverFactory factory = new SeleniumDriverFactory();
-			IWebDriver driver = factory.GetSeleniumDriver("edge", string.Empty, null, null, null);
+			IWebDriver driver = factory.GetSeleniumDriver("edge", string.Empty, string.Empty, null, null, null);
 			AssertOptions(factory, Parameters.IsJava() ? "{browserName:MicrosoftEdge,ms:edgeOptions:{args:[--remote-allow-origins=*]}}" : "{browserName:MicrosoftEdge,ms:edgeOptions:{}}");
 			driver.Close();
 		}
@@ -83,7 +83,7 @@ namespace Test4giis.Selema.Core
 				return;
 			}
 			SeleniumDriverFactory factory = new SeleniumDriverFactory();
-			IWebDriver driver = factory.GetSeleniumDriver("firefox", string.Empty, null, null, null);
+			IWebDriver driver = factory.GetSeleniumDriver("firefox", string.Empty, string.Empty, null, null, null);
 			AssertOptions(factory, "{browserName:firefox,moz:firefoxOptions:{}}");
 			driver.Close();
 		}
@@ -97,11 +97,11 @@ namespace Test4giis.Selema.Core
 				return;
 			}
 			SeleniumDriverFactory factory = new SeleniumDriverFactory();
-			IWebDriver driver = factory.GetSeleniumDriver("chrome", string.Empty, null, chromeHeadlesArgument, null);
+			IWebDriver driver = factory.GetSeleniumDriver("chrome", string.Empty, string.Empty, null, chromeHeadlesArgument, null);
 			AssertOptions(factory, "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]}}");
 			driver.Close();
 			//browser name is case insensitive, browser already downloaded, null remote url
-			driver = factory.GetSeleniumDriver("CHRome", null, null, chromeHeadlesArgument, null);
+			driver = factory.GetSeleniumDriver("CHRome", null, null, null, chromeHeadlesArgument, null);
 			AssertOptions(factory, "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]}}");
 			driver.Close();
 		}
@@ -119,7 +119,7 @@ namespace Test4giis.Selema.Core
 			caps["testprefix:key1"] = "value1";
 			caps["testprefix:key2"] = "value2";
 			//caps.put("unhandledPromptBehavior", "ignore");
-			IWebDriver driver = factory.GetSeleniumDriver("chrome", string.Empty, caps, chromeHeadlesArgument, null);
+			IWebDriver driver = factory.GetSeleniumDriver("chrome", string.Empty, string.Empty, caps, chromeHeadlesArgument, null);
 			AssertOptions(factory, Parameters.IsJava() ? "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]},testprefix:key1:value1,testprefix:key2:value2}" : "{browserName:chrome,testprefix:key1:value1,testprefix:key2:value2,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]}}"
 				);
 			//different order on net
@@ -137,12 +137,12 @@ namespace Test4giis.Selema.Core
 			SeleniumDriverFactory factory = new SeleniumDriverFactory();
 			try
 			{
-				factory.GetSeleniumDriver("carome", string.Empty, null, chromeHeadlesArgument, null);
+				factory.GetSeleniumDriver("carome", string.Empty, string.Empty, null, chromeHeadlesArgument, null);
 				NUnit.Framework.Assert.Fail("Should fail");
 			}
 			catch (SelemaException e)
 			{
-				NUnit.Framework.Assert.IsTrue(e.Message.StartsWith("Can't instantiate WebDriver Options for browser: carome"));
+				Asserts.AssertIsTrue(e.Message.StartsWith("Can't instantiate WebDriver Options for browser: carome"), "Not contained in: " + e.Message);
 			}
 		}
 
@@ -156,12 +156,12 @@ namespace Test4giis.Selema.Core
 			SeleniumDriverFactory factory = new SeleniumDriverFactory();
 			try
 			{
-				factory.EnsureLocalDriverDownloaded("corome");
+				factory.EnsureLocalDriverDownloaded("corome", string.Empty);
 				NUnit.Framework.Assert.Fail("Should fail");
 			}
 			catch (SelemaException e)
 			{
-				NUnit.Framework.Assert.IsTrue(e.Message.StartsWith("Can't download driver executable for browser: corome"));
+				Asserts.AssertIsTrue(e.Message.StartsWith("Can't download driver executable for browser: corome"), "Not contained in: " + e.Message);
 			}
 		}
 
@@ -189,7 +189,7 @@ namespace Test4giis.Selema.Core
 				return;
 			}
 			SeleniumDriverFactory factory = new SeleniumDriverFactory();
-			IWebDriver driver = factory.GetSeleniumDriver("chrome", new Config4test().GetRemoteDriverUrl(), null, null, null);
+			IWebDriver driver = factory.GetSeleniumDriver("chrome", new Config4test().GetRemoteDriverUrl(), null, null, null, null);
 			//NOTE: Selenium 4.8.2/3 (java) adds --remote-allow-origins=* to prevent the Chrome Driver 111 breaking change
 			AssertOptions(factory, Parameters.IsJava() ? "{browserName:chrome,goog:chromeOptions:{args:[--remote-allow-origins=*]}}" : "{browserName:chrome,goog:chromeOptions:{}}");
 			driver.Close();
@@ -204,7 +204,7 @@ namespace Test4giis.Selema.Core
 			}
 			//setting options has been tested with local
 			SeleniumDriverFactory factory = new SeleniumDriverFactory();
-			IWebDriver driver = factory.GetSeleniumDriver("chrome", new Config4test().GetRemoteDriverUrl(), null, new string[] { "--start-maximized" }, null);
+			IWebDriver driver = factory.GetSeleniumDriver("chrome", new Config4test().GetRemoteDriverUrl(), null, null, new string[] { "--start-maximized" }, null);
 			//NOTE: Selenium 4.8.2/3 (java) adds --remote-allow-origins=* to prevent the Chrome Driver 111 breaking change
 			AssertOptions(factory, Parameters.IsJava() ? "{browserName:chrome,goog:chromeOptions:{args:[--remote-allow-origins=*,--start-maximized]}}" : "{browserName:chrome,goog:chromeOptions:{args:[--start-maximized]}}");
 			driver.Close();
@@ -221,7 +221,7 @@ namespace Test4giis.Selema.Core
 			SeleniumDriverFactory factory = new SeleniumDriverFactory();
 			try
 			{
-				factory.GetSeleniumDriver("chrome", wrongUrl, null, null, null);
+				factory.GetSeleniumDriver("chrome", wrongUrl, null, null, null, null);
 				NUnit.Framework.Assert.Fail("Should fail");
 			}
 			catch (SelemaException e)

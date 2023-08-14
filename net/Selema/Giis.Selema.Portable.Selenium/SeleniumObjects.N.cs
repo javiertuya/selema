@@ -1,11 +1,12 @@
+using WebDriverManager.Helpers;
+using WebDriverManager;
+using WebDriverManager.DriverConfigs;
+
 using Giis.Selema.Manager;
 using NLog;
 using System;
 using System.IO;
 using System.Reflection;
-using WebDriverManager;
-using WebDriverManager.DriverConfigs;
-using WebDriverManager.Helpers;
 
 namespace Giis.Selema.Portable.Selenium
 {
@@ -88,7 +89,7 @@ namespace Giis.Selema.Portable.Selenium
 			log.Debug("Getting instance of class: " + className);
 			return className;
 		}
-		private void SetUpWebDriver(IDriverConfig Config)
+		private void SetUpWebDriver(IDriverConfig Config, string version)
 		{
 			//Executing several concurrent processes raises exceptions in some cases.
 			//Perform retries to recover from this problem
@@ -98,7 +99,7 @@ namespace Giis.Selema.Portable.Selenium
 				{
 					// Jul 2023 removed match current browser, if chrome 115, selema try to find that version that does not exist
 					// Using latest available driver gives a more consistent behaviour
-					new DriverManager().SetUpDriver(Config, VersionResolveStrategy.Latest);
+					SetupWebDriverManager(Config, version);
 					string driverPath = GetSeleniumDriverPath(Config, true);
 					log.Debug("Downloaded web driver at: " + driverPath);
 					return;
@@ -113,7 +114,18 @@ namespace Giis.Selema.Portable.Selenium
 			//if here, the driver has not been downloaded after all repetitions
 			throw new SelemaException("WebDriver download failed after 20 retries");
 		}
-		private string GetSeleniumDriverPath(WebDriverManager.DriverConfigs.IDriverConfig config, bool includeBinaryName)
+        private void SetupWebDriverManager(IDriverConfig config, string driverVersion)
+        {
+            if (DriverVersion.MatchBrowser == driverVersion)
+                new DriverManager().SetUpDriver(config, VersionResolveStrategy.MatchingBrowser);
+            else if (DriverVersion.LatestAvailable == driverVersion)
+                new DriverManager().SetUpDriver(config, VersionResolveStrategy.Latest);
+            else if (DriverVersion.SeleniumManager == driverVersion)
+                return;
+            else // none of these keywords, try to get the exact version
+                new DriverManager().SetUpDriver(config, driverVersion);
+        }
+        private string GetSeleniumDriverPath(WebDriverManager.DriverConfigs.IDriverConfig config, bool includeBinaryName)
 		{
 			string binaryName = includeBinaryName ? config.GetBinaryName() : "";
 			return FileHelper.GetBinDestination(config.GetName(), config.GetLatestVersion(),
@@ -123,14 +135,14 @@ namespace Giis.Selema.Portable.Selenium
 		/// <summary>
 		/// Downloads the driver executable for the specified browser using WebDriverManagerNet
 		/// </summary>
-		public void DownloadDriverExecutable(string browser)
+		public void DownloadDriverExecutable(string browser, string version)
 		{
 			try
             {
 				string clasName = GetDrivermanagerClassName(browser);
 				object browserConfig = Activator.CreateInstance(Type.GetType(clasName));
 				//second parametr indicates that browser version will be used, available only for chrome
-				SetUpWebDriver((IDriverConfig)browserConfig);
+				SetUpWebDriver((IDriverConfig)browserConfig, version);
 			}
 			catch (Exception e)
             {
@@ -138,5 +150,5 @@ namespace Giis.Selema.Portable.Selenium
 			}
 		}
 
-	}
+     }
 }

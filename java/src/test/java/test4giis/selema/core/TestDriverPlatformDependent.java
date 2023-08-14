@@ -25,7 +25,7 @@ public class TestDriverPlatformDependent {
 		caps.put("testprefix:key1", "value1");
 		ChromeOptions optInstance=new ChromeOptions();
 		optInstance.setUnhandledPromptBehaviour(UnexpectedAlertBehaviour.IGNORE);
-		WebDriver driver=factory.getSeleniumDriver("chrome", "", caps, TestDriver.chromeHeadlesArgument, optInstance);
+		WebDriver driver=factory.getSeleniumDriver("chrome", "", "", caps, TestDriver.chromeHeadlesArgument, optInstance);
 		assertEquals("Capabilities {browserName: chrome, goog:chromeOptions: {args: [--headless, --remote-allow-origins=*], extensions: []}, testprefix:key1: value1, unhandledPromptBehavior: ignore}",
 				factory.getLastOptionString());
 		driver.close();

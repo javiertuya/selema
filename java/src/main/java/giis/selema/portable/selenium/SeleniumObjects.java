@@ -6,6 +6,7 @@ import org.openqa.selenium.Capabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import giis.selema.manager.DriverVersion;
 import giis.selema.manager.SelemaException;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import io.github.bonigarcia.wdm.config.DriverManagerType;
@@ -53,13 +54,24 @@ public class SeleniumObjects {
 	/**
 	 * Downloads the driver executable for the specified browser using WebDriverManager
 	 */
-	public void downloadDriverExecutable(String browser) {
+	public void downloadDriverExecutable(String browser, String version) {
         try {	
         	DriverManagerType driverManagerType = DriverManagerType.valueOf(browser.toUpperCase());
 			Class.forName(driverManagerType.browserClass());
-			WebDriverManager.getInstance(driverManagerType).setup();
+			setupWebDriverManager(driverManagerType, version);
 		} catch (Throwable e) {
 			throw new SelemaException(log, "Can't download driver executable for browser: "+browser, e);
 		}
 	}
+	private void setupWebDriverManager(DriverManagerType driverManagerType, String driverVersion) {
+		if (DriverVersion.MATCH_BROWSER.equals(driverVersion))
+			WebDriverManager.getInstance(driverManagerType).setup();
+		else if (DriverVersion.LATEST_AVAILABLE.equals(driverVersion))
+			WebDriverManager.getInstance(driverManagerType).avoidBrowserDetection().setup();
+		else if (DriverVersion.SELENIUM_MANAGER.equals(driverVersion))
+			return;
+		else // none of these keywords, try to get the exact version
+			WebDriverManager.getInstance(driverManagerType).driverVersion(driverVersion).setup();
+	}
+	
 }

@@ -109,7 +109,7 @@
       public void addArguments(Object opt, String[] args) { }
       public Object getDriverObj(String browser, Object opt) { return null; }
       public Object getRemoteDriverObj(String remoteUrl, Object opt) { return null; }
-      public void downloadDriverExecutable(String browser) { }
+      public void downloadDriverExecutable(String browser, String version) { }
       }
     </echo>
     <echo file="sharpen-temp/java/giis/selema/portable/selenium/SeleniumActions.java">
@@ -181,6 +181,7 @@
     <replace dir="sharpen-temp/sharpen-temp.net/">
       <!--<replacefilter token="Logger.GetLogger(this.GetType())" value="LogManager.GetCurrentClassLogger()" />-->
       <replacefilter token="//NOSONAR" value="//" />
+      <replacefilter token=".GetType().GetCanonicalName()" value=".GetType().FullName" />
       <replacefilter token="LogManager.GetLogger(this.GetType())" value="LogManager.GetCurrentClassLogger()" />
       <replacefilter token="LogManager.GetLogger(typeof(LogFactory))" value="LogManager.GetCurrentClassLogger()" />
       <replacefilter token="DiffMatchPatch" value="diff_match_patch" />
@@ -195,6 +196,7 @@
     <!--remplazos globales en los tests (de junit4 a nunit3)-->
     <replace dir="sharpen-temp/sharpen-temp.net/">
       <include name="Test4giis*/**" />
+      <replacefilter token="public class TestDriverVersion" value=" [Ignore(&quot;Manual Test&quot;)] public class TestDriverVersion" />
       <replacefilter token="LogManager.GetLogger(this.GetType())" value="LogManager.GetCurrentClassLogger()" />
       <replacefilter token="LogManager.GetLogger(typeof(LogFactory))" value="LogManager.GetCurrentClassLogger()" />
       <replacefilter token="LogManager.GetLogger(typeof(TestExceptions))" value="LogManager.GetCurrentClassLogger()" />
@@ -221,7 +223,7 @@
     <copy todir="Selema/Translated">
       <fileset dir="sharpen-temp/sharpen-temp.net">
         <exclude name="Giis.Selema.Portable/**" />
-        <exclude name="Giis.Selema.Portable.Selenium/**" />
+        <exclude name="Giis.Selema.Portable.Selenium/Selenium*.*" />
         <exclude name="Giis.Selema.Framework.*/**" />
         <exclude name="Test4giis.Selema.*/**" />
       </fileset>

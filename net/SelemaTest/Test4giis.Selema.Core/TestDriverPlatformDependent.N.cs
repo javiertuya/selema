@@ -22,7 +22,7 @@ namespace Test4giis.Selema.Core
 			caps["testprefix:key1"] = "value1";
 			ChromeOptions optInstance=new ChromeOptions();
 			optInstance.UnhandledPromptBehavior = OpenQA.Selenium.UnhandledPromptBehavior.Ignore;
-			IWebDriver driver = factory.GetSeleniumDriver("chrome", string.Empty, caps, TestDriver.chromeHeadlesArgument, optInstance);
+			IWebDriver driver = factory.GetSeleniumDriver("chrome", string.Empty, string.Empty, caps, TestDriver.chromeHeadlesArgument, optInstance);
 			Assert.AreEqual("{browserName:chrome,unhandledPromptBehavior:ignore,testprefix:key1:value1,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]}}",
 				factory.GetLastOptionString().Replace("\"","").Replace("\r","").Replace("\n","").Replace(" ",""));
 			driver.Close();

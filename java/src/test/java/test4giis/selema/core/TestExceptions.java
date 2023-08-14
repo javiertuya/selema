@@ -148,7 +148,6 @@ public class TestExceptions implements IAfterEachCallback {
 		// Failure to write because the driver is closed causes error messages about the watermark
 		sm.driver().close();
 		sm.onFailure("thisClass", "thisTest");
-		//fail("Should fail");
 		lfas.assertLast("[ERROR]", "Can't write onFailure watermark thisTest. Message: invalid session id");
 	}
 

@@ -34,6 +34,8 @@ namespace Giis.Selema.Manager
 
 		private DriverOptions currentOptionsInstance = null;
 
+		private string driverVersion = DriverVersion.Default;
+
 		private IWebDriver currentDriver = null;
 
 		private string currentClassName = string.Empty;
@@ -43,6 +45,7 @@ namespace Giis.Selema.Manager
 		//general purpose logger
 		//SeleManager html log
 		//empty is local
+		// string with strategy to use or a given version
 		//Currently managed driver
 		//Current context, only used for external calls from tests as watermark or getting driver in unmanaged mode
 		public virtual string CurrentClassName()
@@ -165,6 +168,13 @@ namespace Giis.Selema.Manager
 		public virtual string GetDriverUrl()
 		{
 			return this.currentDriverUrl;
+		}
+
+		/// <summary>Sets the driver version selection strategy or the value of the desired driver version to set</summary>
+		public virtual Giis.Selema.Manager.SeleManager SetDriverVersion(string driverVersion)
+		{
+			this.driverVersion = driverVersion;
+			return this;
 		}
 
 		/// <summary>Adds the specific capabilities to the WebDriver prior to its creation</summary>
@@ -603,7 +613,7 @@ namespace Giis.Selema.Manager
 		private IWebDriver GetLocalSeleniumDriver()
 		{
 			log.Trace("Get local Selenium Driver");
-			return new SeleniumDriverFactory().GetSeleniumDriver(currentBrowser, string.Empty, currentOptions, currentArguments, currentOptionsInstance);
+			return new SeleniumDriverFactory().GetSeleniumDriver(currentBrowser, string.Empty, this.driverVersion, currentOptions, currentArguments, currentOptionsInstance);
 		}
 
 		private IWebDriver GetRemoteSeleniumDriver(string driverScope)
@@ -633,7 +643,7 @@ namespace Giis.Selema.Manager
 			{
 				allOptions["selenoid:options"] = selenoidOptions;
 			}
-			return new SeleniumDriverFactory().GetSeleniumDriver(currentBrowser, currentDriverUrl, allOptions, currentArguments, currentOptionsInstance);
+			return new SeleniumDriverFactory().GetSeleniumDriver(currentBrowser, currentDriverUrl, driverVersion, allOptions, currentArguments, currentOptionsInstance);
 		}
 	}
 }

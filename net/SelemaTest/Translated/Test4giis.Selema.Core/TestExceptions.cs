@@ -236,7 +236,6 @@ namespace Test4giis.Selema.Core
 			// Failure to write because the driver is closed causes error messages about the watermark
 			sm.Driver.Close();
 			sm.OnFailure("thisClass", "thisTest");
-			//fail("Should fail");
 			lfas.AssertLast("[ERROR]", "Can't write onFailure watermark thisTest. Message: invalid session id");
 		}
 	}

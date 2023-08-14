@@ -39,6 +39,7 @@ public class SeleManager {
 	private Map<String, Object> currentOptions=null;
 	private String[] currentArguments=null;
 	private Capabilities currentOptionsInstance=null;
+	private String driverVersion=DriverVersion.DEFAULT; // string with strategy to use or a given version
 	
 	//Currently managed driver
 	private WebDriver currentDriver=null;
@@ -141,6 +142,13 @@ public class SeleManager {
 	}
 	public String getDriverUrl() {
 		return this.currentDriverUrl;
+	}
+	/**
+	 * Sets the driver version selection strategy or the value of the desired driver version to set
+	 */
+	public SeleManager setDriverVersion(String driverVersion) {
+		this.driverVersion = driverVersion;
+		return this;
 	}
 	/**
 	 * Adds the specific capabilities to the WebDriver prior to its creation
@@ -495,7 +503,7 @@ public class SeleManager {
 	
 	private WebDriver getLocalSeleniumDriver() { 
 		log.trace("Get local Selenium Driver");
-		return new SeleniumDriverFactory().getSeleniumDriver(currentBrowser, "", currentOptions, currentArguments, currentOptionsInstance);
+		return new SeleniumDriverFactory().getSeleniumDriver(currentBrowser, "", this.driverVersion, currentOptions, currentArguments, currentOptionsInstance);
 	}
 	private WebDriver getRemoteSeleniumDriver(String driverScope) {
 		log.trace("Get remote Selenium Driver");
@@ -517,7 +525,7 @@ public class SeleManager {
 		if (browserService!=null)
 			allOptions.put("selenoid:options",selenoidOptions);
 		
-		return new SeleniumDriverFactory().getSeleniumDriver(currentBrowser, currentDriverUrl, allOptions, currentArguments, currentOptionsInstance);
+		return new SeleniumDriverFactory().getSeleniumDriver(currentBrowser, currentDriverUrl, driverVersion, allOptions, currentArguments, currentOptionsInstance);
 	}
 	
 }

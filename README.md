@@ -18,6 +18,7 @@ and integration with CI platforms and Browser services.
 - Features:
   - Transparent download/creation/disposal of the Selenium WebDriver
   - Configurable driver mode (per test, per class)
+  - Configurable strategy to determine the driver version
   - Unified log in html format
   - Take a screenshot when a test fails
   - Video recording and display a timestamp when test fails
@@ -169,6 +170,7 @@ Unless otherwise stated, on .NET, all packages, classes and methods have the sam
 
 - **Browser**: `setBrowser(String browser)` sets the WebDriver for the specified browser ("chrome", "firefox", "edge", "safari", "opera"), default is chrome.
 - **Drivers**: `setDriverUrl(String driverUrl)` sets a RemoteWebDriver instead a local one (default). The driverUrl must point to the browser service.
+- **Versions**: `setDriverVersion(String versionStrategy)` modifies the default version resolution strategy, see next section for details.
 - **Modes of Operation**: By default, Selema starts a WebDriver before each test executions and quits after each test execution, but this behaviour can be modified:
   - `setManageAtClass()`: Starts a WebDriver before the first test at each class, and quits after all tests in the class
   - `setManageNone()`: Do not start/quit automatically any webdriver. Useful to test scenarios that involve users closing browsers.
@@ -184,6 +186,24 @@ Unless otherwise stated, on .NET, all packages, classes and methods have the sam
 NOTE: As of Selenium v4.9.0 no standard capabilities need to include a vendor prefix:
 https://www.selenium.dev/documentation/webdriver/getting_started/upgrade_to_selenium_4/#after. 
 If using `setOptionsInstance` the capabilities specified with `setOptions` and `setArguments` will be added as well to the WebDriver prior to its creation.
+
+## Driver versions
+
+By default, Selema relies on third party Web Driver Managers
+([Java](https://github.com/bonigarcia/webdrivermanager) and
+[.NET](https://github.com/rosolko/WebDriverManager.Net))
+configured to get the local driver version that best matches with the installed browser.
+
+This is suited for most scenarios, but sometimes, the tester wants to have more control on the versions, 
+or changes in Selenium, browsers or driver managers lead to incompatible versions.
+The SeleManager `setDriverVersion` method allows to change this strategy:
+- `setDriverVersion(DriverVersion.LATEST_AVAILABLE)`: Use the latest available version without taking into account the browser version.
+- `setDriverVersion(DriverVersion.SELENIUM_MANAGER)`: Deactivate the third party Driver Managers.
+  Since Selenium V4.6 it relies on the native Selenium capabilities to download drivers using the 
+  [SeleniumManager](https://www.selenium.dev/documentation/selenium_manager/).
+  Note that SeleniumManager is still in beta (August 2023).
+- `setDriverVersion(DriverVersion.MATCH_BROWSER)`: Set the default behaviour back (driver version that closely matches the browser version).
+- `setDriverVersion(<VERSION_NUMBER>)`: Forces to download the specified version.
 
 ## Log file location
 

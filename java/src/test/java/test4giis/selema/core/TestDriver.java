@@ -1,7 +1,6 @@
 package test4giis.selema.core;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Map;
@@ -52,7 +51,7 @@ public class TestDriver {
 	public void testLocalWebDriverChrome() {
 		if (!isLocal()) return;
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
-		WebDriver driver=factory.getSeleniumDriver("chrome", "", null, new String[] {"--remote-allow-origins=*"}, null);
+		WebDriver driver=factory.getSeleniumDriver("chrome", "", "", null, new String[] {"--remote-allow-origins=*"}, null);
 		assertOptions(factory, "{browserName:chrome,goog:chromeOptions:{args:[--remote-allow-origins=*]}}");
 		driver.close();
 	}
@@ -60,7 +59,7 @@ public class TestDriver {
 	public void testLocalWebDriverEdge() {
 		if (!isLocal()) return;
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
-		WebDriver driver=factory.getSeleniumDriver("edge", "", null, null, null);
+		WebDriver driver=factory.getSeleniumDriver("edge", "", "", null, null, null);
 		assertOptions(factory, Parameters.isJava()
 				? "{browserName:MicrosoftEdge,ms:edgeOptions:{args:[--remote-allow-origins=*]}}"
 				: "{browserName:MicrosoftEdge,ms:edgeOptions:{}}");
@@ -70,7 +69,7 @@ public class TestDriver {
 	public void testLocalWebDriverFirefox() {
 		if (!isLocal()) return;
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
-		WebDriver driver=factory.getSeleniumDriver("firefox", "", null, null, null);
+		WebDriver driver=factory.getSeleniumDriver("firefox", "", "", null, null, null);
 		assertOptions(factory, "{browserName:firefox,moz:firefoxOptions:{}}");
 		driver.close();
 	}
@@ -81,11 +80,11 @@ public class TestDriver {
 	public void testHeadlessWebDriverDefault() {
 		if (!useHeadless()) return;
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
-		WebDriver driver=factory.getSeleniumDriver("chrome", "", null, chromeHeadlesArgument, null);
+		WebDriver driver=factory.getSeleniumDriver("chrome", "", "", null, chromeHeadlesArgument, null);
 		assertOptions(factory, "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]}}");
 		driver.close();
 		//browser name is case insensitive, browser already downloaded, null remote url
-		driver=factory.getSeleniumDriver("CHRome", null, null, chromeHeadlesArgument, null);
+		driver=factory.getSeleniumDriver("CHRome", null, null, null, chromeHeadlesArgument, null);
 		assertOptions(factory, "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]}}");
 		driver.close();
 	}
@@ -99,7 +98,7 @@ public class TestDriver {
 		caps.put("testprefix:key1", "value1");
 		caps.put("testprefix:key2", "value2");
 		//caps.put("unhandledPromptBehavior", "ignore");
-		WebDriver driver=factory.getSeleniumDriver("chrome", "", caps, chromeHeadlesArgument, null);
+		WebDriver driver=factory.getSeleniumDriver("chrome", "", "", caps, chromeHeadlesArgument, null);
 		assertOptions(factory, Parameters.isJava() //different order on net
 			? "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]},testprefix:key1:value1,testprefix:key2:value2}"
 			: "{browserName:chrome,testprefix:key1:value1,testprefix:key2:value2,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]}}");
@@ -113,10 +112,11 @@ public class TestDriver {
 		if (!useHeadless()) return;
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
 		try {
-			factory.getSeleniumDriver("carome", "", null, chromeHeadlesArgument, null);
+			factory.getSeleniumDriver("carome", "", "", null, chromeHeadlesArgument, null);
 			fail("Should fail");
 		} catch (SelemaException e) {
-			assertTrue(e.getMessage().startsWith("Can't instantiate WebDriver Options for browser: carome"));
+			Asserts.assertIsTrue(e.getMessage().startsWith("Can't instantiate WebDriver Options for browser: carome"),
+					"Not contained in: " + e.getMessage());
 		}
 	}
 	@Test
@@ -124,10 +124,11 @@ public class TestDriver {
 		if (!useHeadless()) return;
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
 		try {
-			factory.ensureLocalDriverDownloaded("corome");
+			factory.ensureLocalDriverDownloaded("corome", "");
 			fail("Should fail");
 		} catch (SelemaException e) {
-			assertTrue(e.getMessage().startsWith("Can't download driver executable for browser: corome"));
+			Asserts.assertIsTrue(e.getMessage().startsWith("Can't download driver executable for browser: corome"),
+					"Not contained in: " + e.getMessage());
 		}
 	}
 	//Custom assertion to allow same comparisons in java and net
@@ -146,7 +147,7 @@ public class TestDriver {
 	public void testRemoteWebDriverDefault() {
 		if (!useRemote()) return;
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
-		WebDriver driver=factory.getSeleniumDriver("chrome", new Config4test().getRemoteDriverUrl(), null, null, null);
+		WebDriver driver=factory.getSeleniumDriver("chrome", new Config4test().getRemoteDriverUrl(), null, null, null, null);
 		//NOTE: Selenium 4.8.2/3 (java) adds --remote-allow-origins=* to prevent the Chrome Driver 111 breaking change
 		assertOptions(factory, Parameters.isJava()
 				? "{browserName:chrome,goog:chromeOptions:{args:[--remote-allow-origins=*]}}"
@@ -158,7 +159,7 @@ public class TestDriver {
 		if (!useRemote()) return;
 		//setting options has been tested with local
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
-		WebDriver driver=factory.getSeleniumDriver("chrome", new Config4test().getRemoteDriverUrl(), null, new String[] {"--start-maximized"}, null);
+		WebDriver driver=factory.getSeleniumDriver("chrome", new Config4test().getRemoteDriverUrl(), null, null, new String[] {"--start-maximized"}, null);
 		//NOTE: Selenium 4.8.2/3 (java) adds --remote-allow-origins=* to prevent the Chrome Driver 111 breaking change
 		assertOptions(factory, Parameters.isJava()
 				? "{browserName:chrome,goog:chromeOptions:{args:[--remote-allow-origins=*,--start-maximized]}}"
@@ -171,7 +172,7 @@ public class TestDriver {
 		String wrongUrl=new Config4test().getRemoteDriverUrl() + "/notexist";
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
 		try {
-			factory.getSeleniumDriver("chrome", wrongUrl, null, null, null);
+			factory.getSeleniumDriver("chrome", wrongUrl, null, null, null, null);
 			fail("Should fail");
 		} catch (SelemaException e) {
 			Asserts.assertIsTrue(

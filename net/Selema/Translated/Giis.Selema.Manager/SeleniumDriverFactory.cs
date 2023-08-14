@@ -3,6 +3,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Giis.Selema.Portable.Selenium;
 using NLog;
 using OpenQA;
@@ -31,7 +32,7 @@ namespace Giis.Selema.Manager
 		/// if the remoteUrl is empty or null returns a WebDriver (downloading the driver executable if needed),
 		/// if not, returns a RemoteWebDriver
 		/// </summary>
-		public virtual IWebDriver GetSeleniumDriver(string browser, string remoteUrl, IDictionary<string, object> caps, string[] args, DriverOptions optInstance)
+		public virtual IWebDriver GetSeleniumDriver(string browser, string remoteUrl, string driverVersion, IDictionary<string, object> caps, string[] args, DriverOptions optInstance)
 		{
 			SeleniumObjects reflect = new SeleniumObjects();
 			string objectToInstantiate = string.Empty;
@@ -62,7 +63,7 @@ namespace Giis.Selema.Manager
 				log.Trace("Option string: " + lastOptionString.Replace("\n", string.Empty).Replace("\r", string.Empty));
 				if (remoteUrl == null || string.Empty.Equals(remoteUrl.Trim()))
 				{
-					EnsureLocalDriverDownloaded(browser);
+					EnsureLocalDriverDownloaded(browser, driverVersion);
 					return (IWebDriver)reflect.GetDriverObj(browser, opt);
 				}
 				else
@@ -75,7 +76,15 @@ namespace Giis.Selema.Manager
 			catch (Exception e)
 			{
 				//
-				throw new SelemaException(log, "Can't instantiate " + objectToInstantiate + " for browser: " + browser + (string.Empty.Equals(url) ? string.Empty : " at url: " + url), e);
+				string message = "Can't instantiate " + objectToInstantiate + " for browser: " + browser + (string.Empty.Equals(url) ? string.Empty : " at url: " + url);
+				if (e is TargetInvocationException)
+				{
+					// captures detailed info if caused by selenium execution
+					message += ". Message: " + ((TargetInvocationException)e).InnerException.Message;
+				}
+				message += ". Exception: " + e.GetType().FullName;
+				//add exception class name for better debugging
+				throw new SelemaException(log, message, e);
 			}
 		}
 
@@ -86,12 +95,13 @@ namespace Giis.Selema.Manager
 		}
 
 		/// <summary>Ensures that the appropriate local driver has been downladed,</summary>
-		public virtual void EnsureLocalDriverDownloaded(string browser)
+		public virtual void EnsureLocalDriverDownloaded(string browser, string version)
 		{
 			browser = browser.ToLower();
+			version = version == null || string.Empty.Equals(version.Trim()) ? DriverVersion.Default : version.ToLower();
 			if (!driversWithSetupDone.Contains(browser))
 			{
-				new SeleniumObjects().DownloadDriverExecutable(browser);
+				new SeleniumObjects().DownloadDriverExecutable(browser, version);
 				driversWithSetupDone.Add(browser);
 			}
 		}

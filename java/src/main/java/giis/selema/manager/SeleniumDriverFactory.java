@@ -1,5 +1,6 @@
 package giis.selema.manager;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,6 @@ import giis.selema.portable.selenium.SeleniumObjects;
  */
 public class SeleniumDriverFactory {
 	final Logger log=LoggerFactory.getLogger(this.getClass());
-	private List<String> driversWithSetupDone=new ArrayList<>(); //to avoid duplicate downloads of local drivers
 	private String lastOptionString="";
 	
 	/**
@@ -27,7 +27,7 @@ public class SeleniumDriverFactory {
 	 * if the remoteUrl is empty or null returns a WebDriver (downloading the driver executable if needed),
 	 * if not, returns a RemoteWebDriver 
 	 */
-	public WebDriver getSeleniumDriver(String browser, String remoteUrl, Map<String, Object> caps, String[] args, Capabilities optInstance) {
+	public WebDriver getSeleniumDriver(String browser, String remoteUrl,String driverVersion, Map<String, Object> caps, String[] args, Capabilities optInstance) {
 		SeleniumObjects reflect=new SeleniumObjects();
 		String objectToInstantiate=""; //to enhance error messages
 		String url="";
@@ -48,7 +48,7 @@ public class SeleniumDriverFactory {
 			lastOptionString=opt.toString();
 			log.trace("Option string: "+lastOptionString.replace("\n", "").replace("\r", ""));
 			if (remoteUrl==null || "".equals(remoteUrl.trim())) {
-				ensureLocalDriverDownloaded(browser);
+				ensureLocalDriverDownloaded(browser, driverVersion);
 				return (WebDriver)reflect.getDriverObj(browser, opt);
 			} else {
 				objectToInstantiate="RemoteWebDriver";
@@ -56,9 +56,12 @@ public class SeleniumDriverFactory {
 				return (RemoteWebDriver)reflect.getRemoteDriverObj(remoteUrl, opt);
 			}
 		} catch (Exception e) { //NOSONAR
-			throw new SelemaException(log, "Can't instantiate "
-					+ objectToInstantiate + " for browser: " + browser 
-					+ ("".equals(url)?"":" at url: "+url), e);
+			String message = "Can't instantiate " + objectToInstantiate
+					+ " for browser: " + browser + ("".equals(url)?"":" at url: "+url);
+			if (e instanceof InvocationTargetException) // captures detailed info if caused by selenium execution
+				message += ". Message: " + ((InvocationTargetException)e).getTargetException().getMessage();
+			message += ". Exception: " + e.getClass().getCanonicalName(); //add exception class name for better debugging
+			throw new SelemaException(log, message, e);
 		}
 	}
 	/**
@@ -67,16 +70,14 @@ public class SeleniumDriverFactory {
 	public String getLastOptionString() {
 		return lastOptionString;
 	}
-	
 	/**
 	 * Ensures that the appropriate local driver has been downladed, 
 	 */
-	public void ensureLocalDriverDownloaded(String browser) {
-		browser=browser.toLowerCase();
-		if (!driversWithSetupDone.contains(browser)) {
-			new SeleniumObjects().downloadDriverExecutable(browser);
-			driversWithSetupDone.add(browser);
-		}
+	public void ensureLocalDriverDownloaded(String browser, String version) {
+		// sanitize inputs before download
+		browser = browser.toLowerCase();
+		version = version==null || "".equals(version.trim()) ? DriverVersion.DEFAULT : version.toLowerCase();
+		new SeleniumObjects().downloadDriverExecutable(browser, version);
 	}
 	
 }
