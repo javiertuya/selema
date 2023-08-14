@@ -28,7 +28,7 @@ and integration with CI platforms and Browser services.
 
 ## Breaking changes
 
-- Java only: As of V3.1.0 Java 11 as minimum version supported (this is the requirement of the upcoming Selenium V5)
+- Java only: As of V3.1.0, Java 11 is the minimum version supported (requirement of the upcoming Selenium v5)
 - As of v3.0.0 the class `SeleniumManager` is renamed to `SeleManager` to avoid naming conflics with Selenium >=v4.6
 
 # Getting started
