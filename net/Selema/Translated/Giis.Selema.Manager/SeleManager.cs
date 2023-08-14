@@ -1,6 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// THIS FILE HAS BEEN AUTOMATICALLY CONVERTED FROM THE JAVA SOURCES. DO NOT EDIT ///////
 /////////////////////////////////////////////////////////////////////////////////////////////
+using System;
 using System.Collections.Generic;
 using Giis.Portable.Util;
 using Giis.Selema.Services;
@@ -484,9 +485,29 @@ namespace Giis.Selema.Manager
 			//despues de screenshot y videos por si interfiere en el estado de la pantalla o el instante del fallo
 			if (currentDriver != null && watermark != null)
 			{
-				watermark.Fail(currentDriver, testName);
+				msg += WatermarkFail(currentDriver, testName);
 			}
 			return msg;
+		}
+
+		// After update to Selenium 4.11 we detected some tests that failed with "invalid session id" message.
+		// This was caused by button cliks using javascript executor that apparently crashed the browser
+		// and cause a fist failure in the watermark writing that is controlled and logged now
+		private string WatermarkFail(IWebDriver driver, string value)
+		{
+			try
+			{
+				watermark.Fail(driver, value);
+				return string.Empty;
+			}
+			catch (Exception e)
+			{
+				string msg = "Can't write onFailure watermark " + value + ". Message: " + e.Message;
+				log.Error(msg);
+				selemaLog.Error(msg.Replace("\n", "<br/>"));
+				//some messages may have more than one line
+				return msg;
+			}
 		}
 
 		public virtual void OnSuccess(string testName)
@@ -524,9 +545,19 @@ namespace Giis.Selema.Manager
 				selemaLog.Error("Watermark service is not attached to this Selenium Manager");
 				throw new SelemaException("Watermark service is not attached to this Selenium Manager");
 			}
-			watermark.Write(this.Driver, value);
+			try
+			{
+				watermark.Write(this.Driver, value);
+			}
+			catch (Exception e)
+			{
+				string msg = "Can't write onFailure watermark " + value + ". Message: " + e.Message;
+				log.Warn(msg);
+				selemaLog.Warn(msg.Replace("\n", "<br/>"));
+			}
 		}
 
+		//some messages may have more than one line
 		/// <summary>Asserts if two large strings and links the html differences to the log</summary>
 		public virtual void VisualAssertEquals(string expected, string actual)
 		{

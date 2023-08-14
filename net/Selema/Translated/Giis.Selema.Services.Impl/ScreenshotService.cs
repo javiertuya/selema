@@ -43,8 +43,9 @@ namespace Giis.Selema.Services.Impl
 				string msg = "Can't take screenshot or write the content to file " + screenshotFile + ". Message: " + e.Message;
 				if (log != null)
 				{
-					log.Error(msg);
+					log.Error(msg.Replace("\n", "<br/>"));
 				}
+				//some messages may have more than one line
 				return msg;
 			}
 		}

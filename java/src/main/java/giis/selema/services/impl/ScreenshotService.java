@@ -39,9 +39,10 @@ public class ScreenshotService implements IScreenshotService {
 		} catch (RuntimeException e) {
 			String msg="Can't take screenshot or write the content to file "+screenshotFile+". Message: " + e.getMessage();
 			if (log!=null)
-				log.error(msg);
+				log.error(msg.replace("\n", "<br/>")); //some messages may have more than one line
 			return msg;
 		}
 	}
 
 }
+

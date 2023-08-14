@@ -20,6 +20,7 @@ import giis.selema.manager.SelemaException;
 import giis.selema.manager.SeleManager;
 import giis.selema.services.IMediaContext;
 import giis.selema.services.impl.MediaContext;
+import giis.selema.services.impl.WatermarkService;
 
 /**
  * Checks exceptional situations: Some of them do not raise exceptions, but write in the selema log, 
@@ -51,6 +52,7 @@ public class TestExceptions implements IAfterEachCallback {
 	@Before
 	public void setUp() {
 		saveDriver=sm.driver();
+		sm.add((WatermarkService)null); // some tests add this service, this removes it
 		lfas.assertAfterSetup(sm, false, thisTestCount==0); //ensures correct setup
 		launchPage();
 	}
@@ -123,9 +125,31 @@ public class TestExceptions implements IAfterEachCallback {
 		lfas.assertLast(1, "[WARN]", "Soft Visual Assert differences (Failure 1)", "TestExceptions-testSoftAssertException.html");
 	}
 	@Test
-	public void testWatermarkException() {
+	public void testWatermarkExceptionNotAttached() {
 		try { sm.watermark(); fail("Should fail"); } catch (Throwable e) { }
 		lfas.assertLast("[ERROR]", "Watermark service is not attached to this Selenium Manager");
+	}
+	@Test
+	public void testWatermarkExceptionWritingMessage() {
+		// Driver will be closed, needs a new one for this test
+		sm.replaceDriver(sm.createDriver());
+		sm.add(new WatermarkService());
+		sm.driver().close();
+		// Failure to write because the driver is closed causes error messages about the watermark, but not exception
+		sm.watermarkText("thisShouldNotFail");
+		lfas.assertLast("[WARN]", "Can't write onFailure watermark thisShouldNotFail. Message: invalid session id");
+	}
+	@Test
+	public void testWatermarkExceptionWritingOnFailureMessage() {
+		// Driver will be closed, needs a new one for this test
+		sm.replaceDriver(sm.createDriver());
+		sm.add(new WatermarkService());
+		sm.watermarkText("this works");
+		// Failure to write because the driver is closed causes error messages about the watermark
+		sm.driver().close();
+		sm.onFailure("thisClass", "thisTest");
+		//fail("Should fail");
+		lfas.assertLast("[ERROR]", "Can't write onFailure watermark thisTest. Message: invalid session id");
 	}
 
 }

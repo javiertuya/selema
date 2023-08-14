@@ -395,8 +395,22 @@ public class SeleManager {
 			msg+=videoRecorder.onTestFailure(mediaVideoContext, getDriverScope(className, testName));
 		//despues de screenshot y videos por si interfiere en el estado de la pantalla o el instante del fallo
 		if (currentDriver!=null && watermark!=null) 
-			watermark.fail(currentDriver, testName);
+			msg+=watermarkFail(currentDriver, testName);
 		return msg;
+	}
+	// After update to Selenium 4.11 we detected some tests that failed with "invalid session id" message.
+	// This was caused by button cliks using javascript executor that apparently crashed the browser
+	// and cause a fist failure in the watermark writing that is controlled and logged now
+	private String watermarkFail(WebDriver driver, String value) {
+		try {
+			watermark.fail(driver, value);
+			return "";
+		} catch (RuntimeException e) {
+			String msg="Can't write onFailure watermark " + value + ". Message: " + e.getMessage();
+			log.error(msg);
+			selemaLog.error(msg.replace("\n", "<br/>")); //some messages may have more than one line
+			return msg;
+		}
 	}
 	public void onSuccess(String testName) {
 		log.trace("on test success "+testName);
@@ -431,7 +445,13 @@ public class SeleManager {
 			selemaLog.error("Watermark service is not attached to this Selenium Manager");
 			throw new SelemaException("Watermark service is not attached to this Selenium Manager");
 		}
-		watermark.write(this.driver(), value);
+		try {
+			watermark.write(this.driver(), value);
+		} catch (RuntimeException e) {
+			String msg="Can't write onFailure watermark " + value + ". Message: " + e.getMessage();
+			log.warn(msg);
+			selemaLog.warn(msg.replace("\n", "<br/>")); //some messages may have more than one line
+		}
 	}
 	/**
 	 * Asserts if two large strings and links the html differences to the log

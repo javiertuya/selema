@@ -58,6 +58,8 @@ namespace Test4giis.Selema.Core
 		public virtual void SetUp()
 		{
 			saveDriver = sm.Driver;
+			sm.Add((WatermarkService)null);
+			// some tests add this service, this removes it
 			lfas.AssertAfterSetup(sm, false, thisTestCount == 0);
 			//ensures correct setup
 			LaunchPage();
@@ -199,7 +201,7 @@ namespace Test4giis.Selema.Core
 		}
 
 		[Test]
-		public virtual void TestWatermarkException()
+		public virtual void TestWatermarkExceptionNotAttached()
 		{
 			try
 			{
@@ -210,6 +212,32 @@ namespace Test4giis.Selema.Core
 			{
 			}
 			lfas.AssertLast("[ERROR]", "Watermark service is not attached to this Selenium Manager");
+		}
+
+		[Test]
+		public virtual void TestWatermarkExceptionWritingMessage()
+		{
+			// Driver will be closed, needs a new one for this test
+			sm.ReplaceDriver(sm.CreateDriver());
+			sm.Add(new WatermarkService());
+			sm.Driver.Close();
+			// Failure to write because the driver is closed causes error messages about the watermark, but not exception
+			sm.WatermarkText("thisShouldNotFail");
+			lfas.AssertLast("[WARN]", "Can't write onFailure watermark thisShouldNotFail. Message: invalid session id");
+		}
+
+		[Test]
+		public virtual void TestWatermarkExceptionWritingOnFailureMessage()
+		{
+			// Driver will be closed, needs a new one for this test
+			sm.ReplaceDriver(sm.CreateDriver());
+			sm.Add(new WatermarkService());
+			sm.WatermarkText("this works");
+			// Failure to write because the driver is closed causes error messages about the watermark
+			sm.Driver.Close();
+			sm.OnFailure("thisClass", "thisTest");
+			//fail("Should fail");
+			lfas.AssertLast("[ERROR]", "Can't write onFailure watermark thisTest. Message: invalid session id");
 		}
 	}
 }
