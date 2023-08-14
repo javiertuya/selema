@@ -22,11 +22,8 @@ namespace Giis.Selema.Manager
 	{
 		internal readonly Logger log = LogManager.GetCurrentClassLogger();
 
-		private IList<string> driversWithSetupDone = new List<string>();
-
 		private string lastOptionString = string.Empty;
 
-		//to avoid duplicate downloads of local drivers
 		/// <summary>
 		/// Unified entry point to instantiate a WebDriver for the indicated browser adding the capabilities and arguments specified;
 		/// if the remoteUrl is empty or null returns a WebDriver (downloading the driver executable if needed),
@@ -97,13 +94,10 @@ namespace Giis.Selema.Manager
 		/// <summary>Ensures that the appropriate local driver has been downladed,</summary>
 		public virtual void EnsureLocalDriverDownloaded(string browser, string version)
 		{
+			// sanitize inputs before download
 			browser = browser.ToLower();
 			version = version == null || string.Empty.Equals(version.Trim()) ? DriverVersion.Default : version.ToLower();
-			if (!driversWithSetupDone.Contains(browser))
-			{
-				new SeleniumObjects().DownloadDriverExecutable(browser, version);
-				driversWithSetupDone.Add(browser);
-			}
+			new SeleniumObjects().DownloadDriverExecutable(browser, version);
 		}
 	}
 }

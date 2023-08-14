@@ -11,7 +11,7 @@ providing an unified test log, clues for debugging
 and integration with CI platforms and Browser services.
 
 - Support:
-  - Platforms: Java (>=8) and .NET Core (>=3.1)
+  - Platforms: Java (>=11) and .NET Core (>=3.1)
   - Test frameworks: JUnit 4, JUnit 5, NUnit 3, MSTest 2
   - CI/CD environments: Jenkins, GiHhub Actions
   - Browser services: Selenoid
@@ -26,9 +26,10 @@ and integration with CI platforms and Browser services.
   - Visual differences when comparing large strings (Visual Assert)
   - Flaky test handling (Retry failed tests) on all supported frameworks
 
-## Breaking change v3.0.0
+## Breaking changes
 
-As of v3.0.0 the class `SeleniumManager` is renamed to `SeleManager` to avoid naming conflics with Selenium >=v4.6
+- Java only: As of V3.1.0 Java 11 as minimum version supported (this is the requirement of the upcoming Selenium V5)
+- As of v3.0.0 the class `SeleniumManager` is renamed to `SeleManager` to avoid naming conflics with Selenium >=v4.6
 
 # Getting started
 
