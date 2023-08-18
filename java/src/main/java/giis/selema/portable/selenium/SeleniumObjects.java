@@ -69,7 +69,7 @@ public class SeleniumObjects {
 		else if (DriverVersion.LATEST_AVAILABLE.equals(driverVersion))
 			WebDriverManager.getInstance(driverManagerType).avoidBrowserDetection().setup();
 		else if (DriverVersion.SELENIUM_MANAGER.equals(driverVersion))
-			return;
+			return; // NOSONAR makes logic more clear
 		else // none of these keywords, try to get the exact version
 			WebDriverManager.getInstance(driverManagerType).driverVersion(driverVersion).setup();
 	}

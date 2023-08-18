@@ -1,8 +1,6 @@
 package giis.selema.manager;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.openqa.selenium.Capabilities;

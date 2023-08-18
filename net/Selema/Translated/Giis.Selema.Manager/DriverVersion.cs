@@ -1,6 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// THIS FILE HAS BEEN AUTOMATICALLY CONVERTED FROM THE JAVA SOURCES. DO NOT EDIT ///////
 /////////////////////////////////////////////////////////////////////////////////////////////
+using System;
 using Sharpen;
 
 namespace Giis.Selema.Manager
@@ -15,8 +16,13 @@ namespace Giis.Selema.Manager
 		public const string SeleniumManager = "selenium";
 
 		public const string Default = MatchBrowser;
-		// try match with browser version
-		// use the latest available version
-		// use the default SeleniumManager
+
+		private DriverVersion()
+		{
+			// try match with browser version
+			// use the latest available version
+			// use the default SeleniumManager
+			throw new InvalidOperationException("Utility class");
+		}
 	}
 }
