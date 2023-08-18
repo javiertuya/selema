@@ -112,7 +112,11 @@ jobs:
           name: "test-report-${{ matrix.platform }}-${{ matrix.mode }}-files"
           path: |
             java/target/site
-            java/target/selema
+            java/target/selema/*.html
+            java/target/selema/*.log
+            java/target/selema/*.json
+            java/target/selema/*.png
+            java/target/selema/video*.mp4
             net/reports
       - name: JAVA - Reports for Sonar
         if: ${{ always() && matrix.platform=='java' }}
