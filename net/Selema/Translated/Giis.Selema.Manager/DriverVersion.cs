@@ -14,7 +14,7 @@ namespace Giis.Selema.Manager
 
 		public const string SeleniumManager = "selenium";
 
-		public const string Default = LatestAvailable;
+		public const string Default = MatchBrowser;
 		// try match with browser version
 		// use the latest available version
 		// use the default SeleniumManager
