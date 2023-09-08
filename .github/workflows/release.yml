@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: Checkout GitHub repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       #Official documentation seems incomplete. To avoid failure when importing key: 
       #https://stackoverflow.com/questions/61096521/how-to-use-gpg-key-in-github-actions
       #It requires export the private key with the armor option: gpg --output private.pgm --armor --export-secret-key <email>
@@ -49,7 +49,7 @@ jobs:
       contents: read
       packages: write 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v3.2.0
         with:
             dotnet-version: '6.0.x'
