@@ -95,7 +95,7 @@ jobs:
       #    skip_publishing: ${{ github.actor != 'javiertuya' }} #avoids failure on dependabot or other user PRs
       - name: Generate report checks1
         if: always()
-        uses: mikepenz/action-junit-report@v4.0.0
+        uses: mikepenz/action-junit-report@v4.0.1
         with:
           check_name: "test-result-${{ matrix.platform }}-${{ matrix.mode }}"
           report_paths: "**/${{ env.REPORT_FOLDER }}/surefire-reports/TEST-*.xml"
@@ -118,6 +118,7 @@ jobs:
             java/target/selema/*.png
             java/target/selema/video*.mp4
             net/reports
+            !**/selenoid*.mp4
       - name: JAVA - Reports for Sonar
         if: ${{ always() && matrix.platform=='java' }}
         uses: actions/upload-artifact@v3.1.3
