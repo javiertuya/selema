@@ -149,8 +149,9 @@ public class TestDriver {
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
 		WebDriver driver=factory.getSeleniumDriver("chrome", new Config4test().getRemoteDriverUrl(), null, null, null, null);
 		//NOTE: Selenium 4.8.2/3 (java) adds --remote-allow-origins=* to prevent the Chrome Driver 111 breaking change
+		//As of Selenium 4.14.1 remote-allow-origins is removed
 		assertOptions(factory, Parameters.isJava()
-				? "{browserName:chrome,goog:chromeOptions:{args:[--remote-allow-origins=*]}}"
+				? "{browserName:chrome,goog:chromeOptions:{args:[]}}"
 				: "{browserName:chrome,goog:chromeOptions:{}}");
 		driver.close();
 	}
@@ -161,8 +162,9 @@ public class TestDriver {
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
 		WebDriver driver=factory.getSeleniumDriver("chrome", new Config4test().getRemoteDriverUrl(), null, null, new String[] {"--start-maximized"}, null);
 		//NOTE: Selenium 4.8.2/3 (java) adds --remote-allow-origins=* to prevent the Chrome Driver 111 breaking change
+		//As of Selenium 4.14.1 remote-allow-origins is removed
 		assertOptions(factory, Parameters.isJava()
-				? "{browserName:chrome,goog:chromeOptions:{args:[--remote-allow-origins=*,--start-maximized]}}"
+				? "{browserName:chrome,goog:chromeOptions:{args:[--start-maximized]}}"
 				: "{browserName:chrome,goog:chromeOptions:{args:[--start-maximized]}}");
 		driver.close();
 	}
