@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import giis.portable.util.FileUtil;
+import giis.portable.util.PortableException;
 import giis.selema.manager.SelemaException;
 import giis.selema.services.impl.SelemaLogger;
 
@@ -25,11 +26,21 @@ public class LogReader {
 	public LogReader(String reportDir, String logFile) {
 		this.logFile=FileUtil.getPath(reportDir, logFile);
 	}
+	private List<String> readLogFile() {
+		try {
+			return FileUtil.fileReadLines(logFile);
+		} catch (PortableException e) {
+			//assume a non existing log file as empty (regression #425)
+			if (e.getMessage().startsWith("Error reading file"))
+				return new ArrayList<>();
+			throw (e);
+		}
+	}
 	public int getLogSize() {
-		return FileUtil.fileReadLines(logFile).size();
+		return readLogFile().size();
 	}
 	public void assertBegin() {
-		logLines=FileUtil.fileReadLines(logFile);
+		logLines=readLogFile();
 		assertItems=new ArrayList<String[]>();
 	}
 	public void assertContains(String... expected) {
