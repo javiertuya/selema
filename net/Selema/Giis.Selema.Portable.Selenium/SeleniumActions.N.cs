@@ -27,7 +27,7 @@ namespace Giis.Selema.Portable.Selenium
 		public static void TakeScreenshotToFile(IWebDriver driver, string fileName)
 		{
 			Screenshot ss = ((ITakesScreenshot)driver).GetScreenshot();
-			ss.SaveAsFile(fileName, ScreenshotImageFormat.Png);
+			ss.SaveAsFile(fileName);
 		}
 
 		/// <summary>
