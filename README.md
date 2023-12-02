@@ -11,8 +11,8 @@ providing an unified test log, clues for debugging
 and integration with CI platforms and Browser services.
 
 - Support:
-  - Platforms: Java (>=11) and .NET Core (>=3.1)
-  - Test frameworks: JUnit 4, JUnit 5, NUnit 3, MSTest 2
+  - Platforms: Java (>=11) and .NET (netstandard 2.0)
+  - Test frameworks: JUnit 4, JUnit 5, NUnit 3/4, MSTest 2/3
   - CI/CD environments: Jenkins, GiHhub Actions
   - Browser services: Selenoid
 - Features:
