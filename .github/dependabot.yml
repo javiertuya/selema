@@ -8,7 +8,7 @@ updates:
     open-pull-requests-limit: 20
 
   - package-ecosystem: nuget
-    directory: "/net"
+    directory: "/net/Selema"
     #avoid major updates of frameworks to avoid deprecation warning
     ignore:
       - dependency-name: "Selenium.WebDriver"
@@ -21,6 +21,14 @@ updates:
         update-types: ["version-update:semver-major"]
       - dependency-name: "NLog"
         update-types: ["version-update:semver-major"]
+    schedule:
+      interval: weekly
+      day: friday
+    open-pull-requests-limit: 20
+
+  - package-ecosystem: nuget
+    directory: "/net/SelemaTest"
+    #tests run using the latest framework
     schedule:
       interval: weekly
       day: friday
