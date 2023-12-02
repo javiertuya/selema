@@ -3,12 +3,12 @@
 /////////////////////////////////////////////////////////////////////////////////////////////
 using System.Collections.Generic;
 using Giis.Portable.Util;
-using Giis.Selema.Framework.Nunit3;
 using Giis.Selema.Manager;
 using Giis.Selema.Services.Impl;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using Sharpen;
+using Test4giis.Selema.Portable;
 
 namespace Test4giis.Selema.Core
 {
@@ -138,7 +138,7 @@ namespace Test4giis.Selema.Core
 			try
 			{
 				factory.GetSeleniumDriver("carome", string.Empty, string.Empty, null, chromeHeadlesArgument, null);
-				NUnit.Framework.Assert.Fail("Should fail");
+				NUnit.Framework.Legacy.ClassicAssert.Fail("Should fail");
 			}
 			catch (SelemaException e)
 			{
@@ -157,7 +157,7 @@ namespace Test4giis.Selema.Core
 			try
 			{
 				factory.EnsureLocalDriverDownloaded("corome", string.Empty);
-				NUnit.Framework.Assert.Fail("Should fail");
+				NUnit.Framework.Legacy.ClassicAssert.Fail("Should fail");
 			}
 			catch (SelemaException e)
 			{
@@ -178,7 +178,7 @@ namespace Test4giis.Selema.Core
 			{
 				actual = actual.Replace("\n", string.Empty).Replace("\r", string.Empty).Replace("\"", string.Empty);
 			}
-			NUnit.Framework.Assert.AreEqual(expected, actual);
+			NUnit.Framework.Legacy.ClassicAssert.AreEqual(expected, actual);
 		}
 
 		[Test]
@@ -224,7 +224,7 @@ namespace Test4giis.Selema.Core
 			try
 			{
 				factory.GetSeleniumDriver("chrome", wrongUrl, null, null, null, null);
-				NUnit.Framework.Assert.Fail("Should fail");
+				NUnit.Framework.Legacy.ClassicAssert.Fail("Should fail");
 			}
 			catch (SelemaException e)
 			{

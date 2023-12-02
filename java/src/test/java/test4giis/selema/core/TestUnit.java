@@ -3,10 +3,10 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.*;
 
-import giis.selema.framework.junit4.Asserts;
 import giis.selema.manager.SelemaConfig;
 import giis.selema.services.IMediaContext;
 import giis.selema.services.impl.MediaContext;
+import test4giis.selema.portable.Asserts;
 
 /**
  * Otras pruebas unitarias necesarias, cada uno con su propio selenium manager, 

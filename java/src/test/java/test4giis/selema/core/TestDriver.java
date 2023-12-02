@@ -12,12 +12,12 @@ import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 
 import giis.portable.util.Parameters;
-import giis.selema.framework.junit4.Asserts;
 import giis.selema.manager.CiServiceFactory;
 import giis.selema.manager.SelemaException;
 import giis.selema.manager.SeleniumDriverFactory;
 import giis.selema.manager.SeleManager;
 import giis.selema.services.impl.SelenoidService;
+import test4giis.selema.portable.Asserts;
 
 /**
  * Main tests to check that drivers are created

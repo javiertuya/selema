@@ -9,6 +9,7 @@ using Giis.Selema.Services.Impl;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using Sharpen;
+using Test4giis.Selema.Portable;
 
 namespace Test4giis.Selema.Core
 {
@@ -71,15 +72,15 @@ namespace Test4giis.Selema.Core
 			//fichero cobertura generado
 			//cobertura inicial por haber cargado la pagina
 			recorder.BeforeQuitDriver(driver);
-			NUnit.Framework.Assert.AreEqual(FileUtil.FileRead(TestBmkFolder + "/bmk.initial.jscoverage.json"), FileUtil.FileRead(CoverageOutFile));
+			NUnit.Framework.Legacy.ClassicAssert.AreEqual(FileUtil.FileRead(TestBmkFolder + "/bmk.initial.jscoverage.json"), FileUtil.FileRead(CoverageOutFile));
 			//cobertura intermedia tras ejecutar una accion
 			TestActions.RunAlerts(driver, true, false, false);
 			recorder.BeforeQuitDriver(driver);
-			NUnit.Framework.Assert.AreEqual(FileUtil.FileRead(TestBmkFolder + "/bmk.middle.jscoverage.json"), FileUtil.FileRead(CoverageOutFile));
+			NUnit.Framework.Legacy.ClassicAssert.AreEqual(FileUtil.FileRead(TestBmkFolder + "/bmk.middle.jscoverage.json"), FileUtil.FileRead(CoverageOutFile));
 			//cobertura final tras ejecutar otra accion
 			TestActions.RunAlerts(driver, false, true, true);
 			recorder.BeforeQuitDriver(driver);
-			NUnit.Framework.Assert.AreEqual(FileUtil.FileRead(TestBmkFolder + "/bmk.final.jscoverage.json"), FileUtil.FileRead(CoverageOutFile));
+			NUnit.Framework.Legacy.ClassicAssert.AreEqual(FileUtil.FileRead(TestBmkFolder + "/bmk.final.jscoverage.json"), FileUtil.FileRead(CoverageOutFile));
 		}
 
 		/// <summary>
@@ -91,7 +92,7 @@ namespace Test4giis.Selema.Core
 			string CoverageOutFile = FileUtil.GetPath(Config4test.GetConfig().GetReportDir(), "jscoverage.json");
 			//fichero cobertura generado
 			recorder.BeforeQuitDriver(driver);
-			NUnit.Framework.Assert.AreEqual(FileUtil.FileRead(TestBmkFolder + "/bmk.final2.jscoverage.json"), FileUtil.FileRead(CoverageOutFile));
+			NUnit.Framework.Legacy.ClassicAssert.AreEqual(FileUtil.FileRead(TestBmkFolder + "/bmk.final2.jscoverage.json"), FileUtil.FileRead(CoverageOutFile));
 		}
 	}
 }

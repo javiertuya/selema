@@ -7,11 +7,11 @@ import org.openqa.selenium.WebDriver;
 import giis.selema.manager.SelemaConfig;
 import giis.selema.manager.SeleManager;
 import giis.portable.util.FileUtil;
-import giis.selema.framework.junit4.Asserts;
 import giis.selema.framework.junit4.LifecycleJunit4Class;
 import giis.selema.framework.junit4.LifecycleJunit4Test;
 import giis.selema.services.IJsCoverageService;
 import giis.selema.services.impl.JsCoverService;
+import test4giis.selema.portable.Asserts;
 
 public class TestCoverage {  //interface only to generate compatible NUnit3 translation
 	private WebDriver driver;

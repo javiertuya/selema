@@ -50,17 +50,17 @@ namespace Test4giis.Selema.Nunit3
 			if (repetitions < 3)
 			{
 				//falla salvo la ultima repeticion
-				NUnit.Framework.Assert.Fail("simulated failure");
+				NUnit.Framework.Legacy.ClassicAssert.Fail("simulated failure");
 			}
 			else
 			{
 				if (new Config4test().GetManualCheckEnabled())
 				{
 					//siempre falla para comprobacion manual
-					NUnit.Framework.Assert.Fail("Manual Check: salida estandar del test muestra nombres de test y log de grabacion video y screenshot");
+					NUnit.Framework.Legacy.ClassicAssert.Fail("Manual Check: salida estandar del test muestra nombres de test y log de grabacion video y screenshot");
 				}
 			}
-			NUnit.Framework.Assert.IsTrue(true);
+			NUnit.Framework.Legacy.ClassicAssert.IsTrue(true);
 		}
 	}
 }

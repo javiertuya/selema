@@ -2,11 +2,11 @@
 /////// THIS FILE HAS BEEN AUTOMATICALLY CONVERTED FROM THE JAVA SOURCES. DO NOT EDIT ///////
 /////////////////////////////////////////////////////////////////////////////////////////////
 using System;
-using Giis.Selema.Framework.Nunit3;
 using Giis.Selema.Manager;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using Sharpen;
+using Test4giis.Selema.Portable;
 
 namespace Test4giis.Selema.Core
 {
@@ -66,7 +66,7 @@ namespace Test4giis.Selema.Core
 			try
 			{
 				sm.CreateDriver("ThisClass", "ThisTest");
-				NUnit.Framework.Assert.Fail("Should fail");
+				NUnit.Framework.Legacy.ClassicAssert.Fail("Should fail");
 			}
 			catch (Exception e)
 			{

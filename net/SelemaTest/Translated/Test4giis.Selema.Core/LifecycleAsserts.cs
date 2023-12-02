@@ -26,7 +26,7 @@ namespace Test4giis.Selema.Core
 		//assert ignorecase para compatibilidad java .net
 		public virtual void AssertNow(string expected, string actual)
 		{
-			NUnit.Framework.Assert.AreEqual(expected.ToLower(), actual.ToLower());
+			NUnit.Framework.Legacy.ClassicAssert.AreEqual(expected.ToLower(), actual.ToLower());
 		}
 
 		//checks the log line located at the offset position from end

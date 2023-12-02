@@ -37,14 +37,14 @@ namespace Test4giis.Selema.Nunit3
 			}
 			catch (SelemaException)
 			{
-				NUnit.Framework.Assert.AreEqual(logSize, reader.GetLogSize());
+				NUnit.Framework.Legacy.ClassicAssert.AreEqual(logSize, reader.GetLogSize());
 			}
 		}
 
 		[OneTimeTearDown]
 		public static void AfterTearDown()
 		{
-			NUnit.Framework.Assert.AreEqual(logSize, reader.GetLogSize());
+			NUnit.Framework.Legacy.ClassicAssert.AreEqual(logSize, reader.GetLogSize());
 		}
 	}
 }

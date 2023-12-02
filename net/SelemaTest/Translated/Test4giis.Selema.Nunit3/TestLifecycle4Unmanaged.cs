@@ -43,16 +43,16 @@ namespace Test4giis.Selema.Nunit3
 			lfas.AssertNow(CurrentName() + ".testNoDriver", sm.CurrentTestName());
 			lfas.AssertAfterSetup(sm, false);
 			//should not have an active driver, accesing to it throws exception
-			NUnit.Framework.Assert.IsFalse(sm.HasDriver());
+			NUnit.Framework.Legacy.ClassicAssert.IsFalse(sm.HasDriver());
 			try
 			{
 				sm.Driver.Url = new Config4test().GetWebUrl();
 				//siempre usa la misma pagina
-				NUnit.Framework.Assert.Fail("should fail");
+				NUnit.Framework.Legacy.ClassicAssert.Fail("should fail");
 			}
 			catch (Exception e)
 			{
-				NUnit.Framework.Assert.AreEqual("The Selenium Manager does not have any active WebDriver", e.Message);
+				NUnit.Framework.Legacy.ClassicAssert.AreEqual("The Selenium Manager does not have any active WebDriver", e.Message);
 			}
 			lfas.AssertLast("[ERROR]", "The Selenium Manager does not have any active WebDriver");
 		}
@@ -63,7 +63,7 @@ namespace Test4giis.Selema.Nunit3
 			lfas.AssertNow(CurrentName() + ".testWithDriver", sm.CurrentTestName());
 			//even if it is unmanaged, I can create a driver that is bound to the manager
 			IWebDriver driver = sm.CreateDriver();
-			NUnit.Framework.Assert.IsTrue(sm.HasDriver());
+			NUnit.Framework.Legacy.ClassicAssert.IsTrue(sm.HasDriver());
 			lfas.AssertAfterSetup(sm, true);
 			sm.GetLogger().Info("INSIDE TEST BODY");
 			driver.Url = new Config4test().GetWebUrl();

@@ -85,11 +85,11 @@ namespace Test4giis.Selema.Core
 			try
 			{
 				new SeleManager(null);
-				NUnit.Framework.Assert.Fail("Should fail");
+				NUnit.Framework.Legacy.ClassicAssert.Fail("Should fail");
 			}
 			catch (SelemaException e)
 			{
-				NUnit.Framework.Assert.AreEqual("SeleManager instance requires an instance of SelemaConfig", e.Message);
+				NUnit.Framework.Legacy.ClassicAssert.AreEqual("SeleManager instance requires an instance of SelemaConfig", e.Message);
 			}
 		}
 
@@ -100,7 +100,7 @@ namespace Test4giis.Selema.Core
 			try
 			{
 				new SeleManager(new SelemaConfig().SetReportSubdir("dat/tmp").SetName("ab\x0"));
-				NUnit.Framework.Assert.Fail("Should fail");
+				NUnit.Framework.Legacy.ClassicAssert.Fail("Should fail");
 			}
 			catch (Exception)
 			{
@@ -113,7 +113,7 @@ namespace Test4giis.Selema.Core
 			try
 			{
 				new SeleManager(new SelemaConfig().SetReportSubdir("dat/tmp/ab\x0"));
-				NUnit.Framework.Assert.Fail("Should fail");
+				NUnit.Framework.Legacy.ClassicAssert.Fail("Should fail");
 			}
 			catch (Exception)
 			{
@@ -126,7 +126,7 @@ namespace Test4giis.Selema.Core
 			try
 			{
 				new SeleManager(new SelemaConfig().SetProjectRoot("dat/tmp/ab\x0"));
-				NUnit.Framework.Assert.Fail("Should fail");
+				NUnit.Framework.Legacy.ClassicAssert.Fail("Should fail");
 			}
 			catch (Exception)
 			{
@@ -162,7 +162,7 @@ namespace Test4giis.Selema.Core
 			try
 			{
 				sm.VisualAssertEquals("ab cd", "ab xy cd");
-				NUnit.Framework.Assert.Fail("Should fail");
+				NUnit.Framework.Legacy.ClassicAssert.Fail("Should fail");
 			}
 			catch
 			{
@@ -172,7 +172,7 @@ namespace Test4giis.Selema.Core
 			try
 			{
 				sm.VisualAssertEquals("ef gh", "ef zt gh", "va message");
-				NUnit.Framework.Assert.Fail("Should fail");
+				NUnit.Framework.Legacy.ClassicAssert.Fail("Should fail");
 			}
 			catch
 			{
@@ -191,7 +191,7 @@ namespace Test4giis.Selema.Core
 			try
 			{
 				sm.SoftAssertAll();
-				NUnit.Framework.Assert.Fail("Should fail");
+				NUnit.Framework.Legacy.ClassicAssert.Fail("Should fail");
 			}
 			catch
 			{
@@ -206,7 +206,7 @@ namespace Test4giis.Selema.Core
 			try
 			{
 				sm.Watermark();
-				NUnit.Framework.Assert.Fail("Should fail");
+				NUnit.Framework.Legacy.ClassicAssert.Fail("Should fail");
 			}
 			catch
 			{

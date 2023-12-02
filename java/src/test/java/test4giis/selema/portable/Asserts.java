@@ -1,10 +1,10 @@
-package giis.selema.framework.junit4;
+package test4giis.selema.portable;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Asserts for compatibility in translation from JUnit4 to NUnit3
+ * Asserts for compatibility in translation from JUnit4 to NUnit3  (asserts with messages)
  */
 public class Asserts {
 	private Asserts() {

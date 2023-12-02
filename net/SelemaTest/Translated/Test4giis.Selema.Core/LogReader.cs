@@ -108,7 +108,7 @@ namespace Test4giis.Selema.Core
 		{
 			if (!value)
 			{
-				NUnit.Framework.Assert.Fail(message);
+				NUnit.Framework.Legacy.ClassicAssert.Fail(message);
 			}
 		}
 	}

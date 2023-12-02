@@ -6,9 +6,9 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 
-import giis.selema.framework.junit4.Asserts;
 import giis.selema.manager.DriverVersion;
 import giis.selema.manager.SeleManager;
+import test4giis.selema.portable.Asserts;
 
 /**
  * Test on strategies to get the driver version. 
