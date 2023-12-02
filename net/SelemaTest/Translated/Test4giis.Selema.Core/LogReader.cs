@@ -32,14 +32,31 @@ namespace Test4giis.Selema.Core
 			this.logFile = FileUtil.GetPath(reportDir, logFile);
 		}
 
+		private IList<string> ReadLogFile()
+		{
+			try
+			{
+				return FileUtil.FileReadLines(logFile);
+			}
+			catch (PortableException e)
+			{
+				//assume a non existing log file as empty (regression #425)
+				if (e.Message.StartsWith("Error reading file"))
+				{
+					return new List<string>();
+				}
+				throw (e);
+			}
+		}
+
 		public virtual int GetLogSize()
 		{
-			return FileUtil.FileReadLines(logFile).Count;
+			return ReadLogFile().Count;
 		}
 
 		public virtual void AssertBegin()
 		{
-			logLines = FileUtil.FileReadLines(logFile);
+			logLines = ReadLogFile();
 			assertItems = new List<string[]>();
 		}
 
