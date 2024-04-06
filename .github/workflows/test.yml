@@ -162,7 +162,7 @@ jobs:
 
   publish-java-snapshot:
     #avoid publishing PRs and dependabot branches
-    if: ${{ github.event_name != 'pull_request' && !contains('/head/refs/dependabot/', github.ref) && !contains('/head/refs/dashgit/combined/', github.ref) }}
+     if: ${{ github.event_name != 'pull_request' && !startsWith(github.ref, 'refs/heads/dependabot/') && !startsWith(github.ref, 'refs/heads/dashgit/combined/') }}
     runs-on: ubuntu-latest
     defaults:
       run:
