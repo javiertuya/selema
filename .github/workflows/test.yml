@@ -168,7 +168,7 @@ jobs:
       run:
         working-directory: java
     steps:
-      - uses: javiertuya/branch-snapshots-action@v1.2.2
+      - uses: javiertuya/branch-snapshots-action@v1.2.3
         with: 
           token: ${{ secrets.GITHUB_TOKEN }}
           working-directory: java
