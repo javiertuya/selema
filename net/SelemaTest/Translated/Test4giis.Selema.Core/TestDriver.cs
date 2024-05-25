@@ -118,7 +118,6 @@ namespace Test4giis.Selema.Core
 			//As of Selenium 4.9.0 non standard capabilities must have a prefix
 			caps["testprefix:key1"] = "value1";
 			caps["testprefix:key2"] = "value2";
-			//caps.put("unhandledPromptBehavior", "ignore");
 			IWebDriver driver = factory.GetSeleniumDriver("chrome", string.Empty, string.Empty, caps, chromeHeadlesArgument, null);
 			AssertOptions(factory, Parameters.IsJava() ? "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]},testprefix:key1:value1,testprefix:key2:value2}" : "{browserName:chrome,testprefix:key1:value1,testprefix:key2:value2,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]}}"
 				);

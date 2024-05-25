@@ -30,7 +30,7 @@ public class TestCoverage {  //interface only to generate compatible NUnit3 tran
 		Asserts.assertAreEqual("JSCover", driver.getTitle(),"Page to reset coverage");
 		driver.get(new Config4test().getCoverageUrl());
 		//sm.watermark();
-		runCoverageSession1(sm, driver);
+		runCoverageSession1(driver);
 		//simula la finalizacion de un caso y comienzo de otro cerrando el driver y reabriendolo
 		//sin ejecutar nada, deberia tener la cobertura inicial si no se conservase entre sesiones
 		//pero tengo esta mas la final pues SessionManager al iniciar por segunda vez el driver
@@ -39,7 +39,7 @@ public class TestCoverage {  //interface only to generate compatible NUnit3 tran
 		driver=sm.createDriver();
 		Asserts.assertAreEqual("Restore JSCover coverage to local storage", driver.getTitle(), "Page to reload coverage");
 		driver.get(new Config4test().getCoverageUrl());
-		runCoverageSession2(sm, driver);
+		runCoverageSession2(driver);
 		sm.quitDriver(driver);
 		
 		//simulates failure when no coverage file can be read (the service will become invalidated, name restored in teardown)
@@ -58,7 +58,7 @@ public class TestCoverage {  //interface only to generate compatible NUnit3 tran
 	/**
 	 * Ejecucion sucesiva de acciones que aumentan progresivamente la cobertura
 	 */
-	private void runCoverageSession1(SeleManager sm, WebDriver driver) {
+	private void runCoverageSession1(WebDriver driver) {
 		String CoverageOutFile=FileUtil.getPath(Config4test.getConfig().getReportDir(),"jscoverage.json"); //fichero cobertura generado
 		//cobertura inicial por haber cargado la pagina
 		recorder.beforeQuitDriver(driver);
@@ -78,7 +78,7 @@ public class TestCoverage {  //interface only to generate compatible NUnit3 tran
 	 * Ejecucion de una segunda sesion tras haber abandonado la sesion y reabierto,
 	 * comprueba que la cobertura de la primera sesion no se pierde
 	 */
-	private void runCoverageSession2(SeleManager sm, WebDriver driver) {
+	private void runCoverageSession2(WebDriver driver) {
 		String CoverageOutFile=FileUtil.getPath(Config4test.getConfig().getReportDir(),"jscoverage.json"); //fichero cobertura generado
 		recorder.beforeQuitDriver(driver);
 		assertEquals(FileUtil.fileRead(TEST_BMK_FOLDER+"/bmk.final2.jscoverage.json"), FileUtil.fileRead(CoverageOutFile));

@@ -38,7 +38,7 @@ namespace Test4giis.Selema.Core
 			Asserts.AssertAreEqual("JSCover", driver.Title, "Page to reset coverage");
 			driver.Url = new Config4test().GetCoverageUrl();
 			//sm.watermark();
-			RunCoverageSession1(sm, driver);
+			RunCoverageSession1(driver);
 			//simula la finalizacion de un caso y comienzo de otro cerrando el driver y reabriendolo
 			//sin ejecutar nada, deberia tener la cobertura inicial si no se conservase entre sesiones
 			//pero tengo esta mas la final pues SessionManager al iniciar por segunda vez el driver
@@ -47,7 +47,7 @@ namespace Test4giis.Selema.Core
 			driver = sm.CreateDriver();
 			Asserts.AssertAreEqual("Restore JSCover coverage to local storage", driver.Title, "Page to reload coverage");
 			driver.Url = new Config4test().GetCoverageUrl();
-			RunCoverageSession2(sm, driver);
+			RunCoverageSession2(driver);
 			sm.QuitDriver(driver);
 			//simulates failure when no coverage file can be read (the service will become invalidated, name restored in teardown)
 			((JsCoverService)sm.GetCoverageService()).SetCoverageFileName("notexists.json");
@@ -66,7 +66,7 @@ namespace Test4giis.Selema.Core
 		}
 
 		/// <summary>Ejecucion sucesiva de acciones que aumentan progresivamente la cobertura</summary>
-		private void RunCoverageSession1(SeleManager sm, IWebDriver driver)
+		private void RunCoverageSession1(IWebDriver driver)
 		{
 			string CoverageOutFile = FileUtil.GetPath(Config4test.GetConfig().GetReportDir(), "jscoverage.json");
 			//fichero cobertura generado
@@ -87,7 +87,7 @@ namespace Test4giis.Selema.Core
 		/// Ejecucion de una segunda sesion tras haber abandonado la sesion y reabierto,
 		/// comprueba que la cobertura de la primera sesion no se pierde
 		/// </summary>
-		private void RunCoverageSession2(SeleManager sm, IWebDriver driver)
+		private void RunCoverageSession2(IWebDriver driver)
 		{
 			string CoverageOutFile = FileUtil.GetPath(Config4test.GetConfig().GetReportDir(), "jscoverage.json");
 			//fichero cobertura generado

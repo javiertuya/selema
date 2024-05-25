@@ -97,7 +97,6 @@ public class TestDriver {
 		//As of Selenium 4.9.0 non standard capabilities must have a prefix
 		caps.put("testprefix:key1", "value1");
 		caps.put("testprefix:key2", "value2");
-		//caps.put("unhandledPromptBehavior", "ignore");
 		WebDriver driver=factory.getSeleniumDriver("chrome", "", "", caps, chromeHeadlesArgument, null);
 		assertOptions(factory, Parameters.isJava() //different order on net
 			? "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]},testprefix:key1:value1,testprefix:key2:value2}"
