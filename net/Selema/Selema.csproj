@@ -46,7 +46,7 @@
     <!-- required only for selenium 3
     <PackageReference Include="Microsoft.Edge.SeleniumTools" Version="3.141.2" />
     -->
-    <PackageReference Include="MSTest.TestFramework" Version="3.4.0" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.4.3" />
 
     <PackageReference Include="DotNetSeleniumExtras.WaitHelpers" Version="3.11.0" />
 
