@@ -60,7 +60,7 @@
 
     <PackageReference Include="VisualAssert" Version="2.4.1" />
 
-    <PackageReference Include="WebDriverManager" Version="2.17.2" />
+    <PackageReference Include="WebDriverManager" Version="2.17.3" />
 
     <PackageReference Include="Selenium.WebDriver" Version="4.21.0" />
   </ItemGroup>
