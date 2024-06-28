@@ -78,15 +78,15 @@ public class TestExceptions implements IAfterEachCallback {
 	//uses a different report subdir to do not include wrong named files/folders that cause error when published as artifacts
 	@Test
 	public void testManagerWrongName() {
-		try { new SeleManager(new SelemaConfig().setReportSubdir("dat/tmp").setName("ab\0")); fail("Should fail"); } catch(RuntimeException e) {};
+		try { new SeleManager(new SelemaConfig().setReportSubdir("dat/tmp").setName("ab\0")); fail("Should fail"); } catch(RuntimeException e) {}; //NOSONAR
 	}
 	@Test
 	public void testManagerWrongReportSubdir() {
-		try { new SeleManager(new SelemaConfig().setReportSubdir("dat/tmp/ab\0")); fail("Should fail"); } catch(RuntimeException e) {};
+		try { new SeleManager(new SelemaConfig().setReportSubdir("dat/tmp/ab\0")); fail("Should fail"); } catch(RuntimeException e) {}; //NOSONAR
 	}
 	@Test 
 	public void testManagerWrongProjectRoot() {
-		try { new SeleManager(new SelemaConfig().setProjectRoot("dat/tmp/ab\0")); fail("Should fail"); } catch(RuntimeException e) {};
+		try { new SeleManager(new SelemaConfig().setProjectRoot("dat/tmp/ab\0")); fail("Should fail"); } catch(RuntimeException e) {}; //NOSONAR
 	}
 	@Test
 	public void testScreenshotExceptionByDriver() {
@@ -108,10 +108,10 @@ public class TestExceptions implements IAfterEachCallback {
 	@Test
 	public void testVisualAssertException() {
 		sm.visualAssertEquals("ab cd", "ab cd"); //first assert pass
-		try { sm.visualAssertEquals("ab cd", "ab xy cd"); fail("Should fail"); } catch (Throwable e) { }
+		try { sm.visualAssertEquals("ab cd", "ab xy cd"); fail("Should fail"); } catch (Throwable e) { } //NOSONAR
 		lfas.assertLast("[WARN]", "Visual Assert differences", "TestExceptions-testVisualAssertException.html");
 		//with message
-		try { sm.visualAssertEquals("ef gh", "ef zt gh", "va message"); fail("Should fail"); } catch (Throwable e) { }
+		try { sm.visualAssertEquals("ef gh", "ef zt gh", "va message"); fail("Should fail"); } catch (Throwable e) { } //NOSONAR
 		lfas.assertLast("[WARN]", "Visual Assert differences", "TestExceptions-testVisualAssertException.html", "va message");
 	}
 	@Test
@@ -120,13 +120,13 @@ public class TestExceptions implements IAfterEachCallback {
 		sm.softAssertEquals("ab cd", "ab cd"); //first assert pass
 		sm.softAssertEquals("ab cd", "ab xy cd");
 		sm.softAssertEquals("ef gh", "ef zt gh", "sva message");
-		try { sm.softAssertAll(); fail("Should fail"); } catch (Throwable e) { }
+		try { sm.softAssertAll(); fail("Should fail"); } catch (Throwable e) { } //NOSONAR
 		lfas.assertLast(0, "[WARN]", "Soft Visual Assert differences (Failure 2)", "TestExceptions-testSoftAssertException.html", "sva message");
 		lfas.assertLast(1, "[WARN]", "Soft Visual Assert differences (Failure 1)", "TestExceptions-testSoftAssertException.html");
 	}
 	@Test
 	public void testWatermarkExceptionNotAttached() {
-		try { sm.watermark(); fail("Should fail"); } catch (Throwable e) { }
+		try { sm.watermark(); fail("Should fail"); } catch (Throwable e) { } //NOSONAR
 		lfas.assertLast("[ERROR]", "Watermark service is not attached to this Selenium Manager");
 	}
 	@Test

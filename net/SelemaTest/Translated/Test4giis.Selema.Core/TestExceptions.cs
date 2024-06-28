@@ -107,6 +107,7 @@ namespace Test4giis.Selema.Core
 			}
 		}
 
+		//
 		[Test]
 		public virtual void TestManagerWrongReportSubdir()
 		{
@@ -120,6 +121,7 @@ namespace Test4giis.Selema.Core
 			}
 		}
 
+		//
 		[Test]
 		public virtual void TestManagerWrongProjectRoot()
 		{
@@ -133,6 +135,7 @@ namespace Test4giis.Selema.Core
 			}
 		}
 
+		//
 		[Test]
 		public virtual void TestScreenshotExceptionByDriver()
 		{
@@ -167,6 +170,7 @@ namespace Test4giis.Selema.Core
 			catch
 			{
 			}
+			//
 			lfas.AssertLast("[WARN]", "Visual Assert differences", "TestExceptions-testVisualAssertException.html");
 			//with message
 			try
@@ -177,6 +181,7 @@ namespace Test4giis.Selema.Core
 			catch
 			{
 			}
+			//
 			lfas.AssertLast("[WARN]", "Visual Assert differences", "TestExceptions-testVisualAssertException.html", "va message");
 		}
 
@@ -196,6 +201,7 @@ namespace Test4giis.Selema.Core
 			catch
 			{
 			}
+			//
 			lfas.AssertLast(0, "[WARN]", "Soft Visual Assert differences (Failure 2)", "TestExceptions-testSoftAssertException.html", "sva message");
 			lfas.AssertLast(1, "[WARN]", "Soft Visual Assert differences (Failure 1)", "TestExceptions-testSoftAssertException.html");
 		}
@@ -211,6 +217,7 @@ namespace Test4giis.Selema.Core
 			catch
 			{
 			}
+			//
 			lfas.AssertLast("[ERROR]", "Watermark service is not attached to this Selenium Manager");
 		}
 
