@@ -107,7 +107,7 @@ jobs:
 
       - if: always()
         name: Publish test report files
-        uses: actions/upload-artifact@v4.3.3
+        uses: actions/upload-artifact@v4.3.4
         with:
           name: "test-report-${{ matrix.platform }}-${{ matrix.mode }}-files"
           path: |
@@ -121,7 +121,7 @@ jobs:
             !**/selenoid*.mp4
       - name: JAVA - Reports for Sonar
         if: ${{ always() && matrix.platform=='java' }}
-        uses: actions/upload-artifact@v4.3.3
+        uses: actions/upload-artifact@v4.3.4
         with:
           name: "sonar-${{ matrix.platform }}-${{ matrix.mode }}"
           path: |
