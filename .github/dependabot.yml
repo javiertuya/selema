@@ -1,7 +1,7 @@
 version: 2
 updates:
   - package-ecosystem: maven
-    directorues: 
+    directories: 
       - "/java"
       - "/samples/samples-selema-junit4"
       - "/samples/samples-selema-junit5"
