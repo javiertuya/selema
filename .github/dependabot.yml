@@ -1,40 +1,20 @@
 version: 2
 updates:
   - package-ecosystem: maven
-    directory: "/java"
+    directorues: 
+      - "/java"
+      - "/samples/samples-selema-junit4"
+      - "/samples/samples-selema-junit5"
     schedule:
       interval: weekly
       day: friday
     open-pull-requests-limit: 20
 
   - package-ecosystem: nuget
-    directory: "/net"
-    #tests run using the latest framework
-    schedule:
-      interval: weekly
-      day: friday
-    open-pull-requests-limit: 20
-
-  - package-ecosystem: maven
-    directory: "/samples/samples-selema-junit4"
-    schedule:
-      interval: weekly
-      day: friday
-    open-pull-requests-limit: 20
-  - package-ecosystem: maven
-    directory: "/samples/samples-selema-junit5"
-    schedule:
-      interval: weekly
-      day: friday
-    open-pull-requests-limit: 20
-  - package-ecosystem: nuget
-    directory: "/samples/samples-selema-mstest2"
-    schedule:
-      interval: weekly
-      day: friday
-    open-pull-requests-limit: 20
-  - package-ecosystem: nuget
-    directory: "/samples/samples-selema-nunit3"
+    directories: 
+      - "/net"
+      - "/samples/samples-selema-mstest2"
+      - "/samples/samples-selema-nunit3"
     schedule:
       interval: weekly
       day: friday
