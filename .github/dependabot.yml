@@ -11,8 +11,18 @@ updates:
     open-pull-requests-limit: 20
 
   - package-ecosystem: nuget
+    directory: "/net"
+    ignore:
+      # nuget package still kept at v3 to prevent deprecation errors
+      - dependency-name: "NUnit"
+        update-types: ["version-update:semver-major"]
+    schedule:
+      interval: weekly
+      day: friday
+    open-pull-requests-limit: 20
+
+  - package-ecosystem: nuget
     directories: 
-      - "/net"
       - "/samples/samples-selema-mstest2"
       - "/samples/samples-selema-nunit3"
     schedule:
