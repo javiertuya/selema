@@ -43,7 +43,8 @@ jobs:
       - name: NET - Platform dependent report location
         if: ${{ matrix.platform == 'net' }}
         run: echo "REPORT_FOLDER=reports" >> $GITHUB_ENV
-
+      - run: echo "Job name - $GITHUB_JOB"
+      
       - name: test properties configuration
         run: |
           echo "selema.test.mode=${{ matrix.mode }}" > selema.properties
