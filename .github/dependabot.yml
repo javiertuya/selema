@@ -16,6 +16,10 @@ updates:
       # nuget package still kept at v3 to prevent deprecation errors
       - dependency-name: "NUnit"
         update-types: ["version-update:semver-major"]
+    groups:
+      MSTest:
+        patterns:
+          - "MSTest.*"
     schedule:
       interval: weekly
       day: friday
