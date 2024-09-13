@@ -50,7 +50,7 @@
 
     <PackageReference Include="DotNetSeleniumExtras.WaitHelpers" Version="3.11.0" />
 
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.64" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.65" />
 
     <PackageReference Include="NLog" Version="5.3.4" />
 
