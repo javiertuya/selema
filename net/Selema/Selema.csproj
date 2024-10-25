@@ -50,7 +50,7 @@
 
     <PackageReference Include="DotNetSeleniumExtras.WaitHelpers" Version="3.11.0" />
 
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.67" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.69" />
 
     <PackageReference Include="NLog" Version="5.3.4" />
 
@@ -58,7 +58,7 @@
 
     <PackageReference Include="PortableCs" Version="2.3.0" />
 
-    <PackageReference Include="VisualAssert" Version="2.5.0" />
+    <PackageReference Include="VisualAssert" Version="2.5.1" />
 
     <PackageReference Include="WebDriverManager" Version="2.17.4" />
 
