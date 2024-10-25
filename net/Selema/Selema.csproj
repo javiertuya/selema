@@ -58,7 +58,7 @@
 
     <PackageReference Include="PortableCs" Version="2.3.0" />
 
-    <PackageReference Include="VisualAssert" Version="2.5.0" />
+    <PackageReference Include="VisualAssert" Version="2.5.1" />
 
     <PackageReference Include="WebDriverManager" Version="2.17.4" />
 
