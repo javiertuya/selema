@@ -6,37 +6,24 @@ updates:
       - "/samples/samples-selema-junit4"
       - "/samples/samples-selema-junit5"
     schedule:
-      interval: weekly
-      day: friday
+      interval: monthly
     open-pull-requests-limit: 20
 
   - package-ecosystem: nuget
-    directory: "/net"
-    ignore:
-      # nuget package still kept at v3 to prevent deprecation errors
-      - dependency-name: "NUnit"
-        update-types: ["version-update:semver-major"]
+    directories: 
+      - "/net"
+      - "/samples/samples-selema-mstest2"
+      - "/samples/samples-selema-nunit3"
     groups:
       MSTest:
         patterns:
           - "MSTest.*"
     schedule:
-      interval: weekly
-      day: friday
-    open-pull-requests-limit: 20
-
-  - package-ecosystem: nuget
-    directories: 
-      - "/samples/samples-selema-mstest2"
-      - "/samples/samples-selema-nunit3"
-    schedule:
-      interval: weekly
-      day: friday
+      interval: monthly
     open-pull-requests-limit: 20
 
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
-      interval: weekly
-      day: friday
+      interval: monthly
     open-pull-requests-limit: 20
