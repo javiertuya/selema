@@ -14,6 +14,11 @@ public interface IBrowserService {
 	 */ 
 	IBrowserService setVnc();
 
+	/** 
+	 * Adds a special capability other than the predefined video and vnc
+	 */ 
+	IBrowserService setCapability(String key, Object value);
+
 	/**
 	 * Gets the video recorder service associated with this browser service
 	 */

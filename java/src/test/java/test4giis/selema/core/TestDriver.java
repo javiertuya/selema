@@ -200,9 +200,9 @@ public class TestDriver {
 	}
 	//with browser service but no video too
 	@Test
-	public void testRemoteWebDriverFromManagerNoVideoService() {
+	public void testRemoteWebDriverFromManagerNoVideoWithCapability() {
 		if (!useRemote()) return;
-		SeleManager sm=new SeleManager(Config4test.getConfig()).setDriverUrl(new Config4test().getRemoteDriverUrl()).add(new SelenoidService());
+		SeleManager sm=new SeleManager(Config4test.getConfig()).setDriverUrl(new Config4test().getRemoteDriverUrl()).add(new SelenoidService().setCapability("enableLog", true));
 		sm.onSetUp("TestDriver", "TestDriver.testRemoteWebDriverFromManager");
 		sm.onFailure("TestDriver", "TestDriver.testRemoteWebDriverFromManager");
 		assertLogRemoteWebDriver();

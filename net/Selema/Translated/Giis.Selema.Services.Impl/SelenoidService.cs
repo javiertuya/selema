@@ -2,6 +2,7 @@
 /////// THIS FILE HAS BEEN AUTOMATICALLY CONVERTED FROM THE JAVA SOURCES. DO NOT EDIT ///////
 /////////////////////////////////////////////////////////////////////////////////////////////
 using System.Collections.Generic;
+using Giis.Portable.Util;
 using Giis.Selema.Services;
 using Sharpen;
 
@@ -12,6 +13,8 @@ namespace Giis.Selema.Services.Impl
 		private bool recordVideo = false;
 
 		private bool enableVnc = false;
+
+		private IDictionary<string, object> specialCapabilities = new Dictionary<string, object>();
 
 		//si true habilita el video recording
 		//si true habilita VNC par ver las sesiones desde selenoid-ui
@@ -30,6 +33,13 @@ namespace Giis.Selema.Services.Impl
 			return this;
 		}
 
+		/// <summary>Adds a special capability other than the predefined video and vnc</summary>
+		public virtual IBrowserService SetCapability(string key, object value)
+		{
+			specialCapabilities[key] = value;
+			return this;
+		}
+
 		/// <summary>Gets the video recorder service associated with this browser service</summary>
 		public virtual IVideoService GetVideoRecorder()
 		{
@@ -42,6 +52,7 @@ namespace Giis.Selema.Services.Impl
 			Dictionary<string, object> opts = new Dictionary<string, object>();
 			opts["name"] = sessionName;
 			opts["enableVNC"] = enableVnc;
+			JavaCs.PutAll(opts, specialCapabilities);
 			return opts;
 		}
 	}

@@ -258,6 +258,8 @@ The Selenoid service instance can be cusomized with these methods:
   properly [configured for video recording](https://aerokube.com/selenoid/latest/#_video_recording)
 - `setVnc()`: Activates the VNC capabilities to be able to watch the test execution in real time (e.g. using selenoid-ui). 
   Note that Selenoid requires special driver containers to allow this capability.
+- `setCapability(String key, Object value)`: Adds a [special capability](https://aerokube.com/selenoid/latest/#_special_capabilities)
+  other than the predefined video and vnc.
 
 To use a remote driver the driver url must be configured by calling `setDriverUrl(String driverUrl)` on the SeleManager instance.
 
