@@ -253,13 +253,13 @@ namespace Test4giis.Selema.Core
 
 		//with browser service but no video too
 		[Test]
-		public virtual void TestRemoteWebDriverFromManagerNoVideoService()
+		public virtual void TestRemoteWebDriverFromManagerNoVideoWithCapability()
 		{
 			if (!UseRemote())
 			{
 				return;
 			}
-			SeleManager sm = new SeleManager(Config4test.GetConfig()).SetDriverUrl(new Config4test().GetRemoteDriverUrl()).Add(new SelenoidService());
+			SeleManager sm = new SeleManager(Config4test.GetConfig()).SetDriverUrl(new Config4test().GetRemoteDriverUrl()).Add(new SelenoidService().SetCapability("enableLog", true));
 			sm.OnSetUp("TestDriver", "TestDriver.testRemoteWebDriverFromManager");
 			sm.OnFailure("TestDriver", "TestDriver.testRemoteWebDriverFromManager");
 			AssertLogRemoteWebDriver();
