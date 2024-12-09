@@ -84,7 +84,8 @@ namespace Test4giis.Selema.Core
 			}
 			SeleniumDriverFactory factory = new SeleniumDriverFactory();
 			IWebDriver driver = factory.GetSeleniumDriver("firefox", string.Empty, string.Empty, null, null, null);
-			AssertOptions(factory, "{browserName:firefox,moz:firefoxOptions:{}}");
+			// #801 no toString method implemented for firefox
+			AssertOptions(factory, Parameters.IsJava() ? "{browserName:firefox,moz:firefoxOptions:{}}" : "OpenQA.Selenium.Firefox.FirefoxOptions");
 			driver.Close();
 		}
 
@@ -119,8 +120,8 @@ namespace Test4giis.Selema.Core
 			caps["testprefix:key1"] = "value1";
 			caps["testprefix:key2"] = "value2";
 			IWebDriver driver = factory.GetSeleniumDriver("chrome", string.Empty, string.Empty, caps, chromeHeadlesArgument, null);
-			AssertOptions(factory, Parameters.IsJava() ? "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]},testprefix:key1:value1,testprefix:key2:value2}" : "{browserName:chrome,testprefix:key1:value1,testprefix:key2:value2,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]}}"
-				);
+			// #801 the toString method is not able to get other custom capabilities than the standard and chromeOptions
+			AssertOptions(factory, Parameters.IsJava() ? "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]},testprefix:key1:value1,testprefix:key2:value2}" : "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]}}");
 			//different order on net
 			driver.Close();
 		}

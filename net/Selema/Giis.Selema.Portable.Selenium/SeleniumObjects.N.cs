@@ -7,6 +7,7 @@ using NLog;
 using System;
 using System.IO;
 using System.Reflection;
+using OpenQA.Selenium.Chromium;
 
 namespace Giis.Selema.Portable.Selenium
 {
@@ -18,13 +19,33 @@ namespace Giis.Selema.Portable.Selenium
 	{
 		internal readonly Logger log = LogManager.GetCurrentClassLogger();
 
-		public object GetOptionsObj(string browser, string[] arguments)
-		{
-			string clasName = GetSeleniumClassName(browser, "Options");
-			return Activator.CreateInstance(Type.GetType(clasName));
-		}
+        public object GetOptionsObj(string browser, string[] arguments)
+        {
+            string clasName = GetSeleniumClassName(browser, "Options");
+            return Activator.CreateInstance(Type.GetType(clasName));
+        }
 
-		public void SetCapability(object opt, string key, object value)
+        // #801 The toString gets all options in java, but needs a custom implementation in net
+		// because it was removed in version 2.7.0
+		// Custom implementation only for chrome and edge to generate the same string than java generates,
+		// including part of the options (other additional capabilities can't be obtained because they are private)
+        public string GetOptionsObjAsString(object obj)
+		{
+			if (obj is ChromiumOptions)
+				return GetChromiumOptionsObjAsString((ChromiumOptions)obj);
+			return obj.ToString();
+        }
+        public string GetChromiumOptionsObjAsString(ChromiumOptions optObj)
+        {
+            string arguments = optObj.Arguments.Count == 0 ? "" : "args:[" + string.Join(",", optObj.Arguments) + "]";
+            string optString = "{"
+                + "browserName:" + optObj.BrowserName
+                + "," + optObj.CapabilityName + ":{" + arguments + "}"
+                + "}";
+            return optString;
+        }
+
+        public void SetCapability(object opt, string key, object value)
 		{
 			MethodInfo setCapability = opt.GetType().GetMethod("AddAdditionalOption", new Type[] { typeof(string), typeof(object) });
 			setCapability.Invoke(opt, new object[] { key, value });

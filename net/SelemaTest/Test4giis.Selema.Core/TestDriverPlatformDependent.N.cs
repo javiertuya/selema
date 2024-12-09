@@ -23,7 +23,8 @@ namespace Test4giis.Selema.Core
 			ChromeOptions optInstance=new ChromeOptions();
 			optInstance.UnhandledPromptBehavior = OpenQA.Selenium.UnhandledPromptBehavior.Ignore;
 			IWebDriver driver = factory.GetSeleniumDriver("chrome", string.Empty, string.Empty, caps, TestDriver.chromeHeadlesArgument, optInstance);
-			Assert.AreEqual("{browserName:chrome,unhandledPromptBehavior:ignore,testprefix:key1:value1,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]}}",
+            // #801 the toString method is not able to get other custom capabilities than the standard and chromeOptions
+            Assert.AreEqual("{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]}}",
 				factory.GetLastOptionString().Replace("\"","").Replace("\r","").Replace("\n","").Replace(" ",""));
 			driver.Close();
 		}

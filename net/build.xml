@@ -105,6 +105,7 @@
       import java.util.Map;
       public class SeleniumObjects {
       public Object getOptionsObj(String browser, String[] arguments) { return null; }
+      public String getOptionsObjAsString(Object obj) { return null; }
       public void setCapability(Object opt, String key, Object value) { }
       public void addArguments(Object opt, String[] args) { }
       public Object getDriverObj(String browser, Object opt) { return null; }

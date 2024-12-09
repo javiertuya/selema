@@ -56,7 +56,7 @@ namespace Giis.Selema.Manager
 				//Creates either local or remote web driver
 				objectToInstantiate = "WebDriver";
 				log.Debug("Setting up WebDriver, browser: " + browser + ", url: " + remoteUrl);
-				lastOptionString = opt.ToString();
+				lastOptionString = reflect.GetOptionsObjAsString(opt);
 				log.Trace("Option string: " + lastOptionString.Replace("\n", string.Empty).Replace("\r", string.Empty));
 				if (remoteUrl == null || string.Empty.Equals(remoteUrl.Trim()))
 				{

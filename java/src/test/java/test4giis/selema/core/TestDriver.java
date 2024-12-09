@@ -70,7 +70,10 @@ public class TestDriver {
 		if (!isLocal()) return;
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
 		WebDriver driver=factory.getSeleniumDriver("firefox", "", "", null, null, null);
-		assertOptions(factory, "{browserName:firefox,moz:firefoxOptions:{}}");
+		// #801 no toString method implemented for firefox
+		assertOptions(factory, Parameters.isJava()
+				? "{browserName:firefox,moz:firefoxOptions:{}}"
+				: "OpenQA.Selenium.Firefox.FirefoxOptions");
 		driver.close();
 	}
 	
@@ -98,9 +101,10 @@ public class TestDriver {
 		caps.put("testprefix:key1", "value1");
 		caps.put("testprefix:key2", "value2");
 		WebDriver driver=factory.getSeleniumDriver("chrome", "", "", caps, chromeHeadlesArgument, null);
+		// #801 the toString method is not able to get other custom capabilities than the standard and chromeOptions
 		assertOptions(factory, Parameters.isJava() //different order on net
 			? "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]},testprefix:key1:value1,testprefix:key2:value2}"
-			: "{browserName:chrome,testprefix:key1:value1,testprefix:key2:value2,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]}}");
+			: "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]}}");
 		driver.close();
 	}
 	

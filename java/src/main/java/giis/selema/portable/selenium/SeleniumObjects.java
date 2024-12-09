@@ -22,6 +22,10 @@ public class SeleniumObjects {
 		String className=getSeleniumClassName(browser, "Options");
 		return Class.forName(className).getConstructor().newInstance();
 	}
+    // #801 The toString gets all options in java, but needs a custom implementation in net
+	public String getOptionsObjAsString(Object opt) throws Exception { //NOSONAR
+		return opt.toString();
+	}
 	public void setCapability(Object opt, String key, Object value) throws Exception { //NOSONAR
 		opt.getClass().getMethod("setCapability", String.class, Object.class).invoke(opt, key, value);
 	}
