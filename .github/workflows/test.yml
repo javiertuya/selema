@@ -35,7 +35,7 @@ jobs:
       - if: ${{ matrix.platform=='net' }}
         uses: actions/setup-dotnet@v4.1.0
         with:
-            dotnet-version: '6.0.x'
+            dotnet-version: '8.0.x'
 
       - name: JAVA - Platform dependent report location
         if: ${{ matrix.platform == 'java' }}
