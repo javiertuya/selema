@@ -61,7 +61,7 @@ public class TestDriver {
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
 		WebDriver driver=factory.getSeleniumDriver("edge", "", "", null, null, null);
 		assertOptions(factory, Parameters.isJava()
-				? "{browserName:MicrosoftEdge,ms:edgeOptions:{args:[--remote-allow-origins=*]}}"
+				? "{browserName:MicrosoftEdge,ms:edgeOptions:{args:[]}}"
 				: "{browserName:MicrosoftEdge,ms:edgeOptions:{}}");
 		driver.close();
 	}
@@ -72,7 +72,7 @@ public class TestDriver {
 		WebDriver driver=factory.getSeleniumDriver("firefox", "", "", null, null, null);
 		// #801 no toString method implemented for firefox
 		assertOptions(factory, Parameters.isJava()
-				? "{browserName:firefox,moz:firefoxOptions:{}}"
+				? "{browserName:firefox,moz:firefoxOptions:{prefs:{remote.active-protocols:3}}}"
 				: "OpenQA.Selenium.Firefox.FirefoxOptions");
 		driver.close();
 	}

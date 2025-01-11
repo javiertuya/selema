@@ -71,7 +71,7 @@ namespace Test4giis.Selema.Core
 			}
 			SeleniumDriverFactory factory = new SeleniumDriverFactory();
 			IWebDriver driver = factory.GetSeleniumDriver("edge", string.Empty, string.Empty, null, null, null);
-			AssertOptions(factory, Parameters.IsJava() ? "{browserName:MicrosoftEdge,ms:edgeOptions:{args:[--remote-allow-origins=*]}}" : "{browserName:MicrosoftEdge,ms:edgeOptions:{}}");
+			AssertOptions(factory, Parameters.IsJava() ? "{browserName:MicrosoftEdge,ms:edgeOptions:{args:[]}}" : "{browserName:MicrosoftEdge,ms:edgeOptions:{}}");
 			driver.Close();
 		}
 
@@ -85,7 +85,7 @@ namespace Test4giis.Selema.Core
 			SeleniumDriverFactory factory = new SeleniumDriverFactory();
 			IWebDriver driver = factory.GetSeleniumDriver("firefox", string.Empty, string.Empty, null, null, null);
 			// #801 no toString method implemented for firefox
-			AssertOptions(factory, Parameters.IsJava() ? "{browserName:firefox,moz:firefoxOptions:{}}" : "OpenQA.Selenium.Firefox.FirefoxOptions");
+			AssertOptions(factory, Parameters.IsJava() ? "{browserName:firefox,moz:firefoxOptions:{prefs:{remote.active-protocols:3}}}" : "OpenQA.Selenium.Firefox.FirefoxOptions");
 			driver.Close();
 		}
 
