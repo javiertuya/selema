@@ -33,7 +33,7 @@ jobs:
           java-version: '11'
           cache: 'maven'
       - if: ${{ matrix.platform=='net' }}
-        uses: actions/setup-dotnet@v4.2.0
+        uses: actions/setup-dotnet@v4.3.0
         with:
             dotnet-version: '8.0.x'
 
@@ -98,7 +98,7 @@ jobs:
       #    skip_publishing: ${{ github.actor != 'javiertuya' }} #avoids failure on dependabot or other user PRs
       - name: Generate report checks1
         if: always()
-        uses: mikepenz/action-junit-report@v5.2.0
+        uses: mikepenz/action-junit-report@v5.3.0
         with:
           check_name: "test-result-${{ matrix.platform }}-${{ matrix.mode }}"
           report_paths: "**/${{ env.REPORT_FOLDER }}/surefire-reports/TEST-*.xml"
@@ -110,7 +110,7 @@ jobs:
 
       - if: always()
         name: Publish test report files
-        uses: actions/upload-artifact@v4.5.0
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: "test-report-${{ matrix.platform }}-${{ matrix.mode }}-files"
           path: |
@@ -124,7 +124,7 @@ jobs:
             !**/selenoid*.mp4
       - name: JAVA - Reports for Sonar
         if: ${{ always() && matrix.platform=='java' }}
-        uses: actions/upload-artifact@v4.5.0
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: "sonar-${{ matrix.platform }}-${{ matrix.mode }}"
           path: |
