@@ -62,7 +62,7 @@
 
     <PackageReference Include="WebDriverManager" Version="2.17.5" />
 
-    <PackageReference Include="Selenium.WebDriver" Version="4.28.0" />
+    <PackageReference Include="Selenium.WebDriver" Version="4.29.0" />
   </ItemGroup>
 
 </Project>
