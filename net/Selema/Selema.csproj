@@ -46,13 +46,13 @@
     <!-- required only for selenium 3
     <PackageReference Include="Microsoft.Edge.SeleniumTools" Version="3.141.2" />
     -->
-    <PackageReference Include="MSTest.TestFramework" Version="3.7.3" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.8.2" />
 
     <PackageReference Include="DotNetSeleniumExtras.WaitHelpers" Version="3.11.0" />
 
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.72" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.74" />
 
-    <PackageReference Include="NLog" Version="5.3.4" />
+    <PackageReference Include="NLog" Version="5.4.0" />
 
     <PackageReference Include="NUnit" Version="3.14.0" />
 
@@ -62,7 +62,7 @@
 
     <PackageReference Include="WebDriverManager" Version="2.17.5" />
 
-    <PackageReference Include="Selenium.WebDriver" Version="4.28.0" />
+    <PackageReference Include="Selenium.WebDriver" Version="4.29.0" />
   </ItemGroup>
 
 </Project>
