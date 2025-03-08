@@ -3,6 +3,8 @@
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.javiertuya/selema)](https://search.maven.org/artifact/io.github.javiertuya/selema)
 [![Nuget](https://img.shields.io/nuget/v/Selema)](https://www.nuget.org/packages/Selema/)
 
+test chrome version
+
 # Selema - Selenium Test Lifecycle Manager
 
 A multi-platform, multi-framework Selenium Test Lifecycle Manager on Java and .NET.
