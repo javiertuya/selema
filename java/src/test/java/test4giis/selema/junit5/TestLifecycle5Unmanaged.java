@@ -14,6 +14,7 @@ import org.openqa.selenium.WebDriver;
 import giis.selema.framework.junit5.LifecycleJunit5;
 import giis.selema.manager.IAfterEachCallback;
 import giis.selema.manager.SeleManager;
+import giis.selema.portable.selenium.DriverUtil;
 import test4giis.selema.core.Config4test;
 import test4giis.selema.core.AfterEachCallback;
 import test4giis.selema.core.LifecycleAsserts;
@@ -53,7 +54,7 @@ public class TestLifecycle5Unmanaged implements IAfterEachCallback {
 		assertTrue(sm.hasDriver());
 		lfas.assertAfterSetup(sm, true);
 		sm.getLogger().info("INSIDE TEST BODY");
-		driver.get(new Config4test().getWebUrl());
+		DriverUtil.getUrl(driver, new Config4test().getWebUrl());
 		lfas.assertAfterPass();
 		sm.quitDriver(driver);
 		//despues de cerrar el driver se guardan los videos, estas acciones se deben comprobar antes del teardown para driver remoto

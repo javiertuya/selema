@@ -9,6 +9,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import giis.selema.portable.selenium.JavaMap;
 import giis.selema.portable.selenium.SeleniumObjects;
 
 /**
@@ -34,9 +35,11 @@ public class SeleniumDriverFactory {
 			//Sets capabilities and arguments by create an options object
 			log.debug("Setting up WebDriver Options, browser: "+browser);
 			Object opt = optInstance==null ? reflect.getOptionsObj(browser, args) : optInstance;
-			if (caps!=null)
-				for (String key: caps.keySet()) //NOSONAR compatibility with .NET
-					reflect.setCapability(opt, key, caps.get(key));
+			if (caps!=null) {
+				JavaMap<String, Object> pcaps = new JavaMap<String, Object>(caps); // NOSONAR net compatibility
+				for (String key: pcaps.keySet())
+					reflect.setCapability(opt, key, pcaps.get(key));
+			}
 			if (args!=null)
 				reflect.addArguments(opt, args);
 			

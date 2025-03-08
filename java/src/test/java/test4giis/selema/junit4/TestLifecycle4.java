@@ -1,4 +1,5 @@
 package test4giis.selema.junit4;
+
 import static org.junit.Assert.assertEquals;
 
 import org.junit.ClassRule;
@@ -12,6 +13,7 @@ import giis.selema.framework.junit4.LifecycleJunit4Class;
 import giis.selema.framework.junit4.LifecycleJunit4Test;
 import giis.selema.manager.IAfterEachCallback;
 import giis.selema.manager.SeleManager;
+import giis.selema.portable.selenium.DriverUtil;
 import test4giis.selema.core.Config4test;
 import test4giis.selema.core.AfterEachCallback;
 import test4giis.selema.core.LifecycleAsserts;
@@ -39,7 +41,7 @@ public class TestLifecycle4 implements IAfterEachCallback {
 	}
 	
 	protected void launchPage() {
-		sm.driver().get(new Config4test().getWebUrl()); //siempre usa la misma pagina
+		DriverUtil.getUrl(sm.driver(), new Config4test().getWebUrl()); //siempre usa la misma pagina
 		sm.watermark();
 	}
 

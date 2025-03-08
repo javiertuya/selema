@@ -16,6 +16,7 @@ import giis.selema.framework.junit4.LifecycleJunit4Class;
 import giis.selema.framework.junit4.LifecycleJunit4Test;
 import giis.selema.manager.IAfterEachCallback;
 import giis.selema.manager.SeleManager;
+import giis.selema.portable.selenium.DriverUtil;
 import test4giis.selema.core.Config4test;
 import test4giis.selema.core.AfterEachCallback;
 import test4giis.selema.core.LifecycleAsserts;
@@ -42,7 +43,7 @@ public class TestLifecycle4Unmanaged implements IAfterEachCallback{
 		//should not have an active driver, accesing to it throws exception
 		assertFalse(sm.hasDriver());
 		try {
-			sm.driver().get(new Config4test().getWebUrl()); //siempre usa la misma pagina
+			DriverUtil.getUrl(sm.driver(), new Config4test().getWebUrl()); //siempre usa la misma pagina
 			fail("should fail");
 		} catch (Throwable e) {
 			assertEquals("The Selenium Manager does not have any active WebDriver", e.getMessage());
@@ -57,7 +58,7 @@ public class TestLifecycle4Unmanaged implements IAfterEachCallback{
 		assertTrue(sm.hasDriver());
 		lfas.assertAfterSetup(sm, true);
 		sm.getLogger().info("INSIDE TEST BODY");
-		driver.get(new Config4test().getWebUrl());
+		DriverUtil.getUrl(driver, new Config4test().getWebUrl());
 		lfas.assertAfterPass();
 		sm.quitDriver(driver);
 		sm.quitDriver(driver); //ensures can be called multiple times

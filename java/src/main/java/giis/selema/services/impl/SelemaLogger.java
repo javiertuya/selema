@@ -63,6 +63,8 @@ public class SelemaLogger implements ISelemaLogger {
 	
 	private void write(String type, String message) {
 		String time=JavaCs.getTime(JavaCs.getCurrentDate());
+		// some messages may have more than one line, replace line break by html break
+		message = message.replace("\r", "").replace("\n", "<br/>");
 		FileUtil.fileAppend(logFile, "\n" + html("[" + type + "] " + time + " " + loggerName + " - "+ message));
 	}
 	private String html(String message) {

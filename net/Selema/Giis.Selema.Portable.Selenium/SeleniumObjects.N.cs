@@ -137,11 +137,11 @@ namespace Giis.Selema.Portable.Selenium
 		}
         private void SetupWebDriverManager(IDriverConfig config, string driverVersion)
         {
-            if (DriverVersion.MatchBrowser == driverVersion)
+            if (DriverVersion.MATCH_BROWSER == driverVersion)
                 new DriverManager().SetUpDriver(config, VersionResolveStrategy.MatchingBrowser);
-            else if (DriverVersion.LatestAvailable == driverVersion)
+            else if (DriverVersion.LATEST_AVAILABLE == driverVersion)
                 new DriverManager().SetUpDriver(config, VersionResolveStrategy.Latest);
-            else if (DriverVersion.SeleniumManager == driverVersion)
+            else if (DriverVersion.SELENIUM_MANAGER == driverVersion)
                 return;
             else // none of these keywords, try to get the exact version
                 new DriverManager().SetUpDriver(config, driverVersion);
@@ -163,10 +163,10 @@ namespace Giis.Selema.Portable.Selenium
 				string clasName = GetDrivermanagerClassName(browser);
 				object browserConfig = Activator.CreateInstance(Type.GetType(clasName));
 				//Fix firefox can't get version matching browser
-				if (browser == "firefox" && version==DriverVersion.MatchBrowser)
+				if (browser == "firefox" && version==DriverVersion.MATCH_BROWSER)
 				{
 					log.Warn("WebDriverManager.Net can not match Firefox driver and browser versions, using latest driver version");
-					version = DriverVersion.LatestAvailable;
+					version = DriverVersion.LATEST_AVAILABLE;
 				}
 				//second parametr indicates that browser version will be used, available only for chrome
 				SetUpWebDriver((IDriverConfig)browserConfig, version);

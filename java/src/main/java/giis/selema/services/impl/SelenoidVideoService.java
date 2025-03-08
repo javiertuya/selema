@@ -1,12 +1,12 @@
 package giis.selema.services.impl;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.openqa.selenium.WebDriver;
 
 import giis.portable.util.FileUtil;
 import giis.portable.util.JavaCs;
+import giis.selema.portable.selenium.JavaMap;
 import giis.selema.services.IMediaContext;
 import giis.selema.services.ISelemaLogger;
 import giis.selema.services.IVideoService;
@@ -51,10 +51,10 @@ public class SelenoidVideoService implements IVideoService {
 	@Override
 	public Map<String, Object> getSeleniumOptions(IMediaContext context, String testName) {
 		String videoFileName=context.getVideoFileName(testName);
-		HashMap<String, Object> opts= new HashMap<>();
+		JavaMap<String, Object> opts = new JavaMap<String, Object>(); // NOSONAR net compatibility
 		opts.put("enableVideo", true);
 		opts.put("videoName", videoFileName);			
-		return opts;
+		return opts.unwrap();
 	}
 	private String getSessionTimestamp(long nowTimestamp) {
 		long starting=(nowTimestamp-lastSessionStartingTimestamp)/1000;

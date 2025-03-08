@@ -28,6 +28,8 @@ and integration with CI platforms and Browser services.
 
 ## Breaking changes
 
+- NET only: As of v3.4.0 the java to .NET conversion has been migrated from Sharpen to [JavaToCsharp](https://github.com/paulirwin/JavaToCSharp),
+  all constants are capitalized as uppercase.
 - Java only: As of V3.1.0, Java 11 is the minimum version supported (requirement of the upcoming Selenium v5)
 - As of v3.0.0 the class `SeleniumManager` is renamed to `SeleManager` to avoid naming conflics with Selenium >=v4.6
 

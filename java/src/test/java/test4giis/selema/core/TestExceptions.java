@@ -1,6 +1,7 @@
 package test4giis.selema.core;
 
 import static org.junit.Assert.assertEquals;
+
 import static org.junit.Assert.fail;
 
 import org.junit.After;
@@ -12,11 +13,13 @@ import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 import giis.selema.framework.junit4.LifecycleJunit4Class;
 import giis.selema.framework.junit4.LifecycleJunit4Test;
 import giis.selema.manager.IAfterEachCallback;
 import giis.selema.manager.SelemaConfig;
 import giis.selema.manager.SelemaException;
+import giis.selema.portable.selenium.DriverUtil;
 import giis.selema.manager.SeleManager;
 import giis.selema.services.IMediaContext;
 import giis.selema.services.impl.MediaContext;
@@ -63,7 +66,7 @@ public class TestExceptions implements IAfterEachCallback {
 	}
 
 	protected void launchPage() {
-		sm.driver().get(new Config4test().getWebUrl()); //siempre usa la misma pagina
+		DriverUtil.getUrl(sm.driver(), new Config4test().getWebUrl()); //siempre usa la misma pagina
 	}
 
 	@Test
@@ -137,7 +140,7 @@ public class TestExceptions implements IAfterEachCallback {
 		sm.driver().close();
 		// Failure to write because the driver is closed causes error messages about the watermark, but not exception
 		sm.watermarkText("thisShouldNotFail");
-		lfas.assertLast("[WARN]", "Can't write onFailure watermark thisShouldNotFail. Message: invalid session id");
+		lfas.assertLast("[WARN]", "Can't write onFailure watermark thisShouldNotFail");
 	}
 	@Test
 	public void testWatermarkExceptionWritingOnFailureMessage() {
@@ -148,7 +151,7 @@ public class TestExceptions implements IAfterEachCallback {
 		// Failure to write because the driver is closed causes error messages about the watermark
 		sm.driver().close();
 		sm.onFailure("thisClass", "thisTest");
-		lfas.assertLast("[ERROR]", "Can't write onFailure watermark thisTest. Message: invalid session id");
+		lfas.assertLast("[ERROR]", "Can't write onFailure watermark thisTest");
 	}
 
 }

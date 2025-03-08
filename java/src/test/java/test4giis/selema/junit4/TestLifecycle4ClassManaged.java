@@ -13,6 +13,7 @@ import giis.selema.framework.junit4.LifecycleJunit4Class;
 import giis.selema.framework.junit4.LifecycleJunit4Test;
 import giis.selema.manager.IAfterEachCallback;
 import giis.selema.manager.SeleManager;
+import giis.selema.portable.selenium.DriverUtil;
 import test4giis.selema.core.AfterEachCallback;
 import test4giis.selema.core.LifecycleAsserts;
 import test4giis.selema.core.Config4test;
@@ -36,7 +37,7 @@ public class TestLifecycle4ClassManaged implements IAfterEachCallback {
 	}
 
 	protected void launchPage() {
-		sm.driver().get(new Config4test().getWebUrl()); //siempre usa la misma pagina
+		DriverUtil.getUrl(sm.driver(), new Config4test().getWebUrl()); //siempre usa la misma pagina
 		sm.watermark();
 	}
 
