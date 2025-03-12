@@ -1,7 +1,10 @@
 package test4giis.selema.core;
+
 import static org.junit.Assert.assertEquals;
 
-import org.junit.*;
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -9,6 +12,7 @@ import org.openqa.selenium.WebElement;
 import giis.selema.framework.junit4.LifecycleJunit4Class;
 import giis.selema.framework.junit4.LifecycleJunit4Test;
 import giis.selema.manager.SeleManager;
+import giis.selema.portable.selenium.DriverUtil;
 import giis.selema.portable.selenium.SeleniumActions;
 
 public class TestActions { //interface only to generate compatible NUnit3 translation
@@ -20,7 +24,7 @@ public class TestActions { //interface only to generate compatible NUnit3 transl
 	@Test
 	public void testSendKeys() {
 		WebDriver driver=sm.driver();
-		driver.get(new Config4test().getWebUrl());
+		DriverUtil.getUrl(driver, new Config4test().getWebUrl());
 		sm.watermark();
 		WebElement elem=driver.findElement(By.id("textbox"));
 		SeleniumActions.sendKeysActions(driver, elem, "valueWithActions");
@@ -32,7 +36,7 @@ public class TestActions { //interface only to generate compatible NUnit3 transl
 	@Test
 	public void testSetHtmlOrText() {
 		WebDriver driver=sm.driver();
-		driver.get(new Config4test().getWebUrl());
+		DriverUtil.getUrl(driver, new Config4test().getWebUrl());
 		sm.watermark();
 		WebElement elem=driver.findElement(By.id("spanSpan"));
 		SeleniumActions.setInnerHtml(driver, "spanSpan", "text<strong>Bold</strong>");
@@ -43,7 +47,7 @@ public class TestActions { //interface only to generate compatible NUnit3 transl
 	@Test
 	public void testWebDriverWaits() {
 		WebDriver driver=sm.driver();
-		driver.get(new Config4test().getWebUrl());
+		DriverUtil.getUrl(driver, new Config4test().getWebUrl());
 		sm.watermark();
 		WebElement elem=SeleniumActions.findById(driver, "btnDelay");
 		SeleniumActions.clickJavascript(driver, elem);
@@ -54,7 +58,7 @@ public class TestActions { //interface only to generate compatible NUnit3 transl
 	/*
 	@Test
 	public void testAlertsAll() { 
-		driver.get(testConfig.getWebUrl());
+		DriverUtil.loadUrl(driver, testConfig.getWebUrl());
 		watermark();
 		runAlerts(true, true, true, 100);
 	}

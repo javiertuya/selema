@@ -1,58 +1,10 @@
 <project name="Selema" default="build" basedir="." xmlns:if="ant:if" xmlns:unless="ant:unless" xmlns:dn="antlib:org.apache.ant.dotnet" xmlns="antlib:org.apache.tools.ant">
 
-	<description>Version C# de Selema</description>
-  <!--Uses java for sharpen if this property specifies the location of a java7 executable, if not, uses containers -->
-  <property environment="env"/>
-  <property name="java7.exec" value="C:/Program Files/Java/jdk1.7.0_75/bin/java" unless:set="env.GITHUB_WORKSPACE" />
+  <description>Conversion from Java to C# using JavaToCSharp</description>
+  
+  <import file="build-convert.xml"/>
 
-  <target name="clean" description="limpia archivos temporales y generados">
-    <delete dir="Selema/bin"/>
-    <delete dir="Selema/obj"/>
-    <delete dir="Selema/nupkg"/>
-    <delete dir="SelemaTest/bin"/>
-    <delete dir="SelemaTest/obj"/>
-    <delete dir="SelemaTest/TestResults"/>
-    <delete dir="packages"/>
-    <delete dir="reports"/>
-    <delete dir="sharpen-temp"/>
-    <delete dir="Sharpen-Project/src/target/classes"/>
-    <delete dir="Sharpen-Project/src/target/testcases"/>
-    <delete dir="Sharpen-Project/src/target/surefire-reports"/>
-  </target>
-
-	<target name="build" >
-    <exec executable="dotnet" failonerror="true" >
-      <arg value="build" />
-    </exec>
-	</target>
-
-  <target name="test" >
-    <exec executable="dotnet" failonerror="true" >
-      <arg value="test" />
-      <arg value="--logger" />
-      <arg value="console" />
-      <arg value="--logger" />
-      <arg value="trx;LogFileName=../../reports/test-result.trx" />
-    </exec>
-  </target>
-
-  <target name="report.split" description="Convert mstest to junit reports">
-       <exec executable="dotnet" >
-        <arg value="tool" />
-        <arg value="install" />
-        <arg value="--no-cache" />
-        <arg value="--tool-path" />
-        <arg value="packages/dotnet-tools" />
-        <arg value="DotnetTestSplit" />
-      </exec>
-      <property name="DotnetTestSplit.exe" value="packages/dotnet-tools/DotnetTestSplit.exe" if:set="isWindows" />
-      <property name="DotnetTestSplit.exe" location="packages/dotnet-tools/DotnetTestSplit" unless:set="isWindows" />
-      <exec executable="${DotnetTestSplit.exe}" failonerror="true">
-        <arg value="reports/test-result.trx" />
-        <arg value="reports/surefire-reports" />
-      </exec>
-  </target>
-  <target name="report" description="JUnit html format report generation">
+    <target name="report" description="JUnit html format report generation (from .trx splitted with DotnetTestSplit)">
       <junitreport todir="reports">
         <fileset dir="reports/surefire-reports">
           <include name="TEST-*.xml" />
@@ -61,189 +13,91 @@
         <report format="noframes" todir="reports/junit-noframes" />
       </junitreport>
   </target>
-
-  <target name="sharpen" description="Traduce el codigo fuente de Selema de Java a C#"
-          depends="sharpen.preprocess, sharpen.sharpen, sharpen.postprocess ">
-    <!--
-      Three stages (each is run as a target):
-      - copy java files to a sharpen-temp/java directory and gets dependencies
-      - perform the sharpen translation
-      - final changes in translated files (in temporary folder) and copy to the solution
-    -->
-  </target>
-
-  <target name="sharpen.preprocess">
-    <!--copia los fuentes a la carpeta temporal donde se traduciran y postprocesaran-->
-    <copy todir="sharpen-temp/java">
-      <fileset dir="../java/src/main/java" >
-        <exclude name="**/framework/junit5/**" />
-      </fileset>
-      <fileset dir="../java/src/test/java" >
-        <exclude name="**/*junit5/**" />
-        <exclude name="**/TestDriverPlatformDependent.*" />
-      </fileset>
-    </copy>
-    <mkdir dir="sharpen-temp/lib" />
-
-    <!-- Other libraries to resolve depenencies when executing sharpen (delcared in sharpen-all-options.txt) -->
-    <sequential>
-      <get src="https://repo1.maven.org/maven2/junit/junit/4.13/junit-4.13.jar" dest="sharpen-temp/lib/junit-4.13.jar" usetimestamp="true" />
-      <get src="https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.32/slf4j-api-1.7.32.jar" dest="sharpen-temp/lib/slf4j-api-1.7.32.jar" usetimestamp="true" />
-      <get src="https://repo1.maven.org/maven2/commons-io/commons-io/2.6/commons-io-2.6.jar" dest="sharpen-temp/lib/commons-io-2.6.jar" usetimestamp="true" />
-      <get src="https://repo1.maven.org/maven2/org/bitbucket/cowwoc/diff-match-patch/1.2/diff-match-patch-1.2.jar" dest="sharpen-temp/lib/diff-match-patch-1.2.jar" usetimestamp="true" />
-      <get src="https://repo1.maven.org/maven2/io/github/javiertuya/portable-java/2.1.2/portable-java-2.1.2.jar" dest="sharpen-temp/lib/portable-java-2.1.2.jar" usetimestamp="true" />
-      <get src="https://repo1.maven.org/maven2/io/github/javiertuya/visual-assert/2.2.1/visual-assert-2.2.1.jar" dest="sharpen-temp/lib/visual-assert-2.2.1.jar" usetimestamp="true" />
-      <property name="selenium-url" value="https://repo1.maven.org/maven2/org/seleniumhq/selenium" />
-      <get src="${selenium-url}/selenium-api/3.141.59/selenium-api-3.141.59.jar" dest="sharpen-temp/lib/selenium-api-3.141.59.jar" usetimestamp="true" />
-      <get src="${selenium-url}/selenium-remote-driver/3.141.59/selenium-remote-driver-3.141.59.jar" dest="sharpen-temp/lib/selenium-remote-driver-3.141.59.jar" usetimestamp="true" />
-      <get src="${selenium-url}/selenium-support/3.141.59/selenium-support-3.141.59.jar" dest="sharpen-temp/lib/selenium-support-3.141.59.jar" usetimestamp="true" />
-    </sequential>
-
-    <!--Dificiles de mapear las clases de Selenium, crea un stub, habra implementaciones en cada plataforma-->
-    <echo file="sharpen-temp/java/giis/selema/portable/selenium/SeleniumObjects.java">
-      package giis.selema.portable.selenium;
-      import java.util.Map;
-      public class SeleniumObjects {
-      public Object getOptionsObj(String browser, String[] arguments) { return null; }
-      public String getOptionsObjAsString(Object obj) { return null; }
-      public void setCapability(Object opt, String key, Object value) { }
-      public void addArguments(Object opt, String[] args) { }
-      public Object getDriverObj(String browser, Object opt) { return null; }
-      public Object getRemoteDriverObj(String remoteUrl, Object opt) { return null; }
-      public void downloadDriverExecutable(String browser, String version) { }
-      }
-    </echo>
-    <echo file="sharpen-temp/java/giis/selema/portable/selenium/SeleniumActions.java">
-      package giis.selema.portable.selenium;
-      import org.openqa.selenium.WebDriver;
-      import org.openqa.selenium.WebElement;
-      import org.openqa.selenium.By;
-      public class SeleniumActions {
-      public static void takeScreenshotToFile(WebDriver driver, String fileName) { }
-      public static void clickActions(WebDriver driver, WebElement elem) { }
-      public static void clickJavascript(WebDriver driver, WebElement elem) { }
-      public static void sendKeysActions(WebDriver driver, WebElement elem, String value) { }
-      public static void sendKeysJavascript(WebDriver driver, WebElement elem, String value) { }
-      public static String executeScript(WebDriver driver, String script) { return ""; }
-      public static String executeScript(WebDriver driver, String script, WebElement elem) { return ""; }
-      public static String executeScript(WebDriver driver, String script, WebElement elem, String value) { return ""; }
-      public static void setInnerHtml(WebDriver driver, String id, String value) { }
-      public static void setInnerText(WebDriver driver, String id, String value) { }
-      public static WebElement findBy(WebDriver driver, By locator) { return (WebElement)null; }
-      public static WebElement findById(WebDriver driver, String id) { return (WebElement)null; }
-      public static void waitUntilTextPresent(WebDriver seleniumDriver, WebElement elem, String expected) { }
-      public static String manageAlert(WebDriver driver, boolean accept, boolean dismiss, String text, boolean waitForClosedAlert) { return ""; }
-      public static String manageAlert(WebDriver driver, boolean accept, boolean dismiss, String text, boolean waitForClosedAlert, int waitTime) { return ""; }
-      }
-    </echo>
-  </target>
-
-  <target name="sharpen.sharpen">
-    <sharpen.run.java7 if:set="java7.exec" />
-    <sharpen.run.container unless:set="java7.exec" />
-  </target>
-
-  <macrodef name="sharpen.run.container" description="Run sharpen from a container" >
-    <sequential>
-      <exec executable="docker" failonerror="true" >
-        <arg value="build" />
-        <arg value="-t" />
-        <arg value="sharpen" />
-        <arg value="./sharpen-docker" />
-      </exec>
-      <echo>${basedir}</echo>
-      <exec executable="docker" failonerror="true" >
-        <arg value="run" />
-        <arg value="-v" />
-        <arg value="${basedir}:/sharpen/workdir" />
-        <arg value="sharpen" />
-        <arg value="." />
-        <arg value="sharpen-temp/java" />
-        <arg value="@sharpen-all-options.txt" />
-      </exec>
-    </sequential>
-  </macrodef>
-
-  <macrodef name="sharpen.run.java7" description="Run sharpen with local java7 installation" >
-    <sequential>
-      <get src="https://github.com/javiertuya/sharpen/releases/download/v1.0.1-fork/sharpencore-0.0.1-SNAPSHOT.jar" 
-           dest="sharpen-temp/lib/sharpencore-0.0.1-SNAPSHOT.jar" usetimestamp="true" />
-      <exec executable="${java7.exec}" failonerror="true" >
-        <arg value="-jar" />
-        <arg value="sharpen-temp/lib/sharpencore-0.0.1-SNAPSHOT.jar" />
-        <arg value="sharpen-temp/java" />
-        <arg value="@sharpen-all-options.txt" />
-      </exec>
-    </sequential>
-  </macrodef>
   
-  <target name="sharpen.postprocess">
-    <!--remplazos globales en el core y tests-->
-    <replace dir="sharpen-temp/sharpen-temp.net/">
-      <!--<replacefilter token="Logger.GetLogger(this.GetType())" value="LogManager.GetCurrentClassLogger()" />-->
-      <replacefilter token="//NOSONAR" value="//" />
+  <target name="clone" description="Gets the JavaToCSharp converter (from forked branch)">
+    <runClone/>
+  </target>
+
+  <target name="convert">
+    <!-- Basic conversion and postprocessing of sources and tests (junit4 into nunit3) -->
+    <runConvert input="../java/src/main/java/giis/selema/manager" output="Selema/Translated/Giis.Selema.Manager"  mapping="java-mapping.yml" />
+    <runConvert input="../java/src/main/java/giis/selema/services" output="Selema/Translated/Giis.Selema.Services"  mapping="java-mapping.yml" />
+    <runConvert input="../java/src/main/java/giis/selema/services/impl" output="Selema/Translated/Giis.Selema.Services.Impl"  mapping="java-mapping.yml" />
+    <runConvert input="../java/src/test/java/test4giis/selema/core" output="SelemaTest/Translated/Test4giis.Selema.Core"  mapping="java-mapping.yml" />
+    <runConvert input="../java/src/test/java/test4giis/selema/junit4" output="SelemaTest/Translated/Test4giis.Selema.Nunit3"  mapping="java-mapping.yml" />
+    <delete file="SelemaTest/Translated/Test4giis.Selema.Core/TestDriverPlatformDependent.cs" />
+
+    <replace dir="." >
+      <include name="Selema/Translated/Giis.Selema.Manager/*.cs" />
+      <include name="Selema/Translated/Giis.Selema.Services/*.cs" />
+      <include name="Selema/Translated/Giis.Selema.Services.Impl/*.cs" />
+      <include name="SelemaTest/Translated/Test4giis.Selema.Core/*.cs" />
+      <include name="SelemaTest/Translated/Test4giis.Selema.Nunit3/*.cs" />
+      <replacefilter token="public class TestDriverVersion" value=" [Ignore(&quot;Manual test to avoid side effects with tests executed after this&quot;)] public class TestDriverVersion" />
+      <replacefilter token="LoggerFactory" value="LogManager" />
+      <replacefilter token="LogManager.GetLogger(this.GetType());" value="LogManager.GetCurrentClassLogger();" />
+      <replacefilter token="LogManager.GetLogger(typeof(" value="LogManager.GetCurrentClassLogger(); //" />
+      <replacefilter token="Throwable" value="Exception" />
+      <replacefilter token="InvocationTargetException" value="TargetInvocationException" />
+      <replacefilter token="((TargetInvocationException)e).GetTargetException().GetMessage()" value="((TargetInvocationException)e).InnerException.Message" />
+      <replacefilter token="e.GetMessage()" value="e.Message" />
+      <replacefilter token=".GetType().GetName()" value=".GetType().FullName" />
       <replacefilter token=".GetType().GetCanonicalName()" value=".GetType().FullName" />
-      <replacefilter token="LogManager.GetLogger(this.GetType())" value="LogManager.GetCurrentClassLogger()" />
-      <replacefilter token="LogManager.GetLogger(typeof(LogFactory))" value="LogManager.GetCurrentClassLogger()" />
-      <replacefilter token="DiffMatchPatch" value="diff_match_patch" />
-      <replacefilter token="LinkedList&lt;diff_match_patch.Diff&gt;" value="List&lt;Diff&gt;" />
-      <replacefilter token="DiffMain" value="diff_main" />
-      <replacefilter token="DiffCleanupSemantic" value="diff_cleanupSemantic" />
-      <replacefilter token="DiffPrettyHtml" value="diff_prettyHtml" />
-      <replacefilter token="Org.Bitbucket.Cowwoc.Diffmatchpatch" value="Giis.Visualassert.DiffMatchPatch" />
-      <replacefilter token="wait.WithMessage(" value="wait.Message=(" />
-      <replacefilter token=".Manage().Window().Maximize()" value=".Manage().Window.Maximize()" />
+
+      <replacefilter token="public virtual WebDriver Driver()" value="public WebDriver Driver { get { return this.GetDriver(); } }  public virtual WebDriver DriverJavaOnly()" />
+      <replacefilter token=".Driver()" value=".Driver" />
+      <replacefilter token="WebDriver" value="IWebDriver" />
+      <replacefilter token="WebElement" value="IWebElement" />
+      <replacefilter token="RemoteIWebDriver" value="RemoteWebDriver" />
+      <replacefilter token="Capabilities" value="DriverOptions" />
+      <replacefilter token=".Window().Maximize()" value=".Window.Maximize()" />
+      <replacefilter token=".GetText()" value=".Text" />
+
+      <replacefilter token="String.ValueOf(" value="(" />
+      
+      <replacefilter token="Dictionary&lt;" value="Map&lt;" />
+
+      <replacefilter token="[Ignore]" value="[Ignore(&quot;Manual test&quot;)]" />
+      <!--todo uppercase when new version of portable-->
+      <replacefilter token="Parameters.DEFAULT_PROJECT_ROOT" value="Parameters.DefaultProjectRoot" />
+      <replacefilter token="Parameters.DEFAULT_REPORT_SUBDIR" value="Parameters.DefaultReportSubdir" />
+
+      <replacefilter token="using converted.placeholder;" value="/////// THIS FILE HAS BEEN AUTOMATICALLY CONVERTED FROM THE JAVA SOURCES. DO NOT EDIT ///////" />
     </replace>
-    <!--remplazos globales en los tests (de junit4 a nunit3)-->
-    <replace dir="sharpen-temp/sharpen-temp.net/">
-      <include name="Test4giis*/**" />
-      <replacefilter token="public class TestDriverVersion" value=" [Ignore(&quot;Manual Test&quot;)] public class TestDriverVersion" />
-      <replacefilter token="LogManager.GetLogger(this.GetType())" value="LogManager.GetCurrentClassLogger()" />
-      <replacefilter token="LogManager.GetLogger(typeof(LogFactory))" value="LogManager.GetCurrentClassLogger()" />
-      <replacefilter token="LogManager.GetLogger(typeof(TestExceptions))" value="LogManager.GetCurrentClassLogger()" />
-      <replacefilter token="LogManager.GetLogger(typeof(TestLifecycle4))" value="LogManager.GetCurrentClassLogger()" />
-      <replacefilter token="LogManager.GetLogger(typeof(TestLifecycle4ClassManaged))" value="LogManager.GetCurrentClassLogger()" />
-      <replacefilter token="LogManager.GetLogger(typeof(TestLifecycle4Unmanaged))" value="LogManager.GetCurrentClassLogger()" />
-      <replacefilter token="LogManager.GetLogger(typeof(TestLifecycle4Repeated))" value="LogManager.GetCurrentClassLogger()" />
-      <replacefilter token="Junit4" value="Nunit3" />
-      <replacefilter token="[Rule]" value="" />
-      <replacefilter token="[ClassRule]" value="" />
-      <replacefilter token="public static LifecycleNunit3Class" value="//public LifecycleNunit3Class" />
-      <replacefilter token="public LifecycleNunit3Test" value="//public LifecycleNunit3Test" />
-      <replacefilter token="LifecycleNunit3Class." value="LifecycleNunit3." />
+    <replace file="Selema/Translated/Giis.Selema.Manager/SeleniumDriverFactory.cs" >
+      <replacefilter token="IWebDriver" value="WebDriver" />
+    </replace>
+
+    <!-- 
+    Core and Junit4 test has been mostly converted into NUnit3,
+    but additional transformations must be made to adapt the particularities of selema,
+    e.g. add the LifecycleNunit3 and remove the LifecycleJunit4 rules
+    -->
+
+    <replace dir="." >
+      <include name="SelemaTest/Translated/Test4giis.Selema.Core/*.cs" />
+      <include name="SelemaTest/Translated/Test4giis.Selema.Nunit3/*.cs" />
+      <replacefilter token="By.Id(" value="OpenQA.Selenium.By.Id(" />
+      
+      <replacefilter token="public static LifecycleJunit4Class" value="//public static LifecycleJunit4Class" />
+      <replacefilter token="public LifecycleJunit4Test" value="//public LifecycleJunit4Test" />
       <replacefilter token="public RepeatedTestRule" value="//public RepeatedTestRule" />
       <replacefilter token="protected internal static SeleManager" value="protected internal SeleManager" />
+      <replacefilter token="protected static SeleManager" value="protected internal SeleManager" />
       <replacefilter token="public class TestLifecycle4" value="[LifecycleNunit3] public class TestLifecycle4" />
       <replacefilter token="public class TestActions" value="[LifecycleNunit3] public class TestActions" />
       <replacefilter token="public class TestExceptions" value="[LifecycleNunit3] public class TestExceptions" />
       <replacefilter token="public virtual void TestRepeated()" value="[Retry(3)] public virtual void TestRepeated()" />
+
+      <replacefilter token="namespace Test4giis.Selema.Junit4" value="namespace Test4giis.Selema.Nunit3" />
+      <replacefilter token="using Giis.Selema.Framework.Junit4;" value="" />
       <replacefilter token="[LifecycleNunit3] public class TestLifecycle4Inherited" value="public class TestLifecycle4Inherited" />
     </replace>
 
-    <!-- Copia a los proyectos .net -->
-    <copy todir="Selema/Translated">
-      <fileset dir="sharpen-temp/sharpen-temp.net">
-        <exclude name="Giis.Selema.Portable/**" />
-        <exclude name="Giis.Selema.Portable.Selenium/Selenium*.*" />
-        <exclude name="Giis.Selema.Framework.*/**" />
-        <exclude name="Test4giis.Selema.*/**" />
-      </fileset>
-      <filterchain>
-        <concatfilter prepend="sharpen-autogenerated-note.txt"/>
-      </filterchain>
-    </copy>
-    <copy todir="SelemaTest/Translated">
-      <fileset dir="sharpen-temp/sharpen-temp.net">
-        <include name="Test4giis.Selema*/**/*" />
-        <exclude name="Test4giis.Selema.Portable/**" />
-      </fileset>
-      <filterchain>
-        <concatfilter prepend="sharpen-autogenerated-note.txt"/>
-      </filterchain>
-    </copy>
-    <move file="SelemaTest/Translated/Test4giis.Selema.Junit4" tofile="SelemaTest/Translated/Test4giis.Selema.Nunit3"/>
-
-    <!--Para mstest copia los tests ya generados de nunit3 a mstest y realiza los remplazos necesarios-->
+    <!--
+    MSTest2 tests are copied from the already converted NUnit3 tests, 
+    but need to be adapted both to selema and mstest
+    -->
     <copy todir="SelemaTest/Translated/Test4giis.Selema.Mstest2">
       <fileset dir="SelemaTest/Translated/Test4giis.Selema.Nunit3">
         <include name="**/*" />
@@ -253,6 +107,8 @@
       <include name="**/*" />
       <replacefilter token="public class Test" value="[TestClass] public class Test" />
       <replacefilter token="[Test]" value="[TestMethod]" />
+      <replacefilter token="[NUnit.Framework.OneTimeSetUp]" value="[ClassInitialize]" />
+      <replacefilter token="[NUnit.Framework.OneTimeTearDown]" value="[ClassCleanup]" />
       <replacefilter token="[OneTimeSetUp]" value="[ClassInitialize]" />
       <replacefilter token="[OneTimeTearDown]" value="[ClassCleanup]" />
       <replacefilter token="[NUnit.Framework.SetUp]" value="[TestInitialize]" />
@@ -268,11 +124,10 @@
         <replacetoken>public virtual void RunAfterCallback(string testName, bool success)</replacetoken>
         <replacevalue>
           <![CDATA[[ClassCleanup(ClassCleanupBehavior.EndOfClass)]
-		public static new void TearDownClass() {
-    
-			LifecycleMstest2.TearDownClass();
-		}
-        public override void RunAfterCallback(string testName, bool success)]]>
+		      public static new void TearDownClass() { 
+            LifecycleMstest2.TearDownClass(); 
+          }
+          public override void RunAfterCallback(string testName, bool success)]]>
         </replacevalue>
       </replacefilter>
     </replace>
@@ -283,13 +138,13 @@
         <replacetoken>protected internal SeleManager</replacetoken>
         <replacevalue>
           <![CDATA[protected internal static SeleManager sm;
-		public CLASS_CONSTRUCTOR() {
-        ]]>
+		      public CLASS_CONSTRUCTOR() {
+          ]]>
         </replacevalue>
       </replacefilter>
+      <replacefilter token="[ClassCleanup(" value="} [ClassCleanup(" />
       <replacefilter token="new SeleManager()" value="LifecycleMstest2.GetManager(sm)" />
       <replacefilter token="new SeleManager(Config4test.GetConfig())" value="LifecycleMstest2.GetManager(sm,Config4test.GetConfig())" />
-      <replacefilter token="//public LifecycleMstest2Class" value="} //public LifecycleMstest2Class" />
     </replace>
     <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4.cs" token="CLASS_CONSTRUCTOR" value="TestLifecycle4" />
     <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4ClassManaged.cs" token="CLASS_CONSTRUCTOR" value="TestLifecycle4ClassManaged" />
@@ -297,12 +152,11 @@
     <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4Inherited.cs" token="CLASS_CONSTRUCTOR" value="TestLifecycle4Inherited" />
     <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4Repeated.cs" token="CLASS_CONSTRUCTOR" value="TestLifecycle4Repeated" />
 
+    <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4Inherited.cs" token="[TestClass]" value="[Microsoft.VisualStudio.TestTools.UnitTesting.TestClass]" />
     <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4Repeated.cs" token="Retry(" value="RetryTestMethod(" />
     <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4Repeated.cs" token="[TestMethod]" value="" />
-    <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4Repeated.cs" token="sm.Driver.Url" value="base.SetUp(); sm.Driver.Url" />
+    <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4Repeated.cs" token="DriverUtil.GetUrl(sm.Driver" value="base.SetUp(); DriverUtil.GetUrl(sm.Driver" />
     <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4Repeated.cs" token="public virtual void SetUp()" value="public override void SetUp()" />
-    <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4Inherited.cs" token="[TestClass]" value="[Microsoft.VisualStudio.TestTools.UnitTesting.TestClass]" />
-
   </target>
 
 </project>

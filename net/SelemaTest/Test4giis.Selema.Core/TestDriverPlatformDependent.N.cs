@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Giis.Selema.Manager;
+using Java.Util;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
@@ -18,7 +19,7 @@ namespace Test4giis.Selema.Core
 			if (!TestDriver.UseHeadless())
 				return;
 			SeleniumDriverFactory factory = new SeleniumDriverFactory();
-			IDictionary<string, object> caps = new SortedDictionary<string, object>();
+			Map<string, object> caps = new TreeMap<string, object>();
 			caps["testprefix:key1"] = "value1";
 			ChromeOptions optInstance=new ChromeOptions();
 			optInstance.UnhandledPromptBehavior = OpenQA.Selenium.UnhandledPromptBehavior.Ignore;

@@ -15,6 +15,7 @@ import giis.portable.util.Parameters;
 import giis.selema.manager.CiServiceFactory;
 import giis.selema.manager.SelemaException;
 import giis.selema.manager.SeleniumDriverFactory;
+import giis.selema.portable.selenium.DriverUtil;
 import giis.selema.manager.SeleManager;
 import giis.selema.services.impl.SelenoidService;
 import test4giis.selema.portable.Asserts;
@@ -53,7 +54,7 @@ public class TestDriver {
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
 		WebDriver driver=factory.getSeleniumDriver("chrome", "", "", null, new String[] {"--remote-allow-origins=*"}, null);
 		assertOptions(factory, "{browserName:chrome,goog:chromeOptions:{args:[--remote-allow-origins=*]}}");
-		driver.close();
+		DriverUtil.closeDriver(driver);
 	}
 	@Test
 	public void testLocalWebDriverEdge() {
@@ -63,7 +64,7 @@ public class TestDriver {
 		assertOptions(factory, Parameters.isJava()
 				? "{browserName:MicrosoftEdge,ms:edgeOptions:{args:[]}}"
 				: "{browserName:MicrosoftEdge,ms:edgeOptions:{}}");
-		driver.close();
+		DriverUtil.closeDriver(driver);
 	}
 	@Test
 	public void testLocalWebDriverFirefox() {
@@ -74,7 +75,7 @@ public class TestDriver {
 		assertOptions(factory, Parameters.isJava()
 				? "{browserName:firefox,moz:firefoxOptions:{prefs:{remote.active-protocols:3}}}"
 				: "OpenQA.Selenium.Firefox.FirefoxOptions");
-		driver.close();
+		DriverUtil.closeDriver(driver);
 	}
 	
 	//next tests use chrome
@@ -85,18 +86,18 @@ public class TestDriver {
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
 		WebDriver driver=factory.getSeleniumDriver("chrome", "", "", null, chromeHeadlesArgument, null);
 		assertOptions(factory, "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]}}");
-		driver.close();
+		DriverUtil.closeDriver(driver);
 		//browser name is case insensitive, browser already downloaded, null remote url
 		driver=factory.getSeleniumDriver("CHRome", null, null, null, chromeHeadlesArgument, null);
 		assertOptions(factory, "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]}}");
-		driver.close();
+		DriverUtil.closeDriver(driver);
 	}
 	
 	@Test
 	public void testHeadlessWebDriverWithOptions() {
 		if (!useHeadless()) return;
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
-		Map<String, Object> caps=new TreeMap<String, Object>();
+		Map<String, Object> caps = new TreeMap<String, Object>();
 		//As of Selenium 4.9.0 non standard capabilities must have a prefix
 		caps.put("testprefix:key1", "value1");
 		caps.put("testprefix:key2", "value2");
@@ -105,7 +106,7 @@ public class TestDriver {
 		assertOptions(factory, Parameters.isJava() //different order on net
 			? "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]},testprefix:key1:value1,testprefix:key2:value2}"
 			: "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]}}");
-		driver.close();
+		DriverUtil.closeDriver(driver);
 	}
 	
 	//testHeadlessWebDriverWithOptionsAndOptionsInstance tested in separate class (transformed manually to C#)
@@ -118,7 +119,7 @@ public class TestDriver {
 			factory.getSeleniumDriver("carome", "", "", null, chromeHeadlesArgument, null);
 			fail("Should fail");
 		} catch (SelemaException e) {
-			Asserts.assertIsTrue(e.getMessage().startsWith("Can't instantiate WebDriver Options for browser: carome"),
+			Asserts.assertIsTrue(e.getMessage().startsWith("Can't instantiate WebDriver Options for browser: carome".replace("IWeb", "Web")),
 					"Not contained in: " + e.getMessage());
 		}
 	}
@@ -156,7 +157,7 @@ public class TestDriver {
 		assertOptions(factory, Parameters.isJava()
 				? "{browserName:chrome,goog:chromeOptions:{args:[]}}"
 				: "{browserName:chrome,goog:chromeOptions:{}}");
-		driver.close();
+		DriverUtil.closeDriver(driver);
 	}
 	@Test
 	public void testRemoteWebDriverWithArguments() {
@@ -169,7 +170,7 @@ public class TestDriver {
 		assertOptions(factory, Parameters.isJava()
 				? "{browserName:chrome,goog:chromeOptions:{args:[--start-maximized]}}"
 				: "{browserName:chrome,goog:chromeOptions:{args:[--start-maximized]}}");
-		driver.close();
+		DriverUtil.closeDriver(driver);
 	}
 	@Test
 	public void testRemoteWebDriverWrongUrl() {
@@ -191,7 +192,7 @@ public class TestDriver {
 	@Test
 	public void testRemoteWebDriverFromManagerNoBrowserService() {
 		if (!useRemote()) return;
-		Map<String,Object> capsToAdd=new TreeMap<String,Object>();
+		Map<String,Object> capsToAdd = new TreeMap<String,Object>();
 		capsToAdd.put("testprefix:key1","value1");
 		capsToAdd.put("testprefix:key2","value2");
 		SeleManager sm=new SeleManager(Config4test.getConfig())

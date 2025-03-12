@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import giis.portable.util.FileUtil;
+import giis.selema.portable.selenium.DriverUtil;
 import giis.selema.portable.selenium.SeleniumActions;
 import giis.selema.services.IJsCoverageService;
 import giis.selema.services.ISelemaLogger;
@@ -63,13 +64,13 @@ public class JsCoverService implements IJsCoverageService {
 	public void afterCreateDriver(WebDriver driver) {
 		String coverageFileName=FileUtil.getPath(this.reportDir, savedCoverageFile); 
 		if (!resetDone) {
-			driver.get(appRoot + CLEAR_LOCAL_STORAGE_HTML);
+			DriverUtil.getUrl(driver, appRoot + CLEAR_LOCAL_STORAGE_HTML);
 			//Creates a first default file without coverage data
 			//(avoids reporting failures if execution does not produces any coverage data)
 			String defaultCoverage="{\"/EMPTY-JS-COVERAGE.js\":{\"lineData\":[null,0,0],\"functionData\":[0],\"branchData\":{}}}";
 			FileUtil.fileWrite(coverageFileName, defaultCoverage);
 		} else {
-			driver.get(appRoot + RESTORE_LOCAL_STORAGE_HTML);
+			DriverUtil.getUrl(driver, appRoot + RESTORE_LOCAL_STORAGE_HTML);
 			//reads from file the previous coverage data and sends to browser local memory
 			try {
 				String coverage=FileUtil.fileRead(coverageFileName);

@@ -51,7 +51,7 @@ public class SelenoidVideoService implements IVideoService {
 	@Override
 	public Map<String, Object> getSeleniumOptions(IMediaContext context, String testName) {
 		String videoFileName=context.getVideoFileName(testName);
-		HashMap<String, Object> opts= new HashMap<>();
+		Map<String, Object> opts = new HashMap<String, Object>(); // NOSONAR net compatibility
 		opts.put("enableVideo", true);
 		opts.put("videoName", videoFileName);			
 		return opts;

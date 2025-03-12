@@ -16,6 +16,7 @@ import giis.selema.framework.junit4.RepeatedIfExceptionsTest;
 import giis.selema.framework.junit4.RepeatedTestRule;
 import giis.selema.manager.IAfterEachCallback;
 import giis.selema.manager.SeleManager;
+import giis.selema.portable.selenium.DriverUtil;
 import giis.selema.services.impl.WatermarkService;
 import test4giis.selema.core.AfterEachCallback;
 import test4giis.selema.core.LifecycleAsserts;
@@ -40,7 +41,7 @@ public class TestLifecycle4Repeated implements IAfterEachCallback {
 	
 	@Before
 	public void setUp() {
-		sm.driver().get(new Config4test().getWebUrl());
+		DriverUtil.getUrl(sm.driver(), new Config4test().getWebUrl());
 		sm.watermark();
 	}
 

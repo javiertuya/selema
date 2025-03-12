@@ -1,0 +1,50 @@
+<project name="build-convert" basedir="." xmlns:if="ant:if" xmlns:unless="ant:unless" xmlns:dn="antlib:org.apache.ant.dotnet" xmlns="antlib:org.apache.tools.ant">
+
+	<description>Macros for conversion from Java to C# using JavaToCSharp</description>
+
+  <macrodef name="runClone" description="Gets the JavaToCSharp converter (from forked branch) to the JavaToCSharp-temp folder">
+    <sequential>
+      <delete dir="JavaToCSharp-temp" failonerror="false"/>
+      <!-- Use a fixed branch in a forked repo to ensure stability -->
+      <exec executable="git" failonerror="true">
+        <arg value="clone" />
+        <arg value="--depth=1" />
+        <arg value="https://github.com/javiertuya/JavaToCSharp.git" />
+        <arg value="JavaToCSharp-temp" />
+        <arg value="--branch" />
+        <arg value="master-fork" />
+      </exec>
+      <delete dir="JavaToCSharp-temp/.git" failonerror="false"/>
+      <echo>Building JavaToCsharp CLI</echo>
+      <exec executable="dotnet" failonerror="true" dir="JavaToCSharp-temp/JavaToCSharpCli">
+        <arg value="build" />
+      </exec>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="runConvert" description="Execute the JavaToCSharp converter">
+    <attribute name="input" />
+    <attribute name="output" />
+    <attribute name="mapping" default="" />
+    <sequential>
+      <delete>
+        <fileset dir="@{output}" includes="*.cs" />
+      </delete>
+      <echo>Converting '@{input}' to '@{output}' - Mapping file: '@{mapping}'</echo>
+      <exec executable="JavaToCSharp-temp/JavaToCSharpCli/bin/Debug/net8.0/JavaToCSharpCli" failonerror="true">
+        <arg value="--include-subdirectories" />
+        <arg value="false" />
+        <arg value="--start-interface-names-with-i" />
+        <arg value="false" />
+        <arg value="--add-using" />
+        <arg value="converted.placeholder" />
+        <arg value="--mappings-file" unless:blank="mapping" />
+        <arg value="@{mapping}" unless:blank="mapping" />
+        <arg value="dir" />
+        <arg value="@{input}" />
+        <arg value="@{output}" />
+      </exec>
+    </sequential>
+  </macrodef>
+
+</project>

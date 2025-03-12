@@ -3,14 +3,13 @@ package giis.selema.services.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import giis.portable.util.JavaCs;
 import giis.selema.services.IBrowserService;
 import giis.selema.services.IVideoService;
 
 public class SelenoidService implements IBrowserService {
 	private boolean recordVideo=false; //si true habilita el video recording
 	private boolean enableVnc=false; //si true habilita VNC par ver las sesiones desde selenoid-ui
-	private Map<String, Object> specialCapabilities=new HashMap<>();
+	private Map<String, Object> specialCapabilities = new HashMap<String, Object>(); // NOSONAR net compatibility
 
 	/** 
 	 * Activates the video recording, provided that the Selenoid server is configured for video recording
@@ -49,10 +48,10 @@ public class SelenoidService implements IBrowserService {
 	 */
 	@Override
 	public Map<String, Object> getSeleniumOptions(String sessionName) {
-		HashMap<String, Object> opts= new HashMap<>();
+		Map<String, Object> opts = new HashMap<String, Object>(); // NOSONAR net compatibility
 		opts.put("name", sessionName);			
 		opts.put("enableVNC", enableVnc);
-		JavaCs.putAll(opts, specialCapabilities);
+		opts.putAll(specialCapabilities);
 		return opts;
 	}
 

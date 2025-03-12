@@ -416,7 +416,7 @@ public class SeleManager {
 		} catch (RuntimeException e) {
 			String msg="Can't write onFailure watermark " + value + ". Message: " + e.getMessage();
 			log.error(msg);
-			selemaLog.error(msg.replace("\n", "<br/>")); //some messages may have more than one line
+			selemaLog.error(msg);
 			return msg;
 		}
 	}
@@ -458,7 +458,7 @@ public class SeleManager {
 		} catch (RuntimeException e) {
 			String msg="Can't write onFailure watermark " + value + ". Message: " + e.getMessage();
 			log.warn(msg);
-			selemaLog.warn(msg.replace("\n", "<br/>")); //some messages may have more than one line
+			selemaLog.warn(msg);
 		}
 	}
 	/**
@@ -508,22 +508,22 @@ public class SeleManager {
 	private WebDriver getRemoteSeleniumDriver(String driverScope) {
 		log.trace("Get remote Selenium Driver");
 		//prepara las opciones anyadiendo a las definidas al configurar, las requeridas por los diferentes servicios
-		Map<String,Object> allOptions=new HashMap<>();
+		Map<String, Object> allOptions = new HashMap<String, Object>(); // NOSONAR net compatibility
 		if (currentOptions!=null)
-			JavaCs.putAll(allOptions, currentOptions);
+			allOptions.putAll(currentOptions);
 		
 		//PATCH
 		//Although browser service and video recorder are handled independently, in the case of Selenoid:
 		//-using Selenium 4.1.0 on .NET, options are not passed to the driver
 		//-it is required to pass all selenoid related options as WebDriver protocol extension as a pair "selenoid:options", <map with all options>
 		//As currently selenoid is the only supported, temporary makes here the exception
-		Map<String,Object> selenoidOptions=new HashMap<>();
+		Map<String, Object> selenoidOptions = new HashMap<String, Object>(); // NOSONAR net compatibility
 		if (browserService!=null)
-			JavaCs.putAll(selenoidOptions, browserService.getSeleniumOptions(driverScope));
+			selenoidOptions.putAll(browserService.getSeleniumOptions(driverScope));
 		if (videoRecorder!=null)
-			JavaCs.putAll(selenoidOptions, videoRecorder.getSeleniumOptions(mediaVideoContext, driverScope));
+			selenoidOptions.putAll(videoRecorder.getSeleniumOptions(mediaVideoContext, driverScope));
 		if (browserService!=null)
-			allOptions.put("selenoid:options",selenoidOptions);
+			allOptions.put("selenoid:options", selenoidOptions);
 		
 		return new SeleniumDriverFactory().getSeleniumDriver(currentBrowser, currentDriverUrl, driverVersion, allOptions, currentArguments, currentOptionsInstance);
 	}

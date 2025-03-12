@@ -8,6 +8,7 @@ import org.openqa.selenium.WebDriver;
 
 import giis.selema.manager.DriverVersion;
 import giis.selema.manager.SeleManager;
+import giis.selema.portable.selenium.DriverUtil;
 import test4giis.selema.portable.Asserts;
 
 /**
@@ -32,14 +33,14 @@ public class TestDriverVersion {
 	public void testLocalDriverMatch() {
 		SeleManager sm = newSeleManager(DriverVersion.MATCH_BROWSER);
 		WebDriver driver = sm.createDriver("ThisClass", "ThisTest");
-		driver.close();
+		DriverUtil.closeDriver(driver);
 	}
 
 	@Test
 	public void testLocalDriverLatest() {
 		SeleManager sm = newSeleManager(DriverVersion.LATEST_AVAILABLE);
 		WebDriver driver = sm.createDriver("ThisClass", "ThisTest");
-		driver.close();
+		DriverUtil.closeDriver(driver);
 	}
 
 	// If some driver has already been downloaded and configured in the path, 
@@ -50,7 +51,7 @@ public class TestDriverVersion {
 	public void testLocalDriverSelenium() {
 		SeleManager sm = newSeleManager(DriverVersion.SELENIUM_MANAGER);
 		WebDriver driver = sm.createDriver("ThisClass", "ThisTest");
-		driver.close();
+		DriverUtil.closeDriver(driver);
 	}
 
 	// Forces an old driver incompatible with current browsers that will raise exception

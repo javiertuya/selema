@@ -1,7 +1,8 @@
 package test4giis.selema.core;
+
 import static org.junit.Assert.assertEquals;
 
-import org.junit.*;
+import org.junit.Test;
 
 import giis.selema.manager.SelemaConfig;
 import giis.selema.services.IMediaContext;

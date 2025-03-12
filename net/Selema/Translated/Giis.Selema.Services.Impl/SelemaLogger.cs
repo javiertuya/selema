@@ -1,90 +1,87 @@
-/////////////////////////////////////////////////////////////////////////////////////////////
-/////// THIS FILE HAS BEEN AUTOMATICALLY CONVERTED FROM THE JAVA SOURCES. DO NOT EDIT ///////
-/////////////////////////////////////////////////////////////////////////////////////////////
+using NLog;
 using Giis.Portable.Util;
 using Giis.Selema.Services;
-using NLog;
-using Sharpen;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
+/////// THIS FILE HAS BEEN AUTOMATICALLY CONVERTED FROM THE JAVA SOURCES. DO NOT EDIT ///////
 
 namespace Giis.Selema.Services.Impl
 {
-	/// <summary>Custom logging to produce the Selema html log file that emulates the output produced by standard loggers.</summary>
-	/// <remarks>
-	/// Custom logging to produce the Selema html log file that emulates the output produced by standard loggers.
-	/// Not using standard loggers to avoid interferences, but also issues calls to the current logger
-	/// </remarks>
-	public class SelemaLogger : ISelemaLogger
-	{
-		private const string SpanHtml = "<br/><span style=\"font-family:monospace;\">";
+    /// <summary>
+    /// Custom logging to produce the Selema html log file that emulates the output produced by standard loggers.
+    /// Not using standard loggers to avoid interferences, but also issues calls to the current logger
+    /// </summary>
+    public class SelemaLogger : ISelemaLogger
+    {
+        private static readonly string SPAN_HTML = "<br/><span style=\"font-family:monospace;\">";
+        private static readonly string SPAN_RED = "<span style=\"color:red;\">";
+        private static readonly string SPAN_RED_BOLD = "<span style=\"color:red;font-weight:bold;\">";
+        private static readonly string SPAN_END = "</span>";
+        private readonly Logger syslog;
+        private string loggerName;
+        private string reportDir;
+        private string logFile;
+        public SelemaLogger(string loggerName, string reportDir, string logFileName)
+        {
+            this.syslog = LogManager.GetLogger(loggerName);
+            this.loggerName = loggerName;
+            this.reportDir = reportDir;
+            this.logFile = FileUtil.GetPath(this.reportDir, logFileName);
 
-		private const string SpanRed = "<span style=\"color:red;\">";
+            //ensures there is a directory for the logger
+            FileUtil.CreateDirectory(reportDir);
+            Info("Logger file created at: " + logFile);
+        }
 
-		private const string SpanRedBold = "<span style=\"color:red;font-weight:bold;\">";
+        public virtual void Trace(string message)
+        {
+            syslog.Trace(message);
+        }
 
-		private const string SpanEnd = "</span>";
+        public virtual void Debug(string message)
+        {
+            syslog.Debug(message);
+        }
 
-		private readonly Logger syslog;
+        public virtual void Info(string message)
+        {
+            Write("INFO", message);
+            syslog.Info(message);
+        }
 
-		private string loggerName;
+        public virtual void Warn(string message)
+        {
+            Write("WARN", SPAN_RED + message + SPAN_END);
+            syslog.Warn(message);
+        }
 
-		private string reportDir;
+        public virtual void Error(string message)
+        {
+            Write("ERROR", SPAN_RED_BOLD + message + SPAN_END);
+            syslog.Error(message);
+        }
 
-		private string logFile;
+        //only for testing
+        public static string ReplaceTags(string logLine)
+        {
+            return logLine.Replace(SPAN_HTML, "").Replace(SPAN_RED_BOLD, "").Replace(SPAN_RED, "").Replace(SPAN_END, "");
+        }
 
-		public SelemaLogger(string loggerName, string reportDir, string logFileName)
-		{
-			this.syslog = LogManager.GetLogger(loggerName);
-			this.loggerName = loggerName;
-			this.reportDir = reportDir;
-			this.logFile = FileUtil.GetPath(this.reportDir, logFileName);
-			//ensures there is a directory for the logger
-			FileUtil.CreateDirectory(reportDir);
-			Info("Logger file created at: " + logFile);
-		}
+        private void Write(string type, string message)
+        {
+            string time = JavaCs.GetTime(JavaCs.GetCurrentDate());
 
-		public virtual void Trace(string message)
-		{
-			syslog.Trace(message);
-		}
+            // some messages may have more than one line, replace line break by html break
+            message = message.Replace("\r", "").Replace("\n", "<br/>");
+            FileUtil.FileAppend(logFile, "\n" + Html("[" + type + "] " + time + " " + loggerName + " - " + message));
+        }
 
-		public virtual void Debug(string message)
-		{
-			syslog.Debug(message);
-		}
-
-		public virtual void Info(string message)
-		{
-			Write("INFO", message);
-			syslog.Info(message);
-		}
-
-		public virtual void Warn(string message)
-		{
-			Write("WARN", SpanRed + message + SpanEnd);
-			syslog.Warn(message);
-		}
-
-		public virtual void Error(string message)
-		{
-			Write("ERROR", SpanRedBold + message + SpanEnd);
-			syslog.Error(message);
-		}
-
-		//only for testing
-		public static string ReplaceTags(string logLine)
-		{
-			return logLine.Replace(SpanHtml, string.Empty).Replace(SpanRedBold, string.Empty).Replace(SpanRed, string.Empty).Replace(SpanEnd, string.Empty);
-		}
-
-		private void Write(string type, string message)
-		{
-			string time = JavaCs.GetTime(JavaCs.GetCurrentDate());
-			FileUtil.FileAppend(logFile, "\n" + Html("[" + type + "] " + time + " " + loggerName + " - " + message));
-		}
-
-		private string Html(string message)
-		{
-			return SpanHtml + message + SpanEnd;
-		}
-	}
+        private string Html(string message)
+        {
+            return SPAN_HTML + message + SPAN_END;
+        }
+    }
 }

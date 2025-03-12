@@ -1,10 +1,15 @@
 package test4giis.selema.core;
+
 import static org.junit.Assert.assertEquals;
 
-import org.junit.*;
+import org.junit.After;
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 
 import giis.selema.manager.SelemaConfig;
+import giis.selema.portable.selenium.DriverUtil;
 import giis.selema.manager.SeleManager;
 import giis.portable.util.FileUtil;
 import giis.selema.framework.junit4.LifecycleJunit4Class;
@@ -27,8 +32,8 @@ public class TestCoverage {  //interface only to generate compatible NUnit3 tran
 	@Test
 	public void testCoverageAll() { 
 		driver=sm.createDriver();
-		Asserts.assertAreEqual("JSCover", driver.getTitle(),"Page to reset coverage");
-		driver.get(new Config4test().getCoverageUrl());
+		Asserts.assertAreEqual("JSCover", DriverUtil.getTitle(driver), "Page to reset coverage");
+		DriverUtil.getUrl(driver, new Config4test().getCoverageUrl());
 		//sm.watermark();
 		runCoverageSession1(driver);
 		//simula la finalizacion de un caso y comienzo de otro cerrando el driver y reabriendolo
@@ -37,8 +42,8 @@ public class TestCoverage {  //interface only to generate compatible NUnit3 tran
 		//ha cargado los ultimos valores de cobertura
 		sm.quitDriver(driver);
 		driver=sm.createDriver();
-		Asserts.assertAreEqual("Restore JSCover coverage to local storage", driver.getTitle(), "Page to reload coverage");
-		driver.get(new Config4test().getCoverageUrl());
+		Asserts.assertAreEqual("Restore JSCover coverage to local storage", DriverUtil.getTitle(driver), "Page to reload coverage");
+		DriverUtil.getUrl(driver, new Config4test().getCoverageUrl());
 		runCoverageSession2(driver);
 		sm.quitDriver(driver);
 		

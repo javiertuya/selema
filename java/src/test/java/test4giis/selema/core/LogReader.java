@@ -32,7 +32,7 @@ public class LogReader {
 		} catch (PortableException e) {
 			//assume a non existing log file as empty (regression #425)
 			if (e.getMessage().startsWith("Error reading file"))
-				return new ArrayList<>();
+				return new ArrayList<String>();
 			throw (e);
 		}
 	}
