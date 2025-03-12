@@ -26,12 +26,14 @@ public class TestActions { //interface only to generate compatible NUnit3 transl
 		WebDriver driver=sm.driver();
 		DriverUtil.getUrl(driver, new Config4test().getWebUrl());
 		sm.watermark();
+		// este es un caso en el que getAttribute (deprecated) se debe remplazar por 
+		// getDomProperty, pero fallaria si se remplaza por getDomAttribute
 		WebElement elem=driver.findElement(By.id("textbox"));
 		SeleniumActions.sendKeysActions(driver, elem, "valueWithActions");
-		assertEquals("valueWithActions", elem.getAttribute("value"));
+		assertEquals("valueWithActions", elem.getDomProperty("value"));
 		//ahora con javascript (no requiere clear)
 		SeleniumActions.sendKeysJavascript(driver, elem, "valueWithJavascript");
-		assertEquals("valueWithJavascript", elem.getAttribute("value"));
+		assertEquals("valueWithJavascript", elem.getDomProperty("value"));
 	}
 	@Test
 	public void testSetHtmlOrText() {

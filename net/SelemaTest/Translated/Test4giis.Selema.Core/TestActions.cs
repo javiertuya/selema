@@ -23,13 +23,16 @@ namespace Test4giis.Selema.Core
             IWebDriver driver = sm.Driver;
             DriverUtil.GetUrl(driver, new Config4test().GetWebUrl());
             sm.Watermark();
+
+            // este es un caso en el que getAttribute (deprecated) se debe remplazar por 
+            // getDomProperty, pero fallaria si se remplaza por getDomAttribute
             IWebElement elem = driver.FindElement(OpenQA.Selenium.By.Id("textbox"));
             SeleniumActions.SendKeysActions(driver, elem, "valueWithActions");
-            NUnit.Framework.Legacy.ClassicAssert.AreEqual("valueWithActions", elem.GetAttribute("value"));
+            NUnit.Framework.Legacy.ClassicAssert.AreEqual("valueWithActions", elem.GetDomProperty("value"));
 
             //ahora con javascript (no requiere clear)
             SeleniumActions.SendKeysJavascript(driver, elem, "valueWithJavascript");
-            NUnit.Framework.Legacy.ClassicAssert.AreEqual("valueWithJavascript", elem.GetAttribute("value"));
+            NUnit.Framework.Legacy.ClassicAssert.AreEqual("valueWithJavascript", elem.GetDomProperty("value"));
         }
 
         [Test]
