@@ -45,6 +45,8 @@
       <include name="Selema/Translated/Giis.Selema.Services.Impl/*.cs" />
       <include name="SelemaTest/Translated/Test4giis.Selema.Core/*.cs" />
       <include name="SelemaTest/Translated/Test4giis.Selema.Nunit3/*.cs" />
+      <replacefilter token="Dictionary&lt;" value="Map&lt;" />
+      <replacefilter token="private static readonly long serialVersionUID" value="//private static readonly long serialVersionUID" />
       <replacefilter token="public class TestDriverVersion" value=" [Ignore(&quot;Manual test to avoid side effects with tests executed after this&quot;)] public class TestDriverVersion" />
       <replacefilter token="LoggerFactory" value="LogManager" />
       <replacefilter token="LogManager.GetLogger(this.GetType());" value="LogManager.GetCurrentClassLogger();" />
@@ -55,6 +57,7 @@
       <replacefilter token="e.GetMessage()" value="e.Message" />
       <replacefilter token=".GetType().GetName()" value=".GetType().FullName" />
       <replacefilter token=".GetType().GetCanonicalName()" value=".GetType().FullName" />
+      <replacefilter token="String.ValueOf(" value="(" />
 
       <replacefilter token="public virtual WebDriver Driver()" value="public WebDriver Driver { get { return this.GetDriver(); } }  public virtual WebDriver DriverJavaOnly()" />
       <replacefilter token=".Driver()" value=".Driver" />
@@ -64,21 +67,19 @@
       <replacefilter token="Capabilities" value="DriverOptions" />
       <replacefilter token=".Window().Maximize()" value=".Window.Maximize()" />
       <replacefilter token=".GetText()" value=".Text" />
-
-      <replacefilter token="String.ValueOf(" value="(" />
-      
-      <replacefilter token="Dictionary&lt;" value="Map&lt;" />
-
       <replacefilter token="[Ignore]" value="[Ignore(&quot;Manual test&quot;)]" />
+      <!-- nunit requires the exact exception in assert throws, allows derived types -->
+      <replacefilter token="Assert.Throws(typeof(Exception)" value="Assert.Throws(Is.InstanceOf(typeof(Exception))" />
+      <replacefilter token="Assert.Throws(typeof(InvalidOperationException)" value="Assert.Throws(Is.InstanceOf(typeof(Exception))" />
+
       <!--todo uppercase when new version of portable-->
       <replacefilter token="Parameters.DEFAULT_PROJECT_ROOT" value="Parameters.DefaultProjectRoot" />
       <replacefilter token="Parameters.DEFAULT_REPORT_SUBDIR" value="Parameters.DefaultReportSubdir" />
 
       <replacefilter token="using converted.placeholder;" value="/////// THIS FILE HAS BEEN AUTOMATICALLY CONVERTED FROM THE JAVA SOURCES. DO NOT EDIT ///////" />
     </replace>
-    <replace file="Selema/Translated/Giis.Selema.Manager/SeleniumDriverFactory.cs" >
-      <replacefilter token="IWebDriver" value="WebDriver" />
-    </replace>
+    <replace file="Selema/Translated/Giis.Selema.Manager/SeleniumDriverFactory.cs" token="IWebDriver" value="WebDriver" />
+    <replace file="SelemaTest/Translated/Test4giis.Selema.Core/LogReader.cs" token="throw (e)" value="throw" />
 
     <!-- 
     Core and Junit4 test has been mostly converted into NUnit3,
@@ -169,6 +170,9 @@
     <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4Repeated.cs" token="[TestMethod]" value="" />
     <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4Repeated.cs" token="DriverUtil.GetUrl(sm.Driver" value="base.SetUp(); DriverUtil.GetUrl(sm.Driver" />
     <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4Repeated.cs" token="public virtual void SetUp()" value="public override void SetUp()" />
+
+    <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4WithoutManager.cs" token="SelemaException e" value="SelemaException" />
+    <replace file="SelemaTest/Translated/Test4giis.Selema.Nunit3/TestLifecycle4WithoutManager.cs" token="SelemaException e" value="SelemaException" />
   </target>
 
 </project>

@@ -132,15 +132,11 @@ namespace Test4giis.Selema.Core
             if (!UseHeadless())
                 return;
             SeleniumDriverFactory factory = new SeleniumDriverFactory();
-            try
+            Exception e = NUnit.Framework.Assert.Throws(typeof(SelemaException), () =>
             {
                 factory.GetSeleniumDriver("carome", "", "", null, chromeHeadlesArgument, null);
-                NUnit.Framework.Legacy.ClassicAssert.Fail("Should fail");
-            }
-            catch (SelemaException e)
-            {
-                Asserts.AssertIsTrue(e.Message.StartsWith("Can't instantiate IWebDriver Options for browser: carome".Replace("IWeb", "Web")), "Not contained in: " + e.Message);
-            }
+            });
+            Asserts.AssertIsTrue(e.Message.StartsWith("Can't instantiate IWebDriver Options for browser: carome".Replace("IWeb", "Web")), "Not contained in: " + e.Message);
         }
 
         [Test]
@@ -149,15 +145,11 @@ namespace Test4giis.Selema.Core
             if (!UseHeadless())
                 return;
             SeleniumDriverFactory factory = new SeleniumDriverFactory();
-            try
+            Exception e = NUnit.Framework.Assert.Throws(typeof(SelemaException), () =>
             {
                 factory.EnsureLocalDriverDownloaded("corome", "");
-                NUnit.Framework.Legacy.ClassicAssert.Fail("Should fail");
-            }
-            catch (SelemaException e)
-            {
-                Asserts.AssertIsTrue(e.Message.StartsWith("Can't download driver executable for browser: corome"), "Not contained in: " + e.Message);
-            }
+            });
+            Asserts.AssertIsTrue(e.Message.StartsWith("Can't download driver executable for browser: corome"), "Not contained in: " + e.Message);
         }
 
         //Custom assertion to allow same comparisons in java and net
@@ -209,15 +201,11 @@ namespace Test4giis.Selema.Core
                 return;
             string wrongUrl = new Config4test().GetRemoteDriverUrl() + "/notexist";
             SeleniumDriverFactory factory = new SeleniumDriverFactory();
-            try
+            Exception e = NUnit.Framework.Assert.Throws(typeof(SelemaException), () =>
             {
                 factory.GetSeleniumDriver("chrome", wrongUrl, null, null, null, null);
-                NUnit.Framework.Legacy.ClassicAssert.Fail("Should fail");
-            }
-            catch (SelemaException e)
-            {
-                Asserts.AssertIsTrue(e.Message.StartsWith("Can't instantiate RemoteWebDriver for browser: chrome at url: " + wrongUrl), "Not contained in: " + e.Message);
-            }
+            });
+            Asserts.AssertIsTrue(e.Message.StartsWith("Can't instantiate RemoteWebDriver for browser: chrome at url: " + wrongUrl), "Not contained in: " + e.Message);
         }
 
         //lifecycle tests with remote driver use a browser service, but it should work if not browser service is attached

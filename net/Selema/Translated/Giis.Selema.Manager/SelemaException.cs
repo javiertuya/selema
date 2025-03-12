@@ -10,7 +10,7 @@ namespace Giis.Selema.Manager
 {
     public class SelemaException : Exception
     {
-        private static readonly long serialVersionUID = -2848837670059731155;
+        //private static readonly long serialVersionUID = -2848837670059731155;
         public SelemaException(string message) : base(message)
         {
         }

@@ -1,6 +1,7 @@
 package test4giis.selema.junit5;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -24,11 +25,10 @@ public class TestLifecycle5WithoutManager {
 	@Test
 	public void testFailedTestNoWriteLogs() {
 		//a failed test should not raise exception nor write logs
-		try {
+		assertThrows(SelemaException.class, () -> {
 			throw new SelemaException("Exception to be catched");
-		} catch (SelemaException e) {
-			assertEquals(logSize, lfas.getLogSize());
-		}
+		});
+		assertEquals(logSize, lfas.getLogSize());
 	}
 	@AfterAll
 	public static void afterTearDown() {

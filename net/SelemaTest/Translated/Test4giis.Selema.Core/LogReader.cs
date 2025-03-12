@@ -41,7 +41,7 @@ namespace Test4giis.Selema.Core
                 //assume a non existing log file as empty (regression #425)
                 if (e.Message.StartsWith("Error reading file"))
                     return new List<string>();
-                throw (e);
+                throw;
             }
         }
 

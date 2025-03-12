@@ -1,7 +1,7 @@
 package test4giis.selema.core;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertThrows;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -115,25 +115,21 @@ public class TestDriver {
 	public void testHeadlessWebDriverNotFound() {
 		if (!useHeadless()) return;
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
-		try {
+		RuntimeException e = assertThrows(SelemaException.class, () -> {
 			factory.getSeleniumDriver("carome", "", "", null, chromeHeadlesArgument, null);
-			fail("Should fail");
-		} catch (SelemaException e) {
-			Asserts.assertIsTrue(e.getMessage().startsWith("Can't instantiate WebDriver Options for browser: carome".replace("IWeb", "Web")),
-					"Not contained in: " + e.getMessage());
-		}
+		});
+		Asserts.assertIsTrue(e.getMessage().startsWith("Can't instantiate WebDriver Options for browser: carome".replace("IWeb", "Web")),
+				"Not contained in: " + e.getMessage());
 	}
 	@Test
 	public void testHeadlessWebDriverUnloadable() {
 		if (!useHeadless()) return;
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
-		try {
+		RuntimeException e = assertThrows(SelemaException.class, () -> {
 			factory.ensureLocalDriverDownloaded("corome", "");
-			fail("Should fail");
-		} catch (SelemaException e) {
-			Asserts.assertIsTrue(e.getMessage().startsWith("Can't download driver executable for browser: corome"),
-					"Not contained in: " + e.getMessage());
-		}
+		});
+		Asserts.assertIsTrue(e.getMessage().startsWith("Can't download driver executable for browser: corome"),
+				"Not contained in: " + e.getMessage());
 	}
 	//Custom assertion to allow same comparisons in java and net
 	private void assertOptions(SeleniumDriverFactory factory, String expected) {
@@ -177,14 +173,12 @@ public class TestDriver {
 		if (!useRemote()) return;
 		String wrongUrl=new Config4test().getRemoteDriverUrl() + "/notexist";
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
-		try {
+		RuntimeException e = assertThrows(SelemaException.class, () -> {
 			factory.getSeleniumDriver("chrome", wrongUrl, null, null, null, null);
-			fail("Should fail");
-		} catch (SelemaException e) {
-			Asserts.assertIsTrue(
-					e.getMessage().startsWith("Can't instantiate RemoteWebDriver for browser: chrome at url: " + wrongUrl),
-					"Not contained in: " + e.getMessage());
-		}
+		});
+		Asserts.assertIsTrue(
+				e.getMessage().startsWith("Can't instantiate RemoteWebDriver for browser: chrome at url: " + wrongUrl),
+				"Not contained in: " + e.getMessage());
 	}
 
 	//lifecycle tests with remote driver use a browser service, but it should work if not browser service is attached

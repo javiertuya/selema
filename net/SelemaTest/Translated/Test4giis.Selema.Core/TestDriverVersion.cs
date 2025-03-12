@@ -63,15 +63,11 @@ namespace Test4giis.Selema.Core
         public virtual void TestLocalDriverGivenVersion()
         {
             SeleManager sm = NewSeleManager("99.0.4844.51");
-            try
+            Exception e = NUnit.Framework.Assert.Throws(typeof(SelemaException), () =>
             {
                 sm.CreateDriver("ThisClass", "ThisTest");
-                NUnit.Framework.Legacy.ClassicAssert.Fail("Should fail");
-            }
-            catch (Exception e)
-            {
-                Asserts.AssertIsTrue(e.Message.Contains("This version of ChromeDriver only supports Chrome version 99"), "Not contained in: " + e.Message);
-            }
+            });
+            Asserts.AssertIsTrue(e.Message.Contains("This version of ChromeDriver only supports Chrome version 99"), "Not contained in: " + e.Message);
         }
     }
 }

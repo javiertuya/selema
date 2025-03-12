@@ -28,11 +28,12 @@ namespace Test4giis.Selema.Mstest2
         {
 
             //a failed test should not raise exception nor write logs
+            //do not use assertThrows or similar for compatibility with net conversion and different frameworks
             try
             {
                 throw new SelemaException("Exception to be catched");
             }
-            catch (SelemaException e)
+            catch (SelemaException)
             {
                 Microsoft.VisualStudio.TestTools.UnitTesting.Assert.AreEqual(logSize, reader.GetLogSize());
             }

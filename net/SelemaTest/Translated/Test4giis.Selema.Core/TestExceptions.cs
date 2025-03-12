@@ -67,58 +67,39 @@ namespace Test4giis.Selema.Core
         [Test]
         public virtual void TestManagerWithoutConfig()
         {
-            try
+            Exception e = NUnit.Framework.Assert.Throws(typeof(SelemaException), () =>
             {
                 new SeleManager(null);
-                NUnit.Framework.Legacy.ClassicAssert.Fail("Should fail");
-            }
-            catch (SelemaException e)
-            {
-                NUnit.Framework.Legacy.ClassicAssert.AreEqual("SeleManager instance requires an instance of SelemaConfig", e.Message);
-            }
+            });
+            NUnit.Framework.Legacy.ClassicAssert.AreEqual("SeleManager instance requires an instance of SelemaConfig", e.Message);
         }
 
         //uses a different report subdir to do not include wrong named files/folders that cause error when published as artifacts
         [Test]
         public virtual void TestManagerWrongName()
         {
-            try
+            NUnit.Framework.Assert.Throws(Is.InstanceOf(typeof(Exception)), () =>
             {
                 new SeleManager(new SelemaConfig().SetReportSubdir("dat/tmp").SetName("ab\0"));
-                NUnit.Framework.Legacy.ClassicAssert.Fail("Should fail");
-            }
-            catch (Exception e)
-            {
-            } //NOSONAR
-            //NOSONAR
+            });
         }
 
         [Test]
         public virtual void TestManagerWrongReportSubdir()
         {
-            try
+            NUnit.Framework.Assert.Throws(Is.InstanceOf(typeof(Exception)), () =>
             {
                 new SeleManager(new SelemaConfig().SetReportSubdir("dat/tmp/ab\0"));
-                NUnit.Framework.Legacy.ClassicAssert.Fail("Should fail");
-            }
-            catch (Exception e)
-            {
-            } //NOSONAR
-            //NOSONAR
+            });
         }
 
         [Test]
         public virtual void TestManagerWrongProjectRoot()
         {
-            try
+            NUnit.Framework.Assert.Throws(Is.InstanceOf(typeof(Exception)), () =>
             {
                 new SeleManager(new SelemaConfig().SetProjectRoot("dat/tmp/ab\0"));
-                NUnit.Framework.Legacy.ClassicAssert.Fail("Should fail");
-            }
-            catch (Exception e)
-            {
-            } //NOSONAR
-            //NOSONAR
+            });
         }
 
         [Test]
@@ -149,27 +130,17 @@ namespace Test4giis.Selema.Core
         public virtual void TestVisualAssertException()
         {
             sm.VisualAssertEquals("ab cd", "ab cd"); //first assert pass
-            try
+            NUnit.Framework.Assert.Throws(Is.InstanceOf(typeof(Exception)), () =>
             {
                 sm.VisualAssertEquals("ab cd", "ab xy cd");
-                NUnit.Framework.Legacy.ClassicAssert.Fail("Should fail");
-            }
-            catch (Exception e)
-            {
-            } //NOSONAR
-
+            });
             lfas.AssertLast("[WARN]", "Visual Assert differences", "TestExceptions-testVisualAssertException.html");
 
             //with message
-            try
+            NUnit.Framework.Assert.Throws(Is.InstanceOf(typeof(Exception)), () =>
             {
                 sm.VisualAssertEquals("ef gh", "ef zt gh", "va message");
-                NUnit.Framework.Legacy.ClassicAssert.Fail("Should fail");
-            }
-            catch (Exception e)
-            {
-            } //NOSONAR
-
+            });
             lfas.AssertLast("[WARN]", "Visual Assert differences", "TestExceptions-testVisualAssertException.html", "va message");
         }
 
@@ -180,15 +151,10 @@ namespace Test4giis.Selema.Core
             sm.SoftAssertEquals("ab cd", "ab cd"); //first assert pass
             sm.SoftAssertEquals("ab cd", "ab xy cd");
             sm.SoftAssertEquals("ef gh", "ef zt gh", "sva message");
-            try
+            NUnit.Framework.Assert.Throws(Is.InstanceOf(typeof(Exception)), () =>
             {
                 sm.SoftAssertAll();
-                NUnit.Framework.Legacy.ClassicAssert.Fail("Should fail");
-            }
-            catch (Exception e)
-            {
-            } //NOSONAR
-
+            });
             lfas.AssertLast(0, "[WARN]", "Soft Visual Assert differences (Failure 2)", "TestExceptions-testSoftAssertException.html", "sva message");
             lfas.AssertLast(1, "[WARN]", "Soft Visual Assert differences (Failure 1)", "TestExceptions-testSoftAssertException.html");
         }
@@ -196,15 +162,10 @@ namespace Test4giis.Selema.Core
         [Test]
         public virtual void TestWatermarkExceptionNotAttached()
         {
-            try
+            NUnit.Framework.Assert.Throws(Is.InstanceOf(typeof(Exception)), () =>
             {
                 sm.Watermark();
-                NUnit.Framework.Legacy.ClassicAssert.Fail("Should fail");
-            }
-            catch (Exception e)
-            {
-            } //NOSONAR
-
+            });
             lfas.AssertLast("[ERROR]", "Watermark service is not attached to this Selenium Manager");
         }
 

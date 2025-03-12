@@ -1,6 +1,6 @@
 package test4giis.selema.core;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertThrows;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -8,6 +8,7 @@ import org.openqa.selenium.WebDriver;
 
 import giis.selema.manager.DriverVersion;
 import giis.selema.manager.SeleManager;
+import giis.selema.manager.SelemaException;
 import giis.selema.portable.selenium.DriverUtil;
 import test4giis.selema.portable.Asserts;
 
@@ -58,13 +59,11 @@ public class TestDriverVersion {
 	@Test
 	public void testLocalDriverGivenVersion() {
 		SeleManager sm = newSeleManager("99.0.4844.51");
-		try {
+		RuntimeException e = assertThrows(SelemaException.class, () -> {
 			sm.createDriver("ThisClass", "ThisTest");
-			fail("Should fail");
-		} catch (RuntimeException e) {
-			Asserts.assertIsTrue( e.getMessage().contains("This version of ChromeDriver only supports Chrome version 99"),
-					"Not contained in: " + e.getMessage());
-		}
+		});
+		Asserts.assertIsTrue( e.getMessage().contains("This version of ChromeDriver only supports Chrome version 99"),
+				"Not contained in: " + e.getMessage());
 	}
 
 }

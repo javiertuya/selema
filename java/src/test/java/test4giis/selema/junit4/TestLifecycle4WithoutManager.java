@@ -28,6 +28,7 @@ public class TestLifecycle4WithoutManager {
 	@Test
 	public void testFailedTestNoWriteLogs() {
 		//a failed test should not raise exception nor write logs
+		//do not use assertThrows or similar for compatibility with net conversion and different frameworks
 		try {
 			throw new SelemaException("Exception to be catched");
 		} catch (SelemaException e) {
