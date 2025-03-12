@@ -35,7 +35,7 @@ public class SeleniumDriverFactory {
 			log.debug("Setting up WebDriver Options, browser: "+browser);
 			Object opt = optInstance==null ? reflect.getOptionsObj(browser, args) : optInstance;
 			if (caps!=null)
-				for (String key: caps.keySet())
+				for (String key: caps.keySet()) // NOSONAR for .NET compatibility
 					reflect.setCapability(opt, key, caps.get(key));
 			if (args!=null)
 				reflect.addArguments(opt, args);

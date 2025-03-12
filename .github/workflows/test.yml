@@ -23,6 +23,10 @@ jobs:
     defaults:
       run:
         working-directory: ${{ matrix.platform }}
+    permissions:
+      contents: read
+      checks: write
+      packages: read
     #if: ${{ false }}  # disable for now
     steps:
       - uses: actions/checkout@v4
@@ -131,6 +135,19 @@ jobs:
             java/target/surefire-reports
             java/target/site/jacoco/jacoco.xml
             
+      # C# code is converted in the development environment and pushed to the repo,
+      # so that there can be incompatible changes in the java side
+      # this last step performs conversion with the latest versions and checks compilation is ok
+      - name: Verify Conversion from Java to C#
+        if: ${{ always() && matrix.platform=='net' && matrix.mode=='headless' }}
+        run: |
+          echo "*** Check .NET build on converted code"
+          dotnet nuget add source --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/javiertuya/index.json"
+          dotnet tool install JavaToCSharpCli --global
+          dotnet tool list --global
+          ant convert
+          dotnet build
+
       # Samples: only check if no compilation errors
       - name: JAVA - compile samples
         if: ${{ matrix.platform=='java' && matrix.mode=='headless' }}

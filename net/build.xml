@@ -2,7 +2,33 @@
 
   <description>Conversion from Java to C# using JavaToCSharp</description>
   
-  <import file="build-convert.xml"/>
+  <!-- To prepare and publish to the GitHub package repository see build-nuget-prepare.sh in javiertuya/portable repo -->
+
+  <macrodef name="runConvert" description="Execute the JavaToCSharp converter">
+    <attribute name="input" />
+    <attribute name="output" />
+    <attribute name="mapping" default="" />
+    <sequential>
+      <delete>
+        <fileset dir="@{output}" includes="*.cs" />
+      </delete>
+      <echo>Converting '@{input}' to '@{output}' - Mapping file: '@{mapping}'</echo>
+      <!--<exec executable="JavaToCSharp-temp/JavaToCSharpCli/bin/Debug/net8.0/JavaToCSharpCli" failonerror="true">-->
+      <exec executable="JavaToCSharpCli" failonerror="true">
+        <arg value="--include-subdirectories" />
+        <arg value="false" />
+        <arg value="--start-interface-names-with-i" />
+        <arg value="false" />
+        <arg value="--add-using" />
+        <arg value="converted.placeholder" />
+        <arg value="--mappings-file" unless:blank="mapping" />
+        <arg value="@{mapping}" unless:blank="mapping" />
+        <arg value="dir" />
+        <arg value="@{input}" />
+        <arg value="@{output}" />
+      </exec>
+    </sequential>
+  </macrodef>
 
     <target name="report" description="JUnit html format report generation (from .trx splitted with DotnetTestSplit)">
       <junitreport todir="reports">
@@ -14,10 +40,6 @@
       </junitreport>
   </target>
   
-  <target name="clone" description="Gets the JavaToCSharp converter (from forked branch)">
-    <runClone/>
-  </target>
-
   <target name="convert">
     <!-- Basic conversion and postprocessing of sources and tests (junit4 into nunit3) -->
     <runConvert input="../java/src/main/java/giis/selema/manager" output="Selema/Translated/Giis.Selema.Manager"  mapping="java-mapping.yml" />
