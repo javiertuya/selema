@@ -85,22 +85,16 @@ jobs:
       - name: NET - Build and test
         if: ${{ matrix.platform=='net' }}
         run: dotnet test --logger "trx;LogFileName=../../reports/test-result.trx"
-      - name: NET - Generate junit xml reports
+      - name: NET - Generate junit html reports
         if: ${{ always() && matrix.platform=='net' }}
-        run: |
-          dotnet tool install --no-cache --tool-path packages/dotnet-tools DotnetTestSplit
-          ./packages/dotnet-tools/DotnetTestSplit reports/test-result.trx reports/surefire-reports
-          ant report
+        uses: javiertuya/junit-report-action@v1.3.0
+        with:
+          net-trx-report: "net/reports/test-result.trx"
+          net-surefire-folder: "net/reports/surefire-reports"
+          surefire-files: "net/reports/surefire-reports/TEST-*.xml"
+          report-dir: net/reports
       
-      #- name: Generate report checks
-      #  if: always()
-      #  uses: scacap/action-surefire-report@v1
-      #  with:
-      #    check_name: "test-result-${{ matrix.platform }}-${{ matrix.mode }}"
-      #    report_paths: "**/${{ env.REPORT_FOLDER }}/surefire-reports/TEST-*.xml"
-      #    fail_on_test_failures: 'true'
-      #    skip_publishing: ${{ github.actor != 'javiertuya' }} #avoids failure on dependabot or other user PRs
-      - name: Generate report checks1
+      - name: Generate report checks
         if: always()
         uses: mikepenz/action-junit-report@v5.4.0
         with:

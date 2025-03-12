@@ -30,16 +30,6 @@
     </sequential>
   </macrodef>
 
-    <target name="report" description="JUnit html format report generation (from .trx splitted with DotnetTestSplit)">
-      <junitreport todir="reports">
-        <fileset dir="reports/surefire-reports">
-          <include name="TEST-*.xml" />
-        </fileset>
-        <report format="frames" todir="reports/junit" />
-        <report format="noframes" todir="reports/junit-noframes" />
-      </junitreport>
-  </target>
-  
   <target name="convert">
     <!-- Basic conversion and postprocessing of sources and tests (junit4 into nunit3) -->
     <runConvert input="../java/src/main/java/giis/selema/manager" output="Selema/Translated/Giis.Selema.Manager"  mapping="java-mapping.yml" />
