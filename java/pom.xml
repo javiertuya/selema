@@ -21,11 +21,11 @@
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
 
-		<junit-jupiter.version>5.12.0</junit-jupiter.version>
+		<junit-jupiter.version>5.12.1</junit-jupiter.version>
 
 		<junit.version>4.13.2</junit.version>
 		
-		<surefire.version>3.5.2</surefire.version>
+		<surefire.version>3.5.3</surefire.version>
 		
 		<slf4j.version>2.0.17</slf4j.version>
 	</properties>
@@ -64,13 +64,13 @@
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
-			<version>4.29.0</version>
+			<version>4.30.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.github.bonigarcia</groupId>
 			<artifactId>webdrivermanager</artifactId>
-			<version>5.9.3</version>
+			<version>6.0.0</version>
 		</dependency>
 
 		<dependency>
