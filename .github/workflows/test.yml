@@ -96,7 +96,7 @@ jobs:
       
       - name: Generate report checks
         if: always()
-        uses: mikepenz/action-junit-report@v5.6.1
+        uses: mikepenz/action-junit-report@v5.6.2
         with:
           check_name: "test-result-${{ matrix.platform }}-${{ matrix.mode }}"
           report_paths: "**/${{ env.REPORT_FOLDER }}/surefire-reports/TEST-*.xml"
@@ -164,7 +164,7 @@ jobs:
     if: ${{ github.actor != 'dependabot[bot]' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: javiertuya/sonarqube-action@v1.4.2
+      - uses: javiertuya/sonarqube-action@v1.4.3
         with: 
           github-token: ${{ secrets.GITHUB_TOKEN }}
           sonar-token: ${{ secrets.SONAR_TOKEN }}
