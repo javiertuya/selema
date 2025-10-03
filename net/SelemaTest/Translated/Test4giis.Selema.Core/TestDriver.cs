@@ -231,7 +231,15 @@ namespace Test4giis.Selema.Core
         {
             if (!UseRemote())
                 return;
-            SeleManager sm = new SeleManager(Config4test.GetConfig()).SetDriverUrl(new Config4test().GetRemoteDriverUrl()).Add(new SelenoidService().SetCapability("enableLog", true));
+            SeleManager sm = new SeleManager(Config4test.GetConfig()).SetDriverUrl(new Config4test().GetRemoteDriverUrl());
+
+            // Browser service capabilities should be also included, in selenoid grouped under selenoid:options
+            if (new Config4test().UseSelenoidRemoteWebDriver())
+                sm.Add(new SelenoidService().SetCapability("enableLog", true));
+            else if (new Config4test().UseSeleniumRemoteWebDriver())
+                sm.Add(new SeleniumGridService().SetCapability("se:screenResolution", "800x600"));
+            else
+                NUnit.Framework.Legacy.ClassicAssert.Fail("This test should execute only with remote web driver");
             sm.OnSetUp("TestDriver", "TestDriver.testRemoteWebDriverFromManager");
             sm.OnFailure("TestDriver", "TestDriver.testRemoteWebDriverFromManager");
             AssertLogRemoteWebDriver();

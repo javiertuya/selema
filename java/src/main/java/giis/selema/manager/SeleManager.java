@@ -511,19 +511,8 @@ public class SeleManager {
 		Map<String, Object> allOptions = new HashMap<String, Object>(); // NOSONAR net compatibility
 		if (currentOptions!=null)
 			allOptions.putAll(currentOptions);
-		
-		//PATCH
-		//Although browser service and video recorder are handled independently, in the case of Selenoid:
-		//-using Selenium 4.1.0 on .NET, options are not passed to the driver
-		//-it is required to pass all selenoid related options as WebDriver protocol extension as a pair "selenoid:options", <map with all options>
-		//As currently selenoid is the only supported, temporary makes here the exception
-		Map<String, Object> selenoidOptions = new HashMap<String, Object>(); // NOSONAR net compatibility
 		if (browserService!=null)
-			selenoidOptions.putAll(browserService.getSeleniumOptions(driverScope));
-		if (videoRecorder!=null)
-			selenoidOptions.putAll(videoRecorder.getSeleniumOptions(mediaVideoContext, driverScope));
-		if (browserService!=null)
-			allOptions.put("selenoid:options", selenoidOptions);
+			browserService.addBrowserServiceOptions(allOptions, videoRecorder, mediaVideoContext, driverScope);
 		
 		return new SeleniumDriverFactory().getSeleniumDriver(currentBrowser, currentDriverUrl, driverVersion, allOptions, currentArguments, currentOptionsInstance);
 	}

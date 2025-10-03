@@ -619,19 +619,8 @@ namespace Giis.Selema.Manager
             Map<string, object> allOptions = new HashMap<string, object>(); // NOSONAR net compatibility
             if (currentOptions != null)
                 allOptions.PutAll(currentOptions);
-
-            //PATCH
-            //Although browser service and video recorder are handled independently, in the case of Selenoid:
-            //-using Selenium 4.1.0 on .NET, options are not passed to the driver
-            //-it is required to pass all selenoid related options as IWebDriver protocol extension as a pair "selenoid:options", <map with all options>
-            //As currently selenoid is the only supported, temporary makes here the exception
-            Map<string, object> selenoidOptions = new HashMap<string, object>(); // NOSONAR net compatibility
             if (browserService != null)
-                selenoidOptions.PutAll(browserService.GetSeleniumOptions(driverScope));
-            if (videoRecorder != null)
-                selenoidOptions.PutAll(videoRecorder.GetSeleniumOptions(mediaVideoContext, driverScope));
-            if (browserService != null)
-                allOptions.Put("selenoid:options", selenoidOptions);
+                browserService.AddBrowserServiceOptions(allOptions, videoRecorder, mediaVideoContext, driverScope);
             return new SeleniumDriverFactory().GetSeleniumDriver(currentBrowser, currentDriverUrl, driverVersion, allOptions, currentArguments, currentOptionsInstance);
         }
     }

@@ -64,6 +64,7 @@
       <replacefilter token="WebDriver" value="IWebDriver" />
       <replacefilter token="WebElement" value="IWebElement" />
       <replacefilter token="RemoteIWebDriver" value="RemoteWebDriver" />
+      <replacefilter token="((RemoteWebDriver)driver).GetSessionId()" value="((RemoteWebDriver)driver).SessionId" />
       <replacefilter token="Capabilities" value="DriverOptions" />
       <replacefilter token=".Window().Maximize()" value=".Window.Maximize()" />
       <replacefilter token=".GetText()" value=".Text" />

@@ -8,6 +8,8 @@ import giis.portable.util.PropertiesFactory;
 import giis.selema.manager.IManagerConfigDelegate;
 import giis.selema.manager.SelemaConfig;
 import giis.selema.manager.SeleManager;
+import giis.selema.services.IBrowserService;
+import giis.selema.services.impl.SeleniumGridService;
 import giis.selema.services.impl.SelenoidService;
 import giis.selema.services.impl.WatermarkService;
 
@@ -40,11 +42,25 @@ public class Config4test implements IManagerConfigDelegate {
 		if (useHeadlessDriver()) //headless argument supported by chrome and edge (at least)
 			sm.setArguments(new String[] { "--headless" });
 		if (useRemoteWebDriver())
-			sm.add(new SelenoidService().setVideo().setVnc());
+			sm.add(getRemoteBrowserService().setVideo().setVnc());
 	}
 	
-	public boolean useRemoteWebDriver() {
+	private IBrowserService getRemoteBrowserService() { // assume that is using remote web driver
+		if (useSelenoidRemoteWebDriver())
+			return new SelenoidService();
+		else if (useSeleniumRemoteWebDriver())
+			return new SeleniumGridService();
+		else
+			return null;
+	}
+	public boolean useSelenoidRemoteWebDriver() {
 		return "selenoid".equals(prop.getProperty("selema.test.mode"));
+	}
+	public boolean useSeleniumRemoteWebDriver() {
+		return "grid".equals(prop.getProperty("selema.test.mode"));
+	}
+	public boolean useRemoteWebDriver() {
+		return useSelenoidRemoteWebDriver() || useSeleniumRemoteWebDriver();
 	}
 	public boolean useHeadlessDriver() {
 		return "headless".equals(prop.getProperty("selema.test.mode"));

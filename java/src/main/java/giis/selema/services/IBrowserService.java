@@ -20,6 +20,12 @@ public interface IBrowserService {
 	IBrowserService setCapability(String key, Object value);
 
 	/**
+	 * Adds the browser service specific capabilities to 'allOptions' map.
+	 */
+	void addBrowserServiceOptions(Map<String, Object> allOptions, IVideoService videoRecorder,
+			IMediaContext mediaVideoContext, String driverScope);
+	
+	/**
 	 * Gets the video recorder service associated with this browser service
 	 */
 	IVideoService getVideoRecorder();

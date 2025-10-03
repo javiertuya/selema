@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 import giis.portable.util.FileUtil;
 import giis.portable.util.JavaCs;
@@ -18,6 +19,7 @@ import giis.selema.services.IVideoService;
 public class SelenoidVideoService implements IVideoService {
 	private ISelemaLogger log;
 	private static final String VIDEO_INDEX_NAME = "video-index.log";
+	protected String seleniumSessionId="";
 	//los timestamps no se miden de forma precisa, pero se tomara como referencia el intervalo que se conoce
 	private long lastSessionStartingTimestamp=0;
 	private long lastSessionStartedTimestamp=0;
@@ -36,6 +38,8 @@ public class SelenoidVideoService implements IVideoService {
 	}
 	@Override
 	public void afterCreateDriver(WebDriver driver) {
+		if (driver instanceof RemoteWebDriver) // should be remote
+			seleniumSessionId = ((RemoteWebDriver) driver).getSessionId().toString();
 		lastSessionStartedTimestamp=JavaCs.currentTimeMillis();
 	}
 	@Override
@@ -47,6 +51,9 @@ public class SelenoidVideoService implements IVideoService {
 		if (log!=null)
 			log.info(videoMsg);
 		return videoMsg;
+	}
+	protected String getVideoFileNameWithRelativePath(String videoFileName) {
+		return videoFileName; // video file strucutre is flat
 	}
 	@Override
 	public Map<String, Object> getSeleniumOptions(IMediaContext context, String testName) {
@@ -69,6 +76,7 @@ public class SelenoidVideoService implements IVideoService {
 	@Override
 	public void beforeQuitDriver(IMediaContext context, String testName) {
 		String videoFileName=context.getVideoFileName(testName);
+		videoFileName=getVideoFileNameWithRelativePath(videoFileName);
 		if (log!=null)
 			log.info("Saving video: " + "<a href=\"" + videoFileName + "\">" + videoFileName + "</a>");
 		String videoIndex=FileUtil.getPath(context.getReportFolder(), VIDEO_INDEX_NAME);

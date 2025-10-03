@@ -22,6 +22,7 @@ namespace Giis.Selema.Portable.Selenium
         public object GetOptionsObj(string browser, string[] arguments)
         {
             string clasName = GetSeleniumClassName(browser, "Options");
+            log.Trace("Create options instance: " + clasName);
             return Activator.CreateInstance(Type.GetType(clasName));
         }
 
@@ -69,16 +70,18 @@ namespace Giis.Selema.Portable.Selenium
 		public object GetDriverObj(string browser, object opt)
 		{
 			string className = GetSeleniumClassName(browser, "Driver");
-			//removed support for edge with selenium 3
-			//if ( "edge" == browser.ToLower()) //a diferencia de java, hay que poner este atributo en las options
-			//	opt.GetType().GetProperty("UseChromium").SetValue(opt, true);
-			return Activator.CreateInstance(Type.GetType(className), new object[] { opt });
+            //removed support for edge with selenium 3
+            //if ( "edge" == browser.ToLower()) //a diferencia de java, hay que poner este atributo en las options
+            //	opt.GetType().GetProperty("UseChromium").SetValue(opt, true);
+            log.Trace("Create local driver instance: " + className);
+            return Activator.CreateInstance(Type.GetType(className), new object[] { opt });
 		}
 
 		public object GetRemoteDriverObj(string remoteUrl, object opt)
 		{
 			string className = GetSeleniumClassName("remote", "Driver");
-			return Activator.CreateInstance(Type.GetType(className), new object[] { new Uri(remoteUrl), opt });
+            log.Trace("Create remote driver instance: " + className);
+            return Activator.CreateInstance(Type.GetType(className), new object[] { new Uri(remoteUrl), opt });
 		}
 
 		private string GetSeleniumClassName(string browser, string clstype)
@@ -96,7 +99,7 @@ namespace Giis.Selema.Portable.Selenium
 			//}
 			//en net debe incluirse el nombre del assembly
 			string className = pkg + "." + cls + clstype + ", " + assembly;
-			log.Trace("Getting instance of class: " + className);
+			log.Trace("Getting class name: " + className);
 			return className;
 		}
 		private string Capitalize(string input)
@@ -107,7 +110,7 @@ namespace Giis.Selema.Portable.Selenium
 		private string GetDrivermanagerClassName(string browser)
 		{
 			string className = "WebDriverManager.DriverConfigs.Impl." + Capitalize(browser.ToLower()) + "Config" + ", WebDriverManager";
-			log.Debug("Getting instance of class: " + className);
+			log.Debug("Getting driver manager class name: " + className);
 			return className;
 		}
 		private void SetUpWebDriver(IDriverConfig Config, string version)
