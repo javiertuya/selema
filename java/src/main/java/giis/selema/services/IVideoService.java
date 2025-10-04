@@ -3,8 +3,10 @@ package giis.selema.services;
 import java.util.Map;
 
 import org.openqa.selenium.WebDriver;
+
 /**
- * Support for video recording from a browser service
+ * Support for video recording for a browser service.
+ * The instance of IBrowserService should create an instance of IVideoService for each Selenium Session
  */
 public interface IVideoService {
 

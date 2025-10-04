@@ -6,12 +6,12 @@ import java.util.Map;
 import giis.selema.services.IMediaContext;
 import giis.selema.services.IVideoService;
 
-public class SeleniumGridService extends SelenoidService {
+public class SeleniumGridService extends AbstractBrowserService {
 
 	@Override
 	public void addBrowserServiceOptions(Map<String, Object> allOptions, IVideoService videoRecorder,
 			IMediaContext mediaVideoContext, String driverScope) {
-		// Unlike selenoid, browser specific options in grid are not grouped
+		// Unlike services like selenoid, browser specific options in grid are not grouped
 		allOptions.putAll(this.getSeleniumOptions(driverScope));
 		if (videoRecorder != null)
 			allOptions.putAll(videoRecorder.getSeleniumOptions(mediaVideoContext, driverScope));

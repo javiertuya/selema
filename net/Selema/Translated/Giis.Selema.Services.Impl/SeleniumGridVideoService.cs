@@ -10,7 +10,7 @@ using System.Text;
 
 namespace Giis.Selema.Services.Impl
 {
-    public class SeleniumGridVideoService : SelenoidVideoService
+    public class SeleniumGridVideoService : AbstractVideoService
     {
         protected override string GetVideoFileNameWithRelativePath(string videoFileName)
         {
