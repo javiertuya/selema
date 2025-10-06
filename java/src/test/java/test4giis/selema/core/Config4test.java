@@ -9,8 +9,10 @@ import giis.selema.manager.IManagerConfigDelegate;
 import giis.selema.manager.SelemaConfig;
 import giis.selema.manager.SeleManager;
 import giis.selema.services.IBrowserService;
+import giis.selema.services.impl.RemoteBrowserService;
 import giis.selema.services.impl.SeleniumGridService;
 import giis.selema.services.impl.SelenoidService;
+import giis.selema.services.impl.VideoControllerLocal;
 import giis.selema.services.impl.WatermarkService;
 
 public class Config4test implements IManagerConfigDelegate {
@@ -42,15 +44,20 @@ public class Config4test implements IManagerConfigDelegate {
 		if (useHeadlessDriver()) //headless argument supported by chrome and edge (at least)
 			sm.setArguments(new String[] { "--headless" });
 		if (useRemoteWebDriver())
-			sm.add(getRemoteBrowserService().setVideo().setVnc());
+			sm.add(getRemoteBrowserService());
 	}
 	
 	private IBrowserService getRemoteBrowserService() { // assume that is using remote web driver
 		if (useSelenoidRemoteWebDriver())
-			return new SelenoidService();
+			return new SelenoidService().setVideo().setVnc();
 		else if (useSeleniumRemoteWebDriver())
-			return new SeleniumGridService();
-		else
+			return new SeleniumGridService().setVideo().setVnc();
+		else if (usePreloadLocal()) {
+			String videoContainer = prop.getProperty("selema.test.preload.video.container");
+			String videoLocation = prop.getProperty("selema.test.preload.video.location");
+			VideoControllerLocal controller = new VideoControllerLocal(videoContainer, videoLocation, "video.mp4");
+			return new RemoteBrowserService().setVideo(controller);
+		} else
 			return null;
 	}
 	public boolean useSelenoidRemoteWebDriver() {
@@ -59,8 +66,12 @@ public class Config4test implements IManagerConfigDelegate {
 	public boolean useSeleniumRemoteWebDriver() {
 		return "grid".equals(prop.getProperty("selema.test.mode"));
 	}
+	public boolean usePreloadLocal() {
+		return "preload-local".equals(prop.getProperty("selema.test.mode"));
+	}
 	public boolean useRemoteWebDriver() {
-		return useSelenoidRemoteWebDriver() || useSeleniumRemoteWebDriver();
+		return useSelenoidRemoteWebDriver() || useSeleniumRemoteWebDriver() 
+				|| usePreloadLocal();
 	}
 	public boolean useHeadlessDriver() {
 		return "headless".equals(prop.getProperty("selema.test.mode"));

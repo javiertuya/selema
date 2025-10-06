@@ -223,7 +223,7 @@ public class SeleManager {
 	 * Attaches a browser service (eg selenoid)
 	 */
 	public SeleManager add(IBrowserService browserSvc) {
-		log.debug("Add browser service");
+		log.debug("Add browser service: " + browserSvc.getClass().getSimpleName());
 		browserService=browserSvc;
 		//when creating this service a compatible video recorder service is created too
 		videoRecorder=browserService.getVideoRecorder();

@@ -9,7 +9,8 @@ import giis.selema.services.IMediaContext;
 public class SeleniumGridVideoService extends AbstractVideoService {
 
 	@Override
-	protected String getVideoFileNameWithRelativePath(String videoFileName) {
+	protected String getVideoFileNameWithRelativePath(IMediaContext context, String testName) {
+		String videoFileName = super.getVideoFileNameWithRelativePath(context, testName);
 		// I don't know why, but the recorded video names have a suffix mp4 before the .mp4 file name extension
 		videoFileName = JavaCs.substring(videoFileName, 0, videoFileName.length() - 4) + "mp4.mp4";
 		// Grid places each video under a different folder

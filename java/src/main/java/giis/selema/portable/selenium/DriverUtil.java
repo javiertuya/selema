@@ -18,6 +18,10 @@ public class DriverUtil {
 		driver.close();
 	}
 	
+	public static void quitDriver(WebDriver driver) {
+		driver.quit();
+	}
+	
 	public static String getTitle(WebDriver driver) {
 		return driver.getTitle();
 	}
