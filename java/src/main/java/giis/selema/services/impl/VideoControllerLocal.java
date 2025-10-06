@@ -3,11 +3,12 @@ package giis.selema.services.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import giis.portable.util.FileUtil;
 import giis.portable.util.JavaCs;
+import giis.portable.util.Parameters;
 import giis.selema.manager.SelemaException;
 import giis.selema.portable.selenium.CommandLine;
 import giis.selema.services.IVideoController;
-import giis.visualassert.portable.FileUtil;
 
 /**
  * Video controller to use when both the recorder container and the tests run in the same VM. Requires the container
@@ -23,14 +24,14 @@ public class VideoControllerLocal implements IVideoController {
 
 	public VideoControllerLocal(String videoContainer, String videoFolder, String defaultVideoName) {
 		this.videoContainer = videoContainer;
-		this.videoFolder = videoFolder;
+		this.videoFolder = FileUtil.getPath(Parameters.DEFAULT_PROJECT_ROOT, videoFolder);
 		this.defaultVideoName = defaultVideoName;
 	}
 
 	@Override
 	public void start() {
 		// First clean the video file (if exists) to prevent the recorder concatenating videos
-		giis.selema.portable.selenium.CommandLine.fileDelete(FileUtil.getPath(videoFolder, defaultVideoName), false);
+		CommandLine.fileDelete(FileUtil.getPath(videoFolder, defaultVideoName), false);
 
 		log.debug("Starting video container: " + videoContainer);
 		runDockerWait("start", videoContainer, "Display selenium-chrome:99.0 is open", 5);

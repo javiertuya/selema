@@ -49,7 +49,7 @@ namespace Test4giis.Selema.Core
             if (UseHeadlessDriver())
                 sm.SetArguments(new string[] { "--headless" });
             if (UseRemoteWebDriver())
-                sm.Add(GetRemoteBrowserService().SetVideo().SetVnc());
+                sm.Add(GetRemoteBrowserService());
         }
 
         private IBrowserService GetRemoteBrowserService()
@@ -57,9 +57,16 @@ namespace Test4giis.Selema.Core
 
             // assume that is using remote web driver
             if (UseSelenoidRemoteWebDriver())
-                return new SelenoidService();
+                return new SelenoidService().SetVideo().SetVnc();
             else if (UseSeleniumRemoteWebDriver())
-                return new SeleniumGridService();
+                return new SeleniumGridService().SetVideo().SetVnc();
+            else if (UsePreloadLocal())
+            {
+                string videoContainer = prop.GetProperty("selema.test.preload.video.container");
+                string videoLocation = prop.GetProperty("selema.test.preload.video.location");
+                VideoControllerLocal controller = new VideoControllerLocal(videoContainer, videoLocation, "video.mp4");
+                return new RemoteBrowserService().SetVideo(controller);
+            }
             else
                 return null;
         }
@@ -74,9 +81,14 @@ namespace Test4giis.Selema.Core
             return "grid".Equals(prop.GetProperty("selema.test.mode"));
         }
 
+        public virtual bool UsePreloadLocal()
+        {
+            return "preload-local".Equals(prop.GetProperty("selema.test.mode"));
+        }
+
         public virtual bool UseRemoteWebDriver()
         {
-            return UseSelenoidRemoteWebDriver() || UseSeleniumRemoteWebDriver();
+            return UseSelenoidRemoteWebDriver() || UseSeleniumRemoteWebDriver() || UsePreloadLocal();
         }
 
         public virtual bool UseHeadlessDriver()

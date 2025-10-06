@@ -59,7 +59,7 @@ namespace Giis.Selema.Services.Impl
         /// <summary>
         /// Gets a new instance of the video recorder service associated with this browser service
         /// </summary>
-        public abstract IVideoService GetVideoRecorder();
+        public abstract IVideoService GetVideoRecorder(); // NOSONAR java redundant, but needed for C# conversion
         /// <summary>
         /// Gets the capabilities that the IWebDriver must configure to integrate with this service
         /// </summary>

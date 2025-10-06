@@ -17,14 +17,14 @@ namespace Giis.Selema.Services.Impl
     /// </summary>
     public abstract class AbstractVideoService : IVideoService
     {
-        private ISelemaLogger log;
+        protected ISelemaLogger log;
         private static readonly string VIDEO_INDEX_NAME = "video-index.log";
         protected string seleniumSessionId = "";
         //los timestamps no se miden de forma precisa, pero se tomara como referencia el intervalo que se conoce
         private long lastSessionStartingTimestamp = 0;
         private long lastSessionStartedTimestamp = 0;
         /// <summary>
-        /// Configures this service, called on attaching the service to a SeleManager
+        /// Configures the logger of this service, called on attaching the service to a SeleManager
         /// </summary>
         public virtual IVideoService Configure(ISelemaLogger thisLog)
         {
@@ -55,9 +55,9 @@ namespace Giis.Selema.Services.Impl
             return videoMsg;
         }
 
-        protected virtual string GetVideoFileNameWithRelativePath(string videoFileName)
+        protected virtual string GetVideoFileNameWithRelativePath(IMediaContext context, string testName)
         {
-            return videoFileName; // video file structure is flat by default
+            return context.GetVideoFileName(testName); // video file structure is flat by default
         }
 
         public virtual Map<string, object> GetSeleniumOptions(IMediaContext context, string testName)
@@ -84,8 +84,7 @@ namespace Giis.Selema.Services.Impl
 
         public virtual void BeforeQuitDriver(IMediaContext context, string testName)
         {
-            string videoFileName = context.GetVideoFileName(testName);
-            videoFileName = GetVideoFileNameWithRelativePath(videoFileName);
+            string videoFileName = GetVideoFileNameWithRelativePath(context, testName);
             if (log != null)
                 log.Info("Saving video: " + "<a href=\"" + videoFileName + "\">" + videoFileName + "</a>");
             string videoIndex = FileUtil.GetPath(context.GetReportFolder(), VIDEO_INDEX_NAME);

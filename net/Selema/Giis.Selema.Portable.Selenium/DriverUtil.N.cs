@@ -16,6 +16,10 @@ namespace Giis.Selema.Portable.Selenium
         {
             driver.Close();
         }
+        public static void QuitDriver(IWebDriver driver)
+        {
+            driver.Quit();
+        }
         public static string GetTitle(IWebDriver driver)
         {
             return driver.Title;

@@ -21,7 +21,7 @@ public class TestDriverPlatformDependent {
 	@Test
 	public void testHeadlessWebDriverWithOptionsAndOptionsInstance() {
 		if (!TestDriver.useHeadless()) return;
-		//TODO temporal, este falla en preloaded, revisar
+		// temporal, este falla en preloaded, revisar
 		if (new Config4test().usePreloadLocal()) return;
 		
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();

@@ -56,8 +56,7 @@ public abstract class AbstractBrowserService implements IBrowserService {
 	/**
 	 * Gets a new instance of the video recorder service associated with this browser service
 	 */
-	@Override
-	public abstract IVideoService getVideoRecorder();
+	@Override public abstract IVideoService getVideoRecorder(); // NOSONAR java redundant, but needed for C# conversion
 
 	/**
 	 * Gets the capabilities that the WebDriver must configure to integrate with this service

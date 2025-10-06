@@ -12,8 +12,9 @@ namespace Giis.Selema.Services.Impl
 {
     public class SeleniumGridVideoService : AbstractVideoService
     {
-        protected override string GetVideoFileNameWithRelativePath(string videoFileName)
+        protected override string GetVideoFileNameWithRelativePath(IMediaContext context, string testName)
         {
+            string videoFileName = base.GetVideoFileNameWithRelativePath(context, testName);
 
             // I don't know why, but the recorded video names have a suffix mp4 before the .mp4 file name extension
             videoFileName = JavaCs.Substring(videoFileName, 0, videoFileName.Length - 4) + "mp4.mp4";
