@@ -87,5 +87,13 @@ namespace Giis.Selema.Portable.Selenium
             }
         }
 
+        public static bool IsAbsolute(string fileName)
+        {
+            return fileName.StartsWith("/") ||
+                    fileName.Length >= 3 && fileName[1] == ':' && fileName[2] == '/';
+        }
+
+
+
     }
 }

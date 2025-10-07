@@ -117,7 +117,9 @@ jobs:
           set -x
           sed -i "s|selema.test.remote.webdriver=none|selema.test.remote.webdriver=http://localhost:4444|g" selema.properties
           echo "selema.test.preload.video.container=selenium-video" >> selema.properties
-          echo "selema.test.preload.video.location=${{ env.REPORT_FOLDER }}/selema" >> selema.properties
+          echo "selema.test.preload.video.sourcefile=${{ env.REPORT_FOLDER }}/preload-local/video.mp4" >> selema.properties
+          echo "selema.test.preload.video.targetfolder=${{ env.REPORT_FOLDER }}/selema" >> selema.properties
+          mkdir -p ${{ env.REPORT_FOLDER }}/preload-local
           mkdir -p ${{ env.REPORT_FOLDER }}/selema
           docker network create grid
           docker run -d -p 4444:4444 -p 6900:5900 --net grid --name selenium-chrome --shm-size="2g" \
@@ -126,7 +128,7 @@ jobs:
           docker run -d --net grid --name selenium-video --user $UID \
             -e SE_VIDEO_FILE_NAME=video.mp4 \
             -e DISPLAY_CONTAINER_NAME=selenium-chrome \
-            -v $GITHUB_WORKSPACE/${{ matrix.platform}}/${{ env.REPORT_FOLDER }}/selema:/videos \
+            -v $GITHUB_WORKSPACE/${{ matrix.platform}}/${{ env.REPORT_FOLDER }}/preload-local:/videos \
             selenium/video:ffmpeg-8.0-20250909
           # stop recoder here, the video service will start an stop when needed
           sleep 5

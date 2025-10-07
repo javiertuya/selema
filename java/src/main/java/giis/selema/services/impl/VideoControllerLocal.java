@@ -19,19 +19,19 @@ public class VideoControllerLocal implements IVideoController {
 	final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	private String videoContainer;
-	private String videoFolder;
-	private String defaultVideoName;
+	private String sourceFile;
+	private String targetFolder;
 
-	public VideoControllerLocal(String videoContainer, String videoFolder, String defaultVideoName) {
+	public VideoControllerLocal(String videoContainer, String sourceFile, String targetFolder) {
 		this.videoContainer = videoContainer;
-		this.videoFolder = FileUtil.getPath(Parameters.DEFAULT_PROJECT_ROOT, videoFolder);
-		this.defaultVideoName = defaultVideoName;
+		this.sourceFile = sourceFile;
+		this.targetFolder = targetFolder;
 	}
 
 	@Override
 	public void start() {
 		// First clean the video file (if exists) to prevent the recorder concatenating videos
-		CommandLine.fileDelete(FileUtil.getPath(videoFolder, defaultVideoName), false);
+		CommandLine.fileDelete(sourceFile, false);
 
 		log.debug("Starting video container: " + videoContainer);
 		runDockerWait("start", videoContainer, "Display selenium-chrome:99.0 is open", 5);
@@ -44,8 +44,8 @@ public class VideoControllerLocal implements IVideoController {
 
 		// copy the video file to its destination and then remove, this should not fail
 		log.debug("Saving recorded video file to: " + videoName);
-		CommandLine.fileCopy(FileUtil.getPath(videoFolder, defaultVideoName), FileUtil.getPath(videoFolder, videoName));
-		CommandLine.fileDelete(FileUtil.getPath(videoFolder, defaultVideoName), true);
+		CommandLine.fileCopy(sourceFile, FileUtil.getPath(targetFolder, videoName));
+		CommandLine.fileDelete(sourceFile, true);
 	}
 
 	/**

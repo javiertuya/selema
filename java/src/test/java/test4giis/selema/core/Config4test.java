@@ -7,6 +7,7 @@ import giis.portable.util.Parameters;
 import giis.portable.util.PropertiesFactory;
 import giis.selema.manager.IManagerConfigDelegate;
 import giis.selema.manager.SelemaConfig;
+import giis.selema.portable.selenium.CommandLine;
 import giis.selema.manager.SeleManager;
 import giis.selema.services.IBrowserService;
 import giis.selema.services.impl.RemoteBrowserService;
@@ -54,8 +55,11 @@ public class Config4test implements IManagerConfigDelegate {
 			return new SeleniumGridService().setVideo().setVnc();
 		else if (usePreloadLocal()) {
 			String videoContainer = prop.getProperty("selema.test.preload.video.container");
-			String videoLocation = prop.getProperty("selema.test.preload.video.location");
-			VideoControllerLocal controller = new VideoControllerLocal(videoContainer, videoLocation, "video.mp4");
+			String videoSourceFile = prop.getProperty("selema.test.preload.video.sourcefile");
+			String targetFolder = prop.getProperty("selema.test.preload.video.targetfolder");
+			videoSourceFile = CommandLine.isAbsolute(videoSourceFile) ? videoSourceFile : FileUtil.getPath(Parameters.DEFAULT_PROJECT_ROOT, videoSourceFile);
+			targetFolder = CommandLine.isAbsolute(targetFolder) ? targetFolder : FileUtil.getPath(Parameters.DEFAULT_PROJECT_ROOT, targetFolder);
+			VideoControllerLocal controller = new VideoControllerLocal(videoContainer, videoSourceFile, targetFolder);
 			return new RemoteBrowserService().setVideo(controller);
 		} else
 			return null;

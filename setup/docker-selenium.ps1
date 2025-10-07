@@ -40,7 +40,3 @@ docker run -d --net grid --name selenium-video `
 # stop recoder here, the video service will start an stop when needed
 sleep 5
 docker stop selenium-video
-
-docker start selenium-video
-#docker exec -it video sudo chmod 777 /videos
-
