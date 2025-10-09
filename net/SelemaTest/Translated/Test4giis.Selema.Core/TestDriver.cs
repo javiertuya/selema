@@ -28,6 +28,10 @@ namespace Test4giis.Selema.Core
             "--headless",
             "--remote-allow-origins=*"
         };
+        public static string[] firefoxHeadlesArgument = new string[]
+        {
+            "-headless"
+        };
         //Not all tests can be executed in all test modes,
         //all in local plus remote driver in CI, headless in local
         public static bool IsLocal()
@@ -88,12 +92,11 @@ namespace Test4giis.Selema.Core
             driver = factory.GetSeleniumDriver("firefox", "", "", null, null, null);
 
             // #801 no toString method implemented for firefox
-            AssertOptions(factory, Parameters.IsJava() ? "{browserName:firefox,moz:firefoxOptions:{prefs:{remote.active-protocols:3}}}" : "OpenQA.Selenium.Firefox.FirefoxOptions");
+            AssertOptions(factory, Parameters.IsJava() ? "{browserName:firefox,moz:firefoxOptions:{prefs:{remote.active-protocols:1}}}" : "OpenQA.Selenium.Firefox.FirefoxOptions");
         }
 
-        //next tests use chrome
         [Test]
-        public virtual void TestHeadlessIWebDriverDefault()
+        public virtual void TestHeadlessIWebDriverChrome()
         {
             if (!UseHeadless())
                 return;
@@ -103,7 +106,7 @@ namespace Test4giis.Selema.Core
         }
 
         [Test]
-        public virtual void TestHeadlessIWebDriverDefaultCaseInsensitive()
+        public virtual void TestHeadlessIWebDriverChromeCaseInsensitive()
         {
             if (!UseHeadless())
                 return;
@@ -114,6 +117,27 @@ namespace Test4giis.Selema.Core
             AssertOptions(factory, "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]}}");
         }
 
+        [Test]
+        public virtual void TestHeadlessIWebDriverEdge()
+        {
+            if (!UseHeadless())
+                return;
+            SeleniumDriverFactory factory = new SeleniumDriverFactory();
+            driver = factory.GetSeleniumDriver("edge", "", "", null, chromeHeadlesArgument, null);
+            AssertOptions(factory, "{browserName:MicrosoftEdge,ms:edgeOptions:{args:[--headless,--remote-allow-origins=*]}}");
+        }
+
+        [Test]
+        public virtual void TestHeadlessIWebDriverFirefox()
+        {
+            if (!UseHeadless())
+                return;
+            SeleniumDriverFactory factory = new SeleniumDriverFactory();
+            driver = factory.GetSeleniumDriver("firefox", "", "", null, firefoxHeadlesArgument, null);
+            AssertOptions(factory, Parameters.IsJava() ? "{browserName:firefox,moz:firefoxOptions:{args:[-headless],prefs:{remote.active-protocols:1}}}" : "OpenQA.Selenium.Firefox.FirefoxOptions");
+        }
+
+        //next tests use chrome headless and exercise other settings (e.g. setting options)
         [Test]
         public virtual void TestHeadlessIWebDriverWithOptions()
         {
@@ -127,7 +151,7 @@ namespace Test4giis.Selema.Core
             caps.Put("testprefix:key2", "value2");
             driver = factory.GetSeleniumDriver("chrome", "", "", caps, chromeHeadlesArgument, null);
 
-            // #801 the toString method is not able to get other custom capabilities than the standard and chromeOptions
+            // #801 net: the toString method is not able to get other custom capabilities than the standard and chromeOptions
             AssertOptions(factory, Parameters.IsJava() ? "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]},testprefix:key1:value1,testprefix:key2:value2}" : "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]}}");
         }
 
@@ -170,6 +194,7 @@ namespace Test4giis.Selema.Core
             NUnit.Framework.Legacy.ClassicAssert.AreEqual(expected, actual);
         }
 
+        // remote web drivers
         [Test]
         public virtual void TestRemoteWebDriverDefault()
         {
@@ -212,14 +237,18 @@ namespace Test4giis.Selema.Core
             Asserts.AssertIsTrue(e.Message.StartsWith("Can't instantiate RemoteWebDriver for browser: chrome at url: " + wrongUrl), "Not contained in: " + e.Message);
         }
 
-        //lifecycle tests with remote driver use a browser service, but it should work if not browser service is attached
-        //As this is not inside a lifecycle controller, simulates the steps.
+        // If we don't need specific features like video recording,
+        // the use of a remote web driver does not require a browser server
+        // (lifecycle test clssess will exercise the specific features)
+        // As this is not inside a lifecycle controller, simulates the steps
         [Test]
-        public virtual void TestRemoteWebDriverFromManagerNoBrowserService()
+        public virtual void TestRemoteWebDriverNoBrowserService()
         {
             if (!UseRemote())
                 return;
             Map<string, object> capsToAdd = new TreeMap<string, object>();
+
+            // still can add custom capabilities
             capsToAdd.Put("testprefix:key1", "value1");
             capsToAdd.Put("testprefix:key2", "value2");
             SeleManager sm = new SeleManager(Config4test.GetConfig()).SetDriverUrl(new Config4test().GetRemoteDriverUrl()).SetOptions(capsToAdd); //can't get options from driver instance, check at the debug log
@@ -229,21 +258,21 @@ namespace Test4giis.Selema.Core
             sm.OnTearDown("TestDriver", "TestDriver.testRemoteWebDriverFromManager");
         }
 
-        //with browser service but no video too
         [Test]
-        public virtual void TestRemoteWebDriverFromManagerNoVideoWithCapability()
+        public virtual void TestRemoteWebDriverNoBrowserServiceAndServiceDependentDriverOptions()
         {
             if (!UseRemote())
                 return;
             SeleManager sm = new SeleManager(Config4test.GetConfig()).SetDriverUrl(new Config4test().GetRemoteDriverUrl());
 
-            // Browser service capabilities should be also included, in selenoid grouped under selenoid:options
+            // Browser server dependent capabilities can also be added, for some remote browsers they are
+            // placed in a group as in selenoid (selenoid:options)
             if (new Config4test().UseSelenoidRemoteWebDriver())
                 sm.Add(new SelenoidService().SetCapability("enableLog", true));
-            else if (new Config4test().UseSeleniumRemoteWebDriver())
+            else if (new Config4test().UseGridRemoteWebDriver())
                 sm.Add(new SeleniumGridService().SetCapability("se:screenResolution", "800x600"));
             else
-                return;
+                return; // do not test in other browser server
             sm.OnSetUp("TestDriver", "TestDriver.testRemoteWebDriverFromManager");
             sm.OnFailure("TestDriver", "TestDriver.testRemoteWebDriverFromManager");
             AssertLogRemoteWebDriver();

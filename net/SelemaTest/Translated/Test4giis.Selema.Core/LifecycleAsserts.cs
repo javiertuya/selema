@@ -1,5 +1,7 @@
 using Giis.Portable.Util;
 using Giis.Selema.Manager;
+using Giis.Selema.Portable.Selenium;
+using Test4giis.Selema.Portable;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -95,13 +97,27 @@ namespace Test4giis.Selema.Core
 
             logReader.AssertEnd();
 
-            //comprueba el video, en este caso no se trata de un fichero pues estos se guardan en selenoid
-            //y solo son copiado tras la ejecucion del job, pero esta el log de los videos
+            // Check the recorded video, only when driver is managed at the test level
+            // This seems flaky if the tests run multiple times without cleaning the selema report folder before
             if (sm.UsesRemoteDriver() && sm.GetManageAtTest())
             {
-                IList<string> videoList = FileUtil.FileReadLines(FileUtil.GetPath(sm.GetConfig().GetReportDir(), "video-index.log"));
+                string reportDir = sm.GetConfig().GetReportDir();
+
+                // Last name in the video index should match with the current test name
+                IList<string> videoList = FileUtil.FileReadLines(FileUtil.GetPath(reportDir, "video-index.log"));
+                string lastVideoName = videoList[videoList.Count - 1];
                 string videoPartialName = normalizedTestName.Replace(".", "-");
-                logReader.AssertIsTrue(videoList[videoList.Count - 1].Contains(videoPartialName), "No se encuentra el video de nombre " + videoPartialName + " al final del indice");
+                Asserts.AssertIsTrue(lastVideoName.Contains(videoPartialName), "Can't find a video named " + videoPartialName + " at the end of video-index.log");
+
+                // And the video file must exist, excluding:
+                // - selenoid (the server writes to a temp file that is later renamed, so that, at this
+                //   moment the final video file is not ready)
+                // - grid: the files must be created under a different user, not accesible when runnint tests
+                // Note that the browser server must be configured to place the videos at the selema reports folder
+                Config4test cfg = new Config4test();
+                if (cfg.UseSelenoidRemoteWebDriver() || cfg.UseGridRemoteWebDriver())
+                    return;
+                Asserts.AssertIsTrue(CommandLine.FileExists(FileUtil.GetPath(reportDir, lastVideoName)), "File " + lastVideoName + " should exist in the selema log folder");
             }
         }
 
@@ -129,7 +145,7 @@ namespace Test4giis.Selema.Core
         private void CheckScreenShotFile(string reportDir, string fullTestName)
         {
             string screenShotName = "screen-*-" + fullTestName.Replace(".", "-") + "*";
-            logReader.AssertIsTrue(FileUtil.GetFilesMatchingWildcard(reportDir, screenShotName).Count >= 1, "No hay ningun archivo de nombre " + screenShotName); //no =1 pues puede haber de otras ejecucione interactivas
+            Asserts.AssertIsTrue(FileUtil.GetFilesMatchingWildcard(reportDir, screenShotName).Count >= 1, "No hay ningun archivo de nombre " + screenShotName); //no =1 pues puede haber de otras ejecucione interactivas
         }
 
         //Removes leading (...) that may appear in test name when testing repeated tests

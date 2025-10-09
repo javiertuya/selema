@@ -51,7 +51,7 @@ public class Config4test implements IManagerConfigDelegate {
 	private IBrowserService getRemoteBrowserService() { // assume that is using remote web driver
 		if (useSelenoidRemoteWebDriver())
 			return new SelenoidService().setVideo().setVnc();
-		else if (useSeleniumRemoteWebDriver())
+		else if (useGridRemoteWebDriver())
 			return new SeleniumGridService().setVideo().setVnc();
 		else if (usePreloadLocal()) {
 			String videoContainer = prop.getProperty("selema.test.preload.video.container");
@@ -67,14 +67,14 @@ public class Config4test implements IManagerConfigDelegate {
 	public boolean useSelenoidRemoteWebDriver() {
 		return "selenoid".equals(prop.getProperty("selema.test.mode"));
 	}
-	public boolean useSeleniumRemoteWebDriver() {
+	public boolean useGridRemoteWebDriver() {
 		return "grid".equals(prop.getProperty("selema.test.mode"));
 	}
 	public boolean usePreloadLocal() {
 		return "preload-local".equals(prop.getProperty("selema.test.mode"));
 	}
 	public boolean useRemoteWebDriver() {
-		return useSelenoidRemoteWebDriver() || useSeleniumRemoteWebDriver() 
+		return useSelenoidRemoteWebDriver() || useGridRemoteWebDriver() 
 				|| usePreloadLocal();
 	}
 	public boolean useHeadlessDriver() {

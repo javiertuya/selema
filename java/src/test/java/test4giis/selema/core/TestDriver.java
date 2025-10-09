@@ -29,6 +29,7 @@ public class TestDriver {
 	//As of Chrome Driver V 111, we need to include remote-allow-origins argument, 
 	//if not connection with driver fails
 	public static String[] chromeHeadlesArgument=new String[] {"--headless", "--remote-allow-origins=*"};
+	public static String[] firefoxHeadlesArgument=new String[] {"-headless"};
 	
 	//Not all tests can be executed in all test modes,
 	//all in local plus remote driver in CI, headless in local
@@ -77,14 +78,12 @@ public class TestDriver {
 		driver=factory.getSeleniumDriver("firefox", "", "", null, null, null);
 		// #801 no toString method implemented for firefox
 		assertOptions(factory, Parameters.isJava()
-				? "{browserName:firefox,moz:firefoxOptions:{prefs:{remote.active-protocols:3}}}"
+				? "{browserName:firefox,moz:firefoxOptions:{prefs:{remote.active-protocols:1}}}"
 				: "OpenQA.Selenium.Firefox.FirefoxOptions");
 	}
 	
-	//next tests use chrome
-
 	@Test
-	public void testHeadlessWebDriverDefault() {
+	public void testHeadlessWebDriverChrome() {
 		if (!useHeadless()) return;
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
 		driver=factory.getSeleniumDriver("chrome", "", "", null, chromeHeadlesArgument, null);
@@ -92,7 +91,7 @@ public class TestDriver {
 	}
 	
 	@Test
-	public void testHeadlessWebDriverDefaultCaseInsensitive() {
+	public void testHeadlessWebDriverChromeCaseInsensitive() {
 		if (!useHeadless()) return;
 		//browser name is case insensitive
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
@@ -100,6 +99,27 @@ public class TestDriver {
 		assertOptions(factory, "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]}}");
 	}
 	
+	@Test
+	public void testHeadlessWebDriverEdge() {
+		if (!useHeadless()) return;
+		SeleniumDriverFactory factory=new SeleniumDriverFactory();
+		driver=factory.getSeleniumDriver("edge", "", "", null, chromeHeadlesArgument, null);
+		assertOptions(factory, "{browserName:MicrosoftEdge,ms:edgeOptions:{args:[--headless,--remote-allow-origins=*]}}");
+	}
+	
+	@Test
+	public void testHeadlessWebDriverFirefox() {
+		if (!useHeadless()) return;
+		SeleniumDriverFactory factory=new SeleniumDriverFactory();
+		driver=factory.getSeleniumDriver("firefox", "", "", null, firefoxHeadlesArgument, null);
+		assertOptions(factory, Parameters.isJava()
+				? "{browserName:firefox,moz:firefoxOptions:{args:[-headless],prefs:{remote.active-protocols:1}}}"
+				: "OpenQA.Selenium.Firefox.FirefoxOptions");
+
+	}
+	
+	//next tests use chrome headless and exercise other settings (e.g. setting options)
+
 	@Test
 	public void testHeadlessWebDriverWithOptions() {
 		if (!useHeadless()) return;
@@ -109,7 +129,7 @@ public class TestDriver {
 		caps.put("testprefix:key1", "value1");
 		caps.put("testprefix:key2", "value2");
 		driver=factory.getSeleniumDriver("chrome", "", "", caps, chromeHeadlesArgument, null);
-		// #801 the toString method is not able to get other custom capabilities than the standard and chromeOptions
+		// #801 net: the toString method is not able to get other custom capabilities than the standard and chromeOptions
 		assertOptions(factory, Parameters.isJava() //different order on net
 			? "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]},testprefix:key1:value1,testprefix:key2:value2}"
 			: "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]}}");
@@ -149,6 +169,8 @@ public class TestDriver {
 		assertEquals(expected, actual);
 	}
 	
+	// remote web drivers
+	
 	@Test
 	public void testRemoteWebDriverDefault() {
 		if (!useRemote()) return;
@@ -185,12 +207,16 @@ public class TestDriver {
 				"Not contained in: " + e.getMessage());
 	}
 
-	//lifecycle tests with remote driver use a browser service, but it should work if not browser service is attached
-	//As this is not inside a lifecycle controller, simulates the steps.
+	// If we don't need specific features like video recording,
+	// the use of a remote web driver does not require a browser server
+	// (lifecycle test clssess will exercise the specific features)
+	// As this is not inside a lifecycle controller, simulates the steps
+
 	@Test
-	public void testRemoteWebDriverFromManagerNoBrowserService() {
+	public void testRemoteWebDriverNoBrowserService() {
 		if (!useRemote()) return;
 		Map<String,Object> capsToAdd = new TreeMap<String,Object>();
+		// still can add custom capabilities
 		capsToAdd.put("testprefix:key1","value1");
 		capsToAdd.put("testprefix:key2","value2");
 		SeleManager sm=new SeleManager(Config4test.getConfig())
@@ -201,19 +227,20 @@ public class TestDriver {
 		assertLogRemoteWebDriver();
 		sm.onTearDown("TestDriver", "TestDriver.testRemoteWebDriverFromManager");
 	}
-	//with browser service but no video too
+	
 	@Test
-	public void testRemoteWebDriverFromManagerNoVideoWithCapability() {
+	public void testRemoteWebDriverNoBrowserServiceAndServiceDependentCapabilities() {
 		if (!useRemote()) return;
 		SeleManager sm=new SeleManager(Config4test.getConfig())
 				.setDriverUrl(new Config4test().getRemoteDriverUrl());
-		// Browser service capabilities should be also included, in selenoid grouped under selenoid:options
+		// Browser server dependent capabilities can also be added, for some remote browsers they are
+		// placed in a group as in selenoid (selenoid:options)
 		if (new Config4test().useSelenoidRemoteWebDriver())
 			sm.add(new SelenoidService().setCapability("enableLog", true));
-		else if (new Config4test().useSeleniumRemoteWebDriver())
+		else if (new Config4test().useGridRemoteWebDriver())
 			sm.add(new SeleniumGridService().setCapability("se:screenResolution", "800x600"));
 		else
-			return;
+			return; // do not test in other browser server
 		
 		sm.onSetUp("TestDriver", "TestDriver.testRemoteWebDriverFromManager");
 		sm.onFailure("TestDriver", "TestDriver.testRemoteWebDriverFromManager");

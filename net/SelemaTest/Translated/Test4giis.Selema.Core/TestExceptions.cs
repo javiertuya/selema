@@ -74,6 +74,17 @@ namespace Test4giis.Selema.Core
             NUnit.Framework.Legacy.ClassicAssert.AreEqual("SeleManager instance requires an instance of SelemaConfig", e.Message);
         }
 
+        [Test]
+        public virtual void TestManagerAddedTwice()
+        {
+            Exception e = NUnit.Framework.Assert.Throws(typeof(SelemaException), () =>
+            {
+                SeleManager s = new SeleManager(Config4test.GetConfig()).Add(new RemoteBrowserService());
+                s.Add(new RemoteBrowserService());
+            });
+            NUnit.Framework.Legacy.ClassicAssert.AreEqual("A browser service has been already added to this SeleManager", e.Message);
+        }
+
         //uses a different report subdir to do not include wrong named files/folders that cause error when published as artifacts
         [Test]
         public virtual void TestManagerWrongName()

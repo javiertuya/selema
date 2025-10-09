@@ -247,6 +247,8 @@ namespace Giis.Selema.Manager
         public virtual SeleManager Add(IBrowserService browserSvc)
         {
             log.Debug("Add browser service: " + browserSvc.GetType().Name);
+            if (browserService != null)
+                throw new SelemaException("A browser service has been already added to this SeleManager");
             browserService = browserSvc;
 
             //when creating this service a compatible video recorder service is created too
@@ -350,7 +352,7 @@ namespace Giis.Selema.Manager
             if (this.UsesRemoteDriver())
             {
                 lastSessionRemote = true;
-                selemaLog.Info("Remote session " + currentBrowser + " starting...");
+                selemaLog.Info("Remote session " + currentBrowser + " starting on " + currentDriverUrl + " ...");
 
                 //Colecciona los datos para identificacion de nombre de sesion para visualizacion en selenoid-ui y nombrado de videos
                 string driverScope = GetDriverScope(className, testName);
@@ -362,7 +364,7 @@ namespace Giis.Selema.Manager
                 IWebDriver rdriver = GetRemoteSeleniumDriver(driverScope);
                 if (videoRecorder != null)
                     videoRecorder.AfterCreateDriver(rdriver);
-                selemaLog.Info("Remote session " + currentBrowser + " started. Remote web driver at " + currentDriverUrl + ", scope: " + driverScope);
+                selemaLog.Info("Remote session " + currentBrowser + " started. Scope: " + driverScope);
                 currentDriver = rdriver;
             }
             else

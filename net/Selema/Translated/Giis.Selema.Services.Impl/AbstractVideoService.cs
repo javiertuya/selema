@@ -47,7 +47,7 @@ namespace Giis.Selema.Services.Impl
         public virtual string OnTestFailure(IMediaContext context, string testName)
         {
             long nowTimestamp = JavaCs.CurrentTimeMillis();
-            string videoFileName = context.GetVideoFileName(testName);
+            string videoFileName = GetVideoFileNameWithRelativePath(context, testName);
             string videoUrl = "<a href=\"" + videoFileName + "\">" + videoFileName + "</a>";
             string videoMsg = "Recording video at " + GetSessionTimestamp(nowTimestamp) + " (aprox.): " + videoUrl;
             if (log != null)

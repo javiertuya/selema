@@ -22,6 +22,7 @@ import giis.selema.portable.selenium.DriverUtil;
 import giis.selema.manager.SeleManager;
 import giis.selema.services.IMediaContext;
 import giis.selema.services.impl.MediaContext;
+import giis.selema.services.impl.RemoteBrowserService;
 import giis.selema.services.impl.WatermarkService;
 
 /**
@@ -74,6 +75,15 @@ public class TestExceptions implements IAfterEachCallback {
 			new SeleManager(null);
 		});
 		assertEquals("SeleManager instance requires an instance of SelemaConfig", e.getMessage());
+	}
+	
+	@Test
+	public void testManagerAddedTwice() {
+		RuntimeException e = assertThrows(SelemaException.class, () -> {
+			SeleManager s = new SeleManager(Config4test.getConfig()).add(new RemoteBrowserService());
+			s.add(new RemoteBrowserService());
+		});
+		assertEquals("A browser service has been already added to this SeleManager", e.getMessage());
 	}
 	
 	//uses a different report subdir to do not include wrong named files/folders that cause error when published as artifacts

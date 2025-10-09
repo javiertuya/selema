@@ -95,12 +95,5 @@ namespace Test4giis.Selema.Core
         {
             return "Log line " + logLine + " item " + assertItemLine + "\n  Expected '" + expected + "'\n  Not contained in: '" + actual + "'";
         }
-
-        //para compatibilidad con el orden de los argumentos entre pataformas
-        public virtual void AssertIsTrue(bool value, string message)
-        {
-            if (!value)
-                NUnit.Framework.Legacy.ClassicAssert.Fail(message);
-        }
     }
 }
