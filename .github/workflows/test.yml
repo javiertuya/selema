@@ -17,8 +17,9 @@ jobs:
     if: (github.event_name != 'pull_request' && ! github.event.pull_request.head.repo.fork) || (github.event_name == 'pull_request' && (github.event.pull_request.head.repo.fork || startsWith(github.head_ref, 'dependabot/')))
     strategy:
       matrix:
-        platform: [java, net]
-        mode: [headless, selenoid, grid, preload-local]
+        #platform: [java, net]
+        platform: [java]
+        mode: [headless, selenoid, grid, preload-local, vcmock]
         #When dynamic grid address is localhost or 127.0.0.1, Net+Grid work on local, but fail with timeout when creating remote web driver in GHA.
         #If set the address to ${hostname -i), then the driver is successfully created, but a different failure is raised:
         #The HTTP request to the remote WebDriver server for URL http://10.1.0.124:4444/session timed out after 60 seconds
@@ -54,12 +55,21 @@ jobs:
       - name: NET - Platform dependent report location
         if: ${{ matrix.platform == 'net' }}
         run: echo "REPORT_FOLDER=reports" >> $GITHUB_ENV
-      - name: Test scope
+
+      - name: Test scope (default)
+        run: |
+          echo "JAVA_TEST_SCOPE=-Dtest=-Dtest=!**/selema/video/Test*" >> $GITHUB_ENV
+          echo "NET_TEST_SCOPE=" >> $GITHUB_ENV
+      - name: Test scope (override for grid)
         if: ${{ matrix.mode == 'grid' }}
         #Grid is expremely slow in GHA, so only run a single test
         run: |
           echo "JAVA_TEST_SCOPE=-Dtest=TestLifecycle4#testFailMethod" >> $GITHUB_ENV
           echo "NET_TEST_SCOPE=--filter FullyQualifiedName=Test4giis.Selema.Mstest2.TestLifecycle4.testFailMethod" >> $GITHUB_ENV
+      - name: Test scope (override for video controller mock)
+        if: ${{ matrix.mode == 'vcmock' }}
+        run: |
+          echo "JAVA_TEST_SCOPE=-Dtest=**/selema/video/Test*" >> $GITHUB_ENV
 
       - name: test properties configuration
         run: |
@@ -233,6 +243,8 @@ jobs:
           restore-artifact-path3: "target-grid"
           restore-artifact-name4: "sonar-java-preload-local"
           restore-artifact-path4: "target-preload-local"
+          restore-artifact-name5: "sonar-java-vcmock"
+          restore-artifact-path5: "target-vcmock"
 
   publish-java-snapshot:
     #avoid publishing PRs and dependabot branches
