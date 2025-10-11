@@ -58,7 +58,7 @@ jobs:
 
       - name: Test scope (default)
         run: |
-          echo "JAVA_TEST_SCOPE=-Dtest=-Dtest=!**/selema/video/Test*" >> $GITHUB_ENV
+          echo "JAVA_TEST_SCOPE=-Dtest=!**/selema/video/Test*" >> $GITHUB_ENV
           echo "NET_TEST_SCOPE=" >> $GITHUB_ENV
       - name: Test scope (override for grid)
         if: ${{ matrix.mode == 'grid' }}
