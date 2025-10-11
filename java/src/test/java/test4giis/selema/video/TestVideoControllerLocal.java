@@ -34,9 +34,9 @@ public class TestVideoControllerLocal {
 	private static final String MOCK_IMAGE = "mock-recorder-image";
 	private static final String DOCKER_BUILD_CONTEXT = "src/test/resources/vcmock";
 
-	private static final String MAPPED_FOLDER = "target/vcmock-mapped";
+	private static final String MAPPED_FOLDER = "target/selema/vcmock-mapped";
 	private static final String RECORDED_VIDEO = MAPPED_FOLDER + "/video.mp4";
-	private static final String TARGET_FOLDER = "target/vcmock-target";
+	private static final String TARGET_FOLDER = "target/selema/vcmock-target";
 
 	@Rule
 	public TestName testName = new TestName();
