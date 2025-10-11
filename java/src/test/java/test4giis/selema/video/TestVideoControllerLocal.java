@@ -28,7 +28,7 @@ import test4giis.selema.portable.Asserts;
  * Use an independent workflow to run in CI.
  */
 public class TestVideoControllerLocal {
-	final static Logger log = LoggerFactory.getLogger(TestVideoControllerLocal.class);
+	static final Logger log = LoggerFactory.getLogger(TestVideoControllerLocal.class);
 
 	private static final String MOCK_CONTAINER = "mock-recorder";
 	private static final String MOCK_IMAGE = "mock-recorder-image";
@@ -59,10 +59,6 @@ public class TestVideoControllerLocal {
 		FileUtil.deleteFilesInDirectory(TARGET_FOLDER);
 		FileUtil.createDirectory(MAPPED_FOLDER);
 		FileUtil.createDirectory(TARGET_FOLDER);
-	}
-
-	@After
-	public void tearDown() {
 	}
 
 	private static void run(String command) {

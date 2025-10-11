@@ -6,6 +6,10 @@ import giis.selema.portable.selenium.CommandLine;
 
 public class ContainerUtil {
 
+	private ContainerUtil() {
+		throw new IllegalStateException("Utility class");
+	}
+
 	/**
 	 * Runs a docker command (start or stop), fails if does not respond with the created container name.
 	 */
@@ -24,7 +28,7 @@ public class ContainerUtil {
 		String logOut = "";
 		for (int i = 0; i < timeoutSeconds * 10; i++) {
 			logOut = CommandLine.runCommand("docker logs --tail 1 " + container);
-			if (logOut.contains(expectedLog1) && logOut.contains(expectedLog1))
+			if (logOut.contains(expectedLog1) && logOut.contains(expectedLog2))
 				return;
 			JavaCs.sleep(100);
 		}
