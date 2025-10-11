@@ -247,8 +247,6 @@ namespace Giis.Selema.Manager
         public virtual SeleManager Add(IBrowserService browserSvc)
         {
             log.Debug("Add browser service: " + browserSvc.GetType().Name);
-            if (browserService != null)
-                throw new SelemaException("A browser service has been already added to this SeleManager");
             browserService = browserSvc;
 
             //when creating this service a compatible video recorder service is created too

@@ -19,5 +19,11 @@ namespace Test4giis.Selema.Portable
         {
             Assert.IsTrue(condition, message);
         }
+
+        public static void AssertContains(string expectedSubstring, string actual)
+        {
+            Assert.IsTrue(actual.Contains(expectedSubstring), "Expected substring should be contained in actual: " + actual);
+        }
+
     }
 }

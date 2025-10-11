@@ -1,6 +1,5 @@
 using NLog;
 using Giis.Portable.Util;
-using Giis.Selema.Manager;
 using Giis.Selema.Portable.Selenium;
 using Giis.Selema.Services;
 using System;
@@ -35,42 +34,31 @@ namespace Giis.Selema.Services.Impl
 
             // First clean the video file (if exists) to prevent the recorder concatenating videos
             CommandLine.FileDelete(sourceFile, false);
-            log.Debug("Starting video container: " + videoContainer);
-            RunDockerWait("start", videoContainer, "Display selenium-chrome:99.0 is open", 5);
+
+            // The recorder should be created and stopped in order to start and record video now.
+            // If not, stop now
+            if (!"exited".Equals(ContainerUtil.GetContainerStatus(videoContainer)))
+            {
+                log.Debug("Video recorder " + videoContainer + " is not stopped, restarting");
+                ContainerUtil.RunDocker("stop", videoContainer);
+                ContainerUtil.WaitDocker(videoContainer, "Shutdown complete", "", 5);
+            }
+
+            log.Debug("Starting video recorder: " + videoContainer);
+            ContainerUtil.RunDocker("start", videoContainer);
+            ContainerUtil.WaitDocker(videoContainer, "Display", "is open", 5);
         }
 
         public virtual void Stop(string videoName)
         {
-            log.Debug("Stopping video container: " + videoContainer);
-            RunDockerWait("stop", videoContainer, "Shutdown complete", 5);
+            log.Debug("Stopping video recorder: " + videoContainer);
+            ContainerUtil.RunDocker("stop", videoContainer);
+            ContainerUtil.WaitDocker(videoContainer, "Shutdown complete", "", 5);
 
             // copy the video file to its destination and then remove, this should not fail
             log.Debug("Saving recorded video file to: " + videoName);
             CommandLine.FileCopy(sourceFile, FileUtil.GetPath(targetFolder, videoName));
             CommandLine.FileDelete(sourceFile, true);
-        }
-
-        /// <summary>
-        /// Runs a docker command (start or stop) and waits until the container log contains the expected string.
-        /// </summary>
-        private void RunDockerWait(string verb, string container, string expectedLog, int timeoutSeconds)
-        {
-            string command = "docker " + verb + " " + container;
-            string dockerOut = CommandLine.RunCommand(command);
-            if (!container.Equals(dockerOut.Trim()))
-                throw new SelemaException(command + " failed. " + dockerOut);
-
-            // poll the docker log until expected string found
-            string logOut = "";
-            for (int i = 0; i < timeoutSeconds * 10; i++)
-            {
-                logOut = CommandLine.RunCommand("docker logs --tail 1 " + container);
-                if (logOut.Contains(expectedLog))
-                    return;
-                JavaCs.Sleep(100);
-            }
-
-            throw new SelemaException(command + " failed. Last docker log does not contain the expected confirmation, but was: " + logOut);
         }
     }
 }

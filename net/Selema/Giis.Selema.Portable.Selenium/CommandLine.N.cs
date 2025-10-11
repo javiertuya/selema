@@ -32,15 +32,17 @@ namespace Giis.Selema.Portable.Selenium
                     FileName = GetShell(),
                     Arguments = GetShellArgs(command),
                     RedirectStandardOutput = true,
+                    RedirectStandardError = true,
                     UseShellExecute = false,
                     CreateNoWindow = true
                 }
             };
             process.Start();
-            string output = process.StandardOutput.ReadToEnd();
+            string stdout = process.StandardOutput.ReadToEnd();
+            string stderr = process.StandardError.ReadToEnd();
             process.WaitForExit();
 
-            return output;
+            return string.Join(stdout, stderr, "\n").Trim();
         }
 
         private static bool IsWindows()

@@ -285,8 +285,8 @@ namespace Test4giis.Selema.Core
             logReader.AssertBegin();
             logReader.AssertContains("Creating SeleManager instance");
             logReader.AssertContains("*** SetUp - TestDriver.testRemoteWebDriverFromManager");
-            logReader.AssertContains("Remote session chrome starting");
-            logReader.AssertContains("Remote session chrome started. Remote web driver at " + new Config4test().GetRemoteDriverUrl());
+            logReader.AssertContains("Remote session chrome starting on " + new Config4test().GetRemoteDriverUrl());
+            logReader.AssertContains("Remote session chrome started.");
             logReader.AssertContains("FAIL TestDriver.testRemoteWebDriverFromManager");
             logReader.AssertContains("Taking screenshot", "TestDriver-testRemoteWebDriverFromManager.png");
             logReader.AssertEnd();
