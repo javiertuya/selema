@@ -252,8 +252,8 @@ public class TestDriver {
 		logReader.assertBegin();
 		logReader.assertContains("Creating SeleManager instance");
 		logReader.assertContains("*** SetUp - TestDriver.testRemoteWebDriverFromManager");
-		logReader.assertContains("Remote session chrome starting");
-		logReader.assertContains("Remote session chrome started. Remote web driver at "+new Config4test().getRemoteDriverUrl());
+		logReader.assertContains("Remote session chrome starting on " + new Config4test().getRemoteDriverUrl());
+		logReader.assertContains("Remote session chrome started.");
 		logReader.assertContains("FAIL TestDriver.testRemoteWebDriverFromManager");
 		logReader.assertContains("Taking screenshot", "TestDriver-testRemoteWebDriverFromManager.png");
 		logReader.assertEnd();
