@@ -147,10 +147,10 @@ jobs:
 
       - name: JAVA - Build and test (warmup)
         if: ${{ matrix.platform=='java' }}
-        run: mvn test -Dmaven.test.failure.ignore=true -Dtest=TestLifecycle4 -U --no-transfer-progress
+        run: mvn test -Dmaven.test.failure.ignore=true -Dtest=TestLifecycle4* -U --no-transfer-progress
       - name: JAVA - Build and test
         if: ${{ matrix.platform=='java' }}
-        run: mvn test -Dmaven.test.failure.ignore=true -Dtest=TestLifecycle4 -U --no-transfer-progress
+        run: mvn test -Dmaven.test.failure.ignore=true -Dtest=TestLifecycle4* -U --no-transfer-progress
 
       - name: NET - Build and test
         if: ${{ matrix.platform=='net' }}
