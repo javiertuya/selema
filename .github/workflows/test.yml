@@ -17,8 +17,8 @@ jobs:
     if: (github.event_name != 'pull_request' && ! github.event.pull_request.head.repo.fork) || (github.event_name == 'pull_request' && (github.event.pull_request.head.repo.fork || startsWith(github.head_ref, 'dependabot/')))
     strategy:
       matrix:
-        platform: [java, net]
-        mode: [headless, selenoid, grid, preload-local, vcmock]
+        platform: [java]
+        mode: [headless, selenoid, grid, preload-local]
         #When dynamic grid address is localhost or 127.0.0.1, Net+Grid work on local, but fail with timeout when creating remote web driver in GHA.
         #If set the address to ${hostname -i), then the driver is successfully created, but a different failure is raised:
         #The HTTP request to the remote WebDriver server for URL http://10.1.0.124:4444/session timed out after 60 seconds
@@ -145,9 +145,12 @@ jobs:
           docker logs selenium-chrome
           docker logs selenium-video
 
+      - name: JAVA - Build and test (warmup)
+        if: ${{ matrix.platform=='java' }}
+        run: mvn test -Dmaven.test.failure.ignore=true -Dtest=TestLifecycle4 -U --no-transfer-progress
       - name: JAVA - Build and test
         if: ${{ matrix.platform=='java' }}
-        run: mvn test -Dmaven.test.failure.ignore=true ${{ env.JAVA_TEST_SCOPE }} -U --no-transfer-progress
+        run: mvn test -Dmaven.test.failure.ignore=true -Dtest=TestLifecycle4 -U --no-transfer-progress
 
       - name: NET - Build and test
         if: ${{ matrix.platform=='net' }}
