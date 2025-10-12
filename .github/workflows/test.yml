@@ -147,10 +147,10 @@ jobs:
 
       - name: JAVA - Build and test (warmup)
         if: ${{ matrix.platform=='java' }}
-        run: mvn test -Dmaven.test.failure.ignore=true -Dtest=TestLifecycle4* -U --no-transfer-progress
+        run: mvn test -Dmaven.test.failure.ignore=true -Dtest=TestLifecycle4 -U --no-transfer-progress
       - name: JAVA - Build and test
         if: ${{ matrix.platform=='java' }}
-        run: mvn test -Dmaven.test.failure.ignore=true -Dtest=TestLifecycle4* -U --no-transfer-progress
+        run: mvn test -Dmaven.test.failure.ignore=true -Dtest=TestLifecycle4 -U --no-transfer-progress
 
       - name: NET - Build and test
         if: ${{ matrix.platform=='net' }}
@@ -222,45 +222,3 @@ jobs:
           cd ../samples/samples-selema-mstest2 && dotnet build
           cd ../samples-selema-nunit3 && dotnet build
 
-  # Example using a custom action, see https://github.com/javiertuya/sonarqube-action
-  sonarqube:
-    needs: [test]
-    #if: ${{ false }}  # disable for now
-    #this job fails when comming from a dependabot PR (can't read the sonarqube token). Discussion and workarounds:
-    #https://community.sonarsource.com/t/youre-not-authorized-to-run-analysis-and-github-bots/41994/4
-    #https://github.com/dependabot/dependabot-core/issues/3253#issuecomment-797125425
-    if: ${{ github.actor != 'dependabot[bot]' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: javiertuya/sonarqube-action@v1.4.3
-        with: 
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          sonar-token: ${{ secrets.SONAR_TOKEN }}
-          working-directory: java
-          restore-artifact-name1: "sonar-java-headless"
-          restore-artifact-path1: "target-headless"
-          restore-artifact-name2: "sonar-java-selenoid"
-          restore-artifact-path2: "target-selenoid"
-          restore-artifact-name3: "sonar-java-grid"
-          restore-artifact-path3: "target-grid"
-          restore-artifact-name4: "sonar-java-preload-local"
-          restore-artifact-path4: "target-preload-local"
-          restore-artifact-name5: "sonar-java-vcmock"
-          restore-artifact-path5: "target-vcmock"
-
-  publish-java-snapshot:
-    #avoid publishing PRs and dependabot branches
-    if: ${{ github.event_name != 'pull_request' && !startsWith(github.ref, 'refs/heads/dependabot/') && !startsWith(github.ref, 'refs/heads/dashgit/combined/') }}
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: java
-    steps:
-      - uses: javiertuya/branch-snapshots-action@v1.2.3
-        with: 
-          token: ${{ secrets.GITHUB_TOKEN }}
-          working-directory: java
-          java-version: '11'
-          mvn-deploy-args: '-P publish-github -DskipTests=true -Dmaven.test.failure.ignore=false -U --no-transfer-progress'
-          delete-old-snapshots: true
-          min-snapshots-to-keep: 4

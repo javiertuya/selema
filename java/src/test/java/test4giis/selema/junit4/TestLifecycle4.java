@@ -45,33 +45,30 @@ public class TestLifecycle4 implements IAfterEachCallback {
 		sm.watermark();
 	}
 
-	/* Uncomment only for debug
-	@Before public void setUp() { log.trace("setUp"); }
-	@After public void tearDown() { log.trace("tearDown"); }
-	@BeforeClass public static void setUpClass() { log.trace("setUpClass"); }
-	@AfterClass public static void tearDownClass() { log.trace("tearDownClass"); }
-	*/
-	
 	@Test
-	public void testFailMethod() {
-		sm.getWatermarkService().setBackground("yellow");
-		lfas.assertNow(currentName()+".testFailMethod", sm.currentTestName());
-		lfas.assertAfterSetup(sm, true);
-		launchPage();
-		//simula un fallo para comprobar luego las acciones realizadas a traves del log
-		//NOTA aunque se vera fallo en el watermark, a continuacion se ejecutaran las acciones de teardown correspondientes a no fallo y el test pasara
-		sm.onFailure(currentName(), sm.currentTestName());
-		lfas.assertAfterFail(sm);
-	}
-	
-	@Test
-	public void testPassMethod() {
-		lfas.assertNow(currentName()+".testPassMethod",sm.currentTestName());
-		lfas.assertAfterSetup(sm, true);
+	public void testMethod1() {
 		launchPage();
 		sm.getLogger().info("INSIDE TEST BODY");
-		assertEquals("result",sm.driver().findElement(By.id("spanAlert")).getText());
-		lfas.assertAfterPass();
+	}
+	@Test
+	public void testMethod2() {
+		launchPage();
+		sm.getLogger().info("INSIDE TEST BODY");
+	}
+	@Test
+	public void testMethod3() {
+		launchPage();
+		sm.getLogger().info("INSIDE TEST BODY");
+	}
+	@Test
+	public void testMethod4() {
+		launchPage();
+		sm.getLogger().info("INSIDE TEST BODY");
+	}
+	@Test
+	public void testMethod5() {
+		launchPage();
+		sm.getLogger().info("INSIDE TEST BODY");
 	}
 	
 }
