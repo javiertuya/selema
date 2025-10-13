@@ -224,8 +224,6 @@ public class SeleManager {
 	 */
 	public SeleManager add(IBrowserService browserSvc) {
 		log.debug("Add browser service: " + browserSvc.getClass().getSimpleName());
-		if (browserService != null)
-			throw new SelemaException("A browser service has been already added to this SeleManager");
 		browserService=browserSvc;
 		//when creating this service a compatible video recorder service is created too
 		videoRecorder=browserService.getVideoRecorder();

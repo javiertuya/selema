@@ -36,6 +36,7 @@
     <runConvert input="../java/src/main/java/giis/selema/services" output="Selema/Translated/Giis.Selema.Services"  mapping="java-mapping.yml" />
     <runConvert input="../java/src/main/java/giis/selema/services/impl" output="Selema/Translated/Giis.Selema.Services.Impl"  mapping="java-mapping.yml" />
     <runConvert input="../java/src/test/java/test4giis/selema/core" output="SelemaTest/Translated/Test4giis.Selema.Core"  mapping="java-mapping.yml" />
+    <runConvert input="../java/src/test/java/test4giis/selema/video" output="SelemaTest/Translated/Test4giis.Selema.Video"  mapping="java-mapping.yml" />
     <runConvert input="../java/src/test/java/test4giis/selema/junit4" output="SelemaTest/Translated/Test4giis.Selema.Nunit3"  mapping="java-mapping.yml" />
     <delete file="SelemaTest/Translated/Test4giis.Selema.Core/TestDriverPlatformDependent.cs" />
 
@@ -43,6 +44,7 @@
       <include name="Selema/Translated/Giis.Selema.Manager/*.cs" />
       <include name="Selema/Translated/Giis.Selema.Services/*.cs" />
       <include name="Selema/Translated/Giis.Selema.Services.Impl/*.cs" />
+      <include name="SelemaTest/Translated/Test4giis.Selema.Video/*.cs" />
       <include name="SelemaTest/Translated/Test4giis.Selema.Core/*.cs" />
       <include name="SelemaTest/Translated/Test4giis.Selema.Nunit3/*.cs" />
       <replacefilter token="Dictionary&lt;" value="Map&lt;" />
@@ -59,6 +61,7 @@
       <replacefilter token=".GetType().GetSimpleName()" value=".GetType().Name" />
       <replacefilter token=".GetType().GetCanonicalName()" value=".GetType().FullName" />
       <replacefilter token="String.ValueOf(" value="(" />
+      <replacefilter token="System.@out.Println" value="System.Console.WriteLine" />
 
       <replacefilter token="public virtual WebDriver Driver()" value="public WebDriver Driver { get { return this.GetDriver(); } }  public virtual WebDriver DriverJavaOnly()" />
       <replacefilter token=".Driver()" value=".Driver" />
@@ -73,6 +76,10 @@
       <!-- nunit requires the exact exception in assert throws, allows derived types -->
       <replacefilter token="Assert.Throws(typeof(Exception)" value="Assert.Throws(Is.InstanceOf(typeof(Exception))" />
       <replacefilter token="Assert.Throws(typeof(InvalidOperationException)" value="Assert.Throws(Is.InstanceOf(typeof(Exception))" />
+
+      <replacefilter token="public TestName testName = new TestName();" value="" />
+      <replacefilter token="testName.GetMethodName()" value="NUnit.Framework.TestContext.CurrentContext.Test.Name" />
+      <replacefilter token="using Org.Junit.Rules;" value="" />
 
       <!--todo uppercase when new version of portable-->
       <replacefilter token="Parameters.DEFAULT_PROJECT_ROOT" value="Parameters.DefaultProjectRoot" />
@@ -91,6 +98,7 @@
 
     <replace dir="." >
       <include name="SelemaTest/Translated/Test4giis.Selema.Core/*.cs" />
+      <include name="SelemaTest/Translated/Test4giis.Selema.Video/*.cs" />
       <include name="SelemaTest/Translated/Test4giis.Selema.Nunit3/*.cs" />
       <replacefilter token="By.Id(" value="OpenQA.Selenium.By.Id(" />
       
@@ -103,7 +111,6 @@
       <replacefilter token="public class TestActions" value="[LifecycleNunit3] public class TestActions" />
       <replacefilter token="public class TestExceptions" value="[LifecycleNunit3] public class TestExceptions" />
       <replacefilter token="public virtual void TestRepeated()" value="[Retry(3)] public virtual void TestRepeated()" />
-
       <replacefilter token="namespace Test4giis.Selema.Junit4" value="namespace Test4giis.Selema.Nunit3" />
       <replacefilter token="using Giis.Selema.Framework.Junit4;" value="" />
       <replacefilter token="[LifecycleNunit3] public class TestLifecycle4Inherited" value="public class TestLifecycle4Inherited" />
