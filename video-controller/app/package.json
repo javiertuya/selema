@@ -1,0 +1,14 @@
+{
+  "name": "video-controller",
+  "version": "1.0.0",
+  "description": "RedKanban Api",
+  "author": "Javier Tuya <tuya@uniovi.es>",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "5.1.0"
+  }
+}
