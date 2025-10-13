@@ -11,9 +11,9 @@ namespace Giis.Selema.Services.Impl
 {
     public class SelenoidService : IBrowserService
     {
-        private bool recordVideo = false; //si true habilita el video recording
-        private bool enableVnc = false; //si true habilita VNC par ver las sesiones desde selenoid-ui
-        private Map<string, object> specialDriverOptions = new HashMap<string, object>(); // NOSONAR net compatibility
+        protected bool recordVideo = false; //si true habilita el video recording
+        protected bool enableVnc = false; //si true habilita VNC par ver las sesiones desde selenoid-ui
+        protected Map<string, object> specialDriverOptions = new HashMap<string, object>(); // NOSONAR net compatibility
         /// <summary>
         /// Activates the video recording, provided that the Selenoid server is configured for video recording
         /// </summary>
@@ -39,6 +39,23 @@ namespace Giis.Selema.Services.Impl
         {
             specialDriverOptions.Put(key, value);
             return this;
+        }
+
+        /// <summary>
+        /// Adds the browser service specific capabilities to 'allOptions' map.
+        /// In selenoid the capabilities are enclosed under a "selenoid:options" key
+        /// </summary>
+        public virtual void AddBrowserServiceOptions(Map<string, object> allOptions, IVideoService videoRecorder, IMediaContext mediaVideoContext, string driverScope)
+        {
+
+            //Although browser service and video recorder are handled independently, in the case of Selenoid:
+            //-using Selenium 4.1.0 on .NET, options are not passed to the driver
+            //-it is required to pass all selenoid related options as IWebDriver protocol extension as a pair "selenoid:options", <map with all options>
+            Map<string, object> selenoidOptions = new HashMap<string, object>(); // NOSONAR net compatibility
+            selenoidOptions.PutAll(this.GetSeleniumOptions(driverScope));
+            if (videoRecorder != null)
+                selenoidOptions.PutAll(videoRecorder.GetSeleniumOptions(mediaVideoContext, driverScope));
+            allOptions.Put("selenoid:options", selenoidOptions);
         }
 
         /// <summary>

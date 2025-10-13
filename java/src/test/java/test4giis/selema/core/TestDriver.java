@@ -2,6 +2,7 @@ package test4giis.selema.core;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.fail;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -17,6 +18,7 @@ import giis.selema.manager.SelemaException;
 import giis.selema.manager.SeleniumDriverFactory;
 import giis.selema.portable.selenium.DriverUtil;
 import giis.selema.manager.SeleManager;
+import giis.selema.services.impl.SeleniumGridService;
 import giis.selema.services.impl.SelenoidService;
 import test4giis.selema.portable.Asserts;
 
@@ -201,7 +203,16 @@ public class TestDriver {
 	@Test
 	public void testRemoteWebDriverFromManagerNoVideoWithCapability() {
 		if (!useRemote()) return;
-		SeleManager sm=new SeleManager(Config4test.getConfig()).setDriverUrl(new Config4test().getRemoteDriverUrl()).add(new SelenoidService().setCapability("enableLog", true));
+		SeleManager sm=new SeleManager(Config4test.getConfig())
+				.setDriverUrl(new Config4test().getRemoteDriverUrl());
+		// Browser service capabilities should be also included, in selenoid grouped under selenoid:options
+		if (new Config4test().useSelenoidRemoteWebDriver())
+			sm.add(new SelenoidService().setCapability("enableLog", true));
+		else if (new Config4test().useSeleniumRemoteWebDriver())
+			sm.add(new SeleniumGridService().setCapability("se:screenResolution", "800x600"));
+		else
+			fail("This test should execute only with remote web driver");
+		
 		sm.onSetUp("TestDriver", "TestDriver.testRemoteWebDriverFromManager");
 		sm.onFailure("TestDriver", "TestDriver.testRemoteWebDriverFromManager");
 		assertLogRemoteWebDriver();

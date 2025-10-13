@@ -23,6 +23,10 @@ namespace Giis.Selema.Services
         /// </summary>
         IBrowserService SetCapability(string key, object value);
         /// <summary>
+        /// Adds the browser service specific capabilities to 'allOptions' map.
+        /// </summary>
+        void AddBrowserServiceOptions(Map<string, object> allOptions, IVideoService videoRecorder, IMediaContext mediaVideoContext, string driverScope);
+        /// <summary>
         /// Gets the video recorder service associated with this browser service
         /// </summary>
         IVideoService GetVideoRecorder();

@@ -1,5 +1,6 @@
 using Java.Util;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Remote;
 using Giis.Portable.Util;
 using Giis.Selema.Services;
 using System;
@@ -19,6 +20,7 @@ namespace Giis.Selema.Services.Impl
     {
         private ISelemaLogger log;
         private static readonly string VIDEO_INDEX_NAME = "video-index.log";
+        protected string seleniumSessionId = "";
         //los timestamps no se miden de forma precisa, pero se tomara como referencia el intervalo que se conoce
         private long lastSessionStartingTimestamp = 0;
         private long lastSessionStartedTimestamp = 0;
@@ -38,6 +40,8 @@ namespace Giis.Selema.Services.Impl
 
         public virtual void AfterCreateDriver(IWebDriver driver)
         {
+            if (driver is RemoteWebDriver)
+                seleniumSessionId = ((RemoteWebDriver)driver).SessionId.ToString();
             lastSessionStartedTimestamp = JavaCs.CurrentTimeMillis();
         }
 
@@ -50,6 +54,11 @@ namespace Giis.Selema.Services.Impl
             if (log != null)
                 log.Info(videoMsg);
             return videoMsg;
+        }
+
+        protected virtual string GetVideoFileNameWithRelativePath(string videoFileName)
+        {
+            return videoFileName; // video file strucutre is flat
         }
 
         public virtual Map<string, object> GetSeleniumOptions(IMediaContext context, string testName)
@@ -78,6 +87,7 @@ namespace Giis.Selema.Services.Impl
         public virtual void BeforeQuitDriver(IMediaContext context, string testName)
         {
             string videoFileName = context.GetVideoFileName(testName);
+            videoFileName = GetVideoFileNameWithRelativePath(videoFileName);
             if (log != null)
                 log.Info("Saving video: " + "<a href=\"" + videoFileName + "\">" + videoFileName + "</a>");
             string videoIndex = FileUtil.GetPath(context.GetReportFolder(), VIDEO_INDEX_NAME);

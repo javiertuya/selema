@@ -18,7 +18,14 @@ jobs:
     strategy:
       matrix:
         platform: [java, net]
-        mode: [headless, selenoid]
+        mode: [headless, selenoid, grid]
+        #When dynamic grid address is localhost or 127.0.0.1, Net+Grid work on local, but fail with timeout when creating remote web driver in GHA.
+        #If set the address to ${hostname -i), then the driver is successfully created, but a different failure is raised:
+        #The HTTP request to the remote WebDriver server for URL http://10.1.0.124:4444/session timed out after 60 seconds
+        #Workaround: skip this combination
+        exclude:
+          - platform: net
+            mode: grid
       fail-fast: false
     defaults:
       run:
@@ -47,12 +54,19 @@ jobs:
       - name: NET - Platform dependent report location
         if: ${{ matrix.platform == 'net' }}
         run: echo "REPORT_FOLDER=reports" >> $GITHUB_ENV
+      - name: Test scope
+        if: ${{ matrix.mode == 'grid' }}
+        #Grid is expremely slow in GHA, so only run a single test
+        run: |
+          echo "JAVA_TEST_SCOPE=-Dtest=TestLifecycle4#testFailMethod" >> $GITHUB_ENV
+          echo "NET_TEST_SCOPE=--filter FullyQualifiedName=Test4giis.Selema.Mstest2.TestLifecycle4.testFailMethod" >> $GITHUB_ENV
 
       - name: test properties configuration
         run: |
           echo "selema.test.mode=${{ matrix.mode }}" > selema.properties
           echo "selema.test.browser=chrome" >> selema.properties
-          echo "selema.test.remote.webdriver=http://127.0.0.1:4444/wd/hub" >> selema.properties
+          # remote web driver will be updated later before launching the remote service
+          echo "selema.test.remote.webdriver=none" >> selema.properties
           echo "selema.test.web.root=http://`(hostname -i)`:8888" >> selema.properties
           echo "selema.test.manual.check=false" >> selema.properties
 
@@ -64,6 +78,7 @@ jobs:
       - name: launch services - selenoid
         if: ${{ matrix.mode=='selenoid' }}
         run: |
+          sed -i 's|selema.test.remote.webdriver=none|selema.test.remote.webdriver=http://127.0.0.1:4444/wd/hub|g' selema.properties
           set -x
           mkdir -p ${{ env.REPORT_FOLDER }}/browsers
           echo '{"chrome": {"default": "latest", "versions": {"latest": {"image":"selenoid/chrome:latest","port":"4444","tmpfs": {"/tmp":"size=512m"} } } } }' > ${{ env.REPORT_FOLDER }}/browsers/browsers.json
@@ -78,13 +93,30 @@ jobs:
             aerokube/selenoid:latest-release
           docker logs selenoid
 
+      #spin up a docker-selenium standalone based selenium dynamic grid with chrome (config in src/test/resources)
+      - name: launch services - selenium dynamic grid
+        if: ${{ matrix.mode=='grid' }}
+        run: |
+          set -x
+          sed -i "s|selema.test.remote.webdriver=none|selema.test.remote.webdriver=http://localhost:4444|g" selema.properties
+          mkdir -p ${{ env.REPORT_FOLDER }}/selema
+          # mkdir -p ${{ env.REPORT_FOLDER }}/assets
+          docker run -d --name selenium --shm-size="2g" -p 4444:4444 \
+            -v $GITHUB_WORKSPACE/setup/docker-selenium.toml:/opt/selenium/docker.toml \
+            -v $GITHUB_WORKSPACE/${{ matrix.platform}}/${{ env.REPORT_FOLDER }}/assets:/opt/selenium/assets \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            selenium/standalone-docker:4.35.0-20250909
+          # chown 1200:1201 ${{ env.REPORT_FOLDER }}/assets
+          sleep 10
+          docker logs selenium
+
       - name: JAVA - Build and test
         if: ${{ matrix.platform=='java' }}
-        run: mvn test -Dmaven.test.failure.ignore=true -U --no-transfer-progress
+        run: mvn test -Dmaven.test.failure.ignore=true ${{ env.JAVA_TEST_SCOPE }} -U --no-transfer-progress
 
       - name: NET - Build and test
         if: ${{ matrix.platform=='net' }}
-        run: dotnet test --logger "trx;LogFileName=../../reports/test-result.trx"
+        run: dotnet test ${{ env.NET_TEST_SCOPE }} --logger "trx;LogFileName=../../reports/test-result.trx"
       - name: NET - Generate junit html reports
         if: ${{ always() && matrix.platform=='net' }}
         uses: javiertuya/junit-report-action@v1.3.0
@@ -173,6 +205,8 @@ jobs:
           restore-artifact-path1: "target-headless"
           restore-artifact-name2: "sonar-java-selenoid"
           restore-artifact-path2: "target-selenoid"
+          restore-artifact-name3: "sonar-java-grid"
+          restore-artifact-path3: "target-grid"
 
   publish-java-snapshot:
     #avoid publishing PRs and dependabot branches

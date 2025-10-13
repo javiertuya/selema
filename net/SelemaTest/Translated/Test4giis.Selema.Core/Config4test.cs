@@ -1,6 +1,7 @@
 using Java.Util;
 using Giis.Portable.Util;
 using Giis.Selema.Manager;
+using Giis.Selema.Services;
 using Giis.Selema.Services.Impl;
 using System;
 using System.Collections.Generic;
@@ -48,12 +49,34 @@ namespace Test4giis.Selema.Core
             if (UseHeadlessDriver())
                 sm.SetArguments(new string[] { "--headless" });
             if (UseRemoteWebDriver())
-                sm.Add(new SelenoidService().SetVideo().SetVnc());
+                sm.Add(GetRemoteBrowserService().SetVideo().SetVnc());
+        }
+
+        private IBrowserService GetRemoteBrowserService()
+        {
+
+            // assume that is using remote web driver
+            if (UseSelenoidRemoteWebDriver())
+                return new SelenoidService();
+            else if (UseSeleniumRemoteWebDriver())
+                return new SeleniumGridService();
+            else
+                return null;
+        }
+
+        public virtual bool UseSelenoidRemoteWebDriver()
+        {
+            return "selenoid".Equals(prop.GetProperty("selema.test.mode"));
+        }
+
+        public virtual bool UseSeleniumRemoteWebDriver()
+        {
+            return "grid".Equals(prop.GetProperty("selema.test.mode"));
         }
 
         public virtual bool UseRemoteWebDriver()
         {
-            return "selenoid".Equals(prop.GetProperty("selema.test.mode"));
+            return UseSelenoidRemoteWebDriver() || UseSeleniumRemoteWebDriver();
         }
 
         public virtual bool UseHeadlessDriver()
