@@ -8,6 +8,10 @@ using System.Text;
 
 namespace Giis.Selema.Services
 {
+    /// <summary>
+    /// This service must be aded to the selema manager to get additional functionalities
+    /// of video recording or VNC to watch the test execution
+    /// </summary>
     public interface IBrowserService
     {
         /// <summary>
@@ -27,7 +31,7 @@ namespace Giis.Selema.Services
         /// </summary>
         void AddBrowserServiceOptions(Map<string, object> allOptions, IVideoService videoRecorder, IMediaContext mediaVideoContext, string driverScope);
         /// <summary>
-        /// Gets the video recorder service associated with this browser service
+        /// Gets a new instance of the video recorder service associated with this browser service
         /// </summary>
         IVideoService GetVideoRecorder();
         /// <summary>

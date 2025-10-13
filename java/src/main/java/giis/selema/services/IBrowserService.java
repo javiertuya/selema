@@ -2,6 +2,10 @@ package giis.selema.services;
 
 import java.util.Map;
 
+/**
+ * This service must be aded to the selema manager to get additional functionalities 
+ * of video recording or VNC to watch the test execution
+ */
 public interface IBrowserService {
 
 	/** 
@@ -26,7 +30,7 @@ public interface IBrowserService {
 			IMediaContext mediaVideoContext, String driverScope);
 	
 	/**
-	 * Gets the video recorder service associated with this browser service
+	 * Gets a new instance of the video recorder service associated with this browser service
 	 */
 	IVideoService getVideoRecorder();
 

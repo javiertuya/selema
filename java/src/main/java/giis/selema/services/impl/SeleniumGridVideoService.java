@@ -6,7 +6,7 @@ import java.util.Map;
 import giis.portable.util.JavaCs;
 import giis.selema.services.IMediaContext;
 
-public class SeleniumGridVideoService extends SelenoidVideoService {
+public class SeleniumGridVideoService extends AbstractVideoService {
 
 	@Override
 	protected String getVideoFileNameWithRelativePath(String videoFileName) {

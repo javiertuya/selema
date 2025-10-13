@@ -10,7 +10,8 @@ using System.Text;
 namespace Giis.Selema.Services
 {
     /// <summary>
-    /// Support for video recording from a browser service
+    /// Support for video recording for a browser service.
+    /// The instance of IBrowserService should create an instance of IVideoService for each Selenium Session
     /// </summary>
     public interface IVideoService
     {

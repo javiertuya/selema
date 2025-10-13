@@ -9,12 +9,12 @@ using System.Text;
 
 namespace Giis.Selema.Services.Impl
 {
-    public class SeleniumGridService : SelenoidService
+    public class SeleniumGridService : AbstractBrowserService
     {
         public override void AddBrowserServiceOptions(Map<string, object> allOptions, IVideoService videoRecorder, IMediaContext mediaVideoContext, string driverScope)
         {
 
-            // Unlike selenoid, browser specific options in grid are not grouped
+            // Unlike services like selenoid, browser specific options in grid are not grouped
             allOptions.PutAll(this.GetSeleniumOptions(driverScope));
             if (videoRecorder != null)
                 allOptions.PutAll(videoRecorder.GetSeleniumOptions(mediaVideoContext, driverScope));
