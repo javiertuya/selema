@@ -12,11 +12,6 @@ import giis.selema.services.IMediaContext;
 public class SelenoidVideoService extends AbstractVideoService {
 	
 	@Override
-	protected String getVideoFileNameWithRelativePath(String videoFileName) {
-		return videoFileName; // video file strucutre is flat
-	}
-	
-	@Override
 	public Map<String, Object> getSeleniumOptions(IMediaContext context, String testName) {
 		String videoFileName=context.getVideoFileName(testName);
 		Map<String, Object> opts = new HashMap<String, Object>(); // NOSONAR net compatibility

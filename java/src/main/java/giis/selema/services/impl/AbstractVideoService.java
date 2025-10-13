@@ -16,7 +16,7 @@ import giis.selema.services.IVideoService;
  * Base class for all remote video services
  */
 public abstract class AbstractVideoService implements IVideoService {
-	private ISelemaLogger log;
+	protected ISelemaLogger log;
 	private static final String VIDEO_INDEX_NAME = "video-index.log";
 	protected String seleniumSessionId="";
 	//los timestamps no se miden de forma precisa, pero se tomara como referencia el intervalo que se conoce
@@ -24,7 +24,7 @@ public abstract class AbstractVideoService implements IVideoService {
 	private long lastSessionStartedTimestamp=0;
 	
 	/**
-	 * Configures this service, called on attaching the service to a SeleManager
+	 * Configures the logger of this service, called on attaching the service to a SeleManager
 	 */
 	@Override
 	public IVideoService configure(ISelemaLogger thisLog) {
@@ -55,8 +55,8 @@ public abstract class AbstractVideoService implements IVideoService {
 		return videoMsg;
 	}
 
-	protected String getVideoFileNameWithRelativePath(String videoFileName) {
-		return videoFileName; // video file structure is flat by default
+	protected String getVideoFileNameWithRelativePath(IMediaContext context, String testName) {
+		return context.getVideoFileName(testName); // video file structure is flat by default
 	}
 
 	@Override
@@ -80,8 +80,7 @@ public abstract class AbstractVideoService implements IVideoService {
 
 	@Override
 	public void beforeQuitDriver(IMediaContext context, String testName) {
-		String videoFileName = context.getVideoFileName(testName);
-		videoFileName = getVideoFileNameWithRelativePath(videoFileName);
+		String videoFileName = getVideoFileNameWithRelativePath(context, testName);
 		if (log != null)
 			log.info("Saving video: " + "<a href=\"" + videoFileName + "\">" + videoFileName + "</a>");
 		String videoIndex = FileUtil.getPath(context.getReportFolder(), VIDEO_INDEX_NAME);

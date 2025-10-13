@@ -18,7 +18,7 @@ jobs:
     strategy:
       matrix:
         platform: [java, net]
-        mode: [headless, selenoid, grid]
+        mode: [headless, selenoid, grid, preload-local]
         #When dynamic grid address is localhost or 127.0.0.1, Net+Grid work on local, but fail with timeout when creating remote web driver in GHA.
         #If set the address to ${hostname -i), then the driver is successfully created, but a different failure is raised:
         #The HTTP request to the remote WebDriver server for URL http://10.1.0.124:4444/session timed out after 60 seconds
@@ -26,6 +26,8 @@ jobs:
         exclude:
           - platform: net
             mode: grid
+          - platform: net
+            mode: preload-local
       fail-fast: false
     defaults:
       run:
@@ -109,6 +111,30 @@ jobs:
           # chown 1200:1201 ${{ env.REPORT_FOLDER }}/assets
           sleep 10
           docker logs selenium
+
+      #
+      - name: launch services - preloaded selenium standalone, local with video recorder sidecar
+        if: ${{ matrix.mode=='preload-local' }}
+        run: |
+          set -x
+          sed -i "s|selema.test.remote.webdriver=none|selema.test.remote.webdriver=http://localhost:4444|g" selema.properties
+          echo "selema.test.preload.video.container=selenium-video" >> selema.properties
+          echo "selema.test.preload.video.location=target/selema" >> selema.properties
+          mkdir -p ${{ env.REPORT_FOLDER }}/selema
+          docker network create grid
+          docker run -d -p 4444:4444 -p 6900:5900 --net grid --name selenium-chrome --shm-size="2g" \
+            -e SE_NODE_MAX_SESSIONS=8 \
+            selenium/standalone-chrome:4.35.0-20250909
+          docker run -d --net grid --name selenium-video --user $UID \
+            -e SE_VIDEO_FILE_NAME=video.mp4 \
+            -e DISPLAY_CONTAINER_NAME=selenium-chrome \
+            -v $GITHUB_WORKSPACE/${{ matrix.platform}}/${{ env.REPORT_FOLDER }}/selema:/videos \
+            selenium/video:ffmpeg-8.0-20250909
+          # stop recoder here, the video service will start an stop when needed
+          sleep 5
+          docker stop selenium-video
+          docker logs selenium-chrome
+          docker logs selenium-video
 
       - name: JAVA - Build and test
         if: ${{ matrix.platform=='java' }}
@@ -207,6 +233,8 @@ jobs:
           restore-artifact-path2: "target-selenoid"
           restore-artifact-name3: "sonar-java-grid"
           restore-artifact-path3: "target-grid"
+          restore-artifact-name4: "sonar-java-preload-local"
+          restore-artifact-path4: "target-preload-local"
 
   publish-java-snapshot:
     #avoid publishing PRs and dependabot branches
