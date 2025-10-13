@@ -5,12 +5,14 @@ import org.slf4j.LoggerFactory;
 
 import giis.portable.util.FileUtil;
 import giis.selema.portable.selenium.CommandLine;
+import giis.selema.portable.selenium.VideoControllerException;
 import giis.selema.services.IVideoController;
 
 /**
- * Video controller to use when both the recorder container and the tests run in the same VM. Requires the container
- * running the test have access to docker and to the folders when the videos are stored. Any unexpected behaviour raises
- * an exception that must be handled by the caller video service.
+ * Video controller to use when both the recorder container and the tests run in the same VM.
+ * 
+ * Requires the container running the test have access to docker and to the folders when the videos are stored. Any
+ * unexpected behaviour raises an exception that must be handled by the caller video service.
  */
 public class VideoControllerLocal implements IVideoController {
 	final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -19,6 +21,13 @@ public class VideoControllerLocal implements IVideoController {
 	private String sourceFile;
 	private String targetFolder;
 
+	/**
+	 * Creates a new instance
+	 * 
+	 * @param videoContainer name of the video recorder container
+	 * @param sourceFile name of the recorded video (with path)
+	 * @param targetFolder where the recorded videos will be stored after recording
+	 */
 	public VideoControllerLocal(String videoContainer, String sourceFile, String targetFolder) {
 		this.videoContainer = videoContainer;
 		this.sourceFile = sourceFile;
@@ -50,6 +59,9 @@ public class VideoControllerLocal implements IVideoController {
 		ContainerUtil.waitDocker(videoContainer, "Shutdown complete", "", 5);
 
 		// copy the video file to its destination and then remove, this should not fail
+		if (!CommandLine.fileExists(sourceFile))
+			throw new VideoControllerException("Video file not found after recording: " + sourceFile);
+		
 		log.debug("Saving recorded video file to: " + videoName);
 		CommandLine.fileCopy(sourceFile, FileUtil.getPath(targetFolder, videoName));
 		CommandLine.fileDelete(sourceFile, true);

@@ -8,8 +8,6 @@ import java.io.StringWriter;
 
 import org.apache.commons.io.FileUtils;
 
-import giis.portable.util.PortableException;
-
 public class CommandLine {
 
 	private CommandLine() {
@@ -25,7 +23,7 @@ public class CommandLine {
 		try {
 			proc = Runtime.getRuntime().exec(command);
 		} catch (IOException e) {
-			throw new PortableException("Can't execute command: " + command);
+			throw new VideoControllerException("Can't execute command: " + command);
 		}
 
 		InputStreamReader isr = new InputStreamReader(proc.getInputStream());
@@ -39,7 +37,7 @@ public class CommandLine {
 			while ((output = ebr.readLine()) != null)
 				sw.append(output + "\n");
 		} catch (IOException e) {
-			throw new PortableException("Can't get standard output from command: " + command);
+			throw new VideoControllerException("Can't get standard output from command: " + command);
 		}
 		return sw.toString();
 	}
@@ -52,9 +50,9 @@ public class CommandLine {
 			if (f.exists())
 				FileUtils.delete(f);
 			else if (throwIfNotExists)
-				throw new PortableException("File to delete does not exist: " + fileName);
+				throw new VideoControllerException("File to delete does not exist: " + fileName);
 		} catch (IOException e) {
-			throw new PortableException(e);
+			throw new VideoControllerException(e);
 		}
 	}
 
@@ -62,7 +60,7 @@ public class CommandLine {
 		try {
 			FileUtils.copyFile(new File(fileFrom), new File(fileTo));
 		} catch (IOException e) {
-			throw new PortableException("Can't copy " + fileFrom + " to " + fileTo);
+			throw new VideoControllerException("Can't copy " + fileFrom + " to " + fileTo);
 		}
 	}
 

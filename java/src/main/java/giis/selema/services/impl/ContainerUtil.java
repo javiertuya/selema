@@ -1,8 +1,8 @@
 package giis.selema.services.impl;
 
 import giis.portable.util.JavaCs;
-import giis.selema.manager.SelemaException;
 import giis.selema.portable.selenium.CommandLine;
+import giis.selema.portable.selenium.VideoControllerException;
 
 public class ContainerUtil {
 
@@ -17,7 +17,7 @@ public class ContainerUtil {
 		String command = "docker " + verb + " " + container;
 		String dockerOut = CommandLine.runCommand(command);
 		if (!container.equals(dockerOut.trim()))
-			throw new SelemaException(command + " failed. " + dockerOut);
+			throw new VideoControllerException(command + " failed. " + dockerOut);
 	}
 
 	/**
@@ -32,7 +32,7 @@ public class ContainerUtil {
 				return;
 			JavaCs.sleep(100);
 		}
-		throw new SelemaException("Container did not become ready in time, last log message was: " + logOut);
+		throw new VideoControllerException("Container did not become ready in time, last log message was: " + logOut);
 	}
 
 	/**

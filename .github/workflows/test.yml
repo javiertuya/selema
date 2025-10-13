@@ -18,7 +18,7 @@ jobs:
     strategy:
       matrix:
         platform: [java, net]
-        mode: [headless, selenoid, grid, preload-local, vcmock]
+        mode: [headless, selenoid, grid, preload-local, vcmock-local]
         #When dynamic grid address is localhost or 127.0.0.1, Net+Grid work on local, but fail with timeout when creating remote web driver in GHA.
         #If set the address to ${hostname -i), then the driver is successfully created, but a different failure is raised:
         #The HTTP request to the remote WebDriver server for URL http://10.1.0.124:4444/session timed out after 60 seconds
@@ -65,10 +65,10 @@ jobs:
           echo "JAVA_TEST_SCOPE=-Dtest=TestLifecycle4#testFailMethod" >> $GITHUB_ENV
           echo "NET_TEST_SCOPE=--filter FullyQualifiedName=Test4giis.Selema.Mstest2.TestLifecycle4.testFailMethod" >> $GITHUB_ENV
       - name: Test scope (override), only video controller mock tests
-        if: ${{ matrix.mode == 'vcmock' }}
+        if: ${{ matrix.mode == 'vcmock-local' }}
         run: |
-          echo "JAVA_TEST_SCOPE=-Dtest=**/selema/video/Test*" >> $GITHUB_ENV
-          echo "NET_TEST_SCOPE=--filter FullyQualifiedName~Test4giis.Selema.Video" >> $GITHUB_ENV
+          echo "JAVA_TEST_SCOPE=-Dtest=**/video/TestVideoControllerLocal" >> $GITHUB_ENV
+          echo "NET_TEST_SCOPE=--filter FullyQualifiedName~Video.TestVideoControllerLocal" >> $GITHUB_ENV
 
       - name: test properties configuration
         run: |
@@ -242,8 +242,8 @@ jobs:
           restore-artifact-path3: "target-grid"
           restore-artifact-name4: "sonar-java-preload-local"
           restore-artifact-path4: "target-preload-local"
-          restore-artifact-name5: "sonar-java-vcmock"
-          restore-artifact-path5: "target-vcmock"
+          restore-artifact-name5: "sonar-java-vcmock-local"
+          restore-artifact-path5: "target-vcmock-local"
 
   publish-java-snapshot:
     #avoid publishing PRs and dependabot branches

@@ -2,7 +2,6 @@ using NUnit.Framework;
 
 using NLog;
 using Giis.Portable.Util;
-using Giis.Selema.Manager;
 using Giis.Selema.Portable.Selenium;
 using Giis.Selema.Services;
 using Giis.Selema.Services.Impl;
@@ -22,24 +21,30 @@ namespace Test4giis.Selema.Video
     /// Tests are integrated with docker and do not need any external sever,
     /// but mock the video recorder using a lightweight
     /// container. To be run in an independent workflow to run in CI.
+    /// 
+    /// This test does not requires a previous external setup (container is created in the code):
+    /// - Files to create the mock container are in video-controller/vcmock
+    /// - Folder were the mock video is created is video-controller/target/vcmock-mapped
+    /// - Folder were the mock video is copied is video-controller/target/vcmock-target
     /// </summary>
     public class TestVideoControllerLocal
     {
         static readonly Logger log = LogManager.GetCurrentClassLogger(); //TestVideoControllerLocal));
-        private static readonly string MOCK_CONTAINER = "selenium-video-mock";
-        private static readonly string MOCK_IMAGE = "selenium-video-mock-image";
-        private static readonly string ROOT = Parameters.GetProjectRoot(); // for .NET compatibility
-        private static readonly string REPORTS = FileUtil.GetPath(ROOT, Parameters.GetReportSubdir());
+        protected static readonly string MOCK_CONTAINER = "selenium-video-mock";
+        protected static readonly string MOCK_IMAGE = "selenium-video-mock-image";
+        protected static readonly string ROOT = Parameters.GetProjectRoot(); // for .NET compatibility
+        protected static readonly string REPORTS = FileUtil.GetPath(ROOT, Parameters.GetReportSubdir());
         // note that the build context is platform independent, located in the java project
-        private static readonly string DOCKER_BUILD_CONTEXT = FileUtil.GetPath(ROOT, "../java", "src/test/resources/vcmock");
-        private static readonly string MAPPED_FOLDER = FileUtil.GetPath(REPORTS, "selema/vcmock-mapped");
-        private static readonly string RECORDED_VIDEO = MAPPED_FOLDER + "/video.mp4";
-        private static readonly string TARGET_FOLDER = FileUtil.GetPath(REPORTS, "selema/vcmock-target");
+        protected static readonly string DOCKER_BUILD_CONTEXT = FileUtil.GetPath(ROOT, "..", "video-controller/vcmock");
+        // definitions of where the videos are stored, different setup for this and the subclasses
+        protected string mappedFolder;
+        protected string recordedVideo;
+        protected string targetFolder;
         
         [NUnit.Framework.OneTimeSetUp]
         public static void SetUpAll()
         {
-            log.Debug("Building the mock video recorder docker container");
+            log.Debug("****** Building the mock video recorder docker image ******");
             string buildCommand = "docker build -t " + MOCK_IMAGE + " " + DOCKER_BUILD_CONTEXT;
             System.Console.WriteLine(buildCommand);
             Run(buildCommand);
@@ -49,20 +54,29 @@ namespace Test4giis.Selema.Video
         public virtual void SetUp()
         {
             log.Info("****** Running test: {} ******", NUnit.Framework.TestContext.CurrentContext.Test.Name);
+            FileSystemSetup();
 
             // Ensures a clean environment for both container and video files and folders
             Run("docker stop " + MOCK_CONTAINER);
             Run("docker rm " + MOCK_CONTAINER);
-            FileUtil.CreateDirectory(MAPPED_FOLDER);
-            FileUtil.CreateDirectory(TARGET_FOLDER);
-            FileUtil.DeleteFilesInDirectory(MAPPED_FOLDER);
-            FileUtil.DeleteFilesInDirectory(TARGET_FOLDER);
+            FileUtil.CreateDirectory(FileUtil.GetPath(REPORTS, "selema")); // just to do avoid report failures in GHA
+            FileUtil.CreateDirectory(mappedFolder);
+            FileUtil.CreateDirectory(targetFolder);
+            FileUtil.DeleteFilesInDirectory(mappedFolder);
+            FileUtil.DeleteFilesInDirectory(targetFolder);
             log.Info("Test setup done");
+        }
+
+        protected virtual void FileSystemSetup()
+        {
+            mappedFolder = FileUtil.GetPath(ROOT, "..", "video-controller/target/vcmock-mapped");
+            recordedVideo = mappedFolder + "/mock.mp4";
+            targetFolder = FileUtil.GetPath(ROOT, "..", "video-controller/target/vcmock-target");
         }
 
         protected virtual IVideoController GetController()
         {
-            return new VideoControllerLocal(MOCK_CONTAINER, RECORDED_VIDEO, TARGET_FOLDER);
+            return new VideoControllerLocal(MOCK_CONTAINER, recordedVideo, targetFolder);
         }
 
         protected static void Run(string command)
@@ -74,13 +88,13 @@ namespace Test4giis.Selema.Video
         // This mocks what the external script will do to preload the containers, with some additional verification
         protected virtual void PreloadRecorder(bool stopAfterRun)
         {
-            string mappedVolume = FileUtil.GetFullPath(MAPPED_FOLDER);
+            string mappedVolume = FileUtil.GetFullPath(mappedFolder);
             mappedVolume = mappedVolume.Replace("\\", "/").Replace("C:/", "//c/"); // fix for windows
             string runCommand = "docker run -d --name " + MOCK_CONTAINER + " -v " + mappedVolume + ":/app/videos " + MOCK_IMAGE;
             System.Console.WriteLine(runCommand);
             Run(runCommand);
             ContainerUtil.WaitDocker(MOCK_CONTAINER, "Display", "is open", 5);
-            Asserts.AssertIsTrue(CommandLine.FileExists(RECORDED_VIDEO), "Video file generated by the mock container after preload does not exist");
+            Asserts.AssertIsTrue(CommandLine.FileExists(recordedVideo), "Video file generated by the mock container after preload does not exist");
             if (stopAfterRun)
             {
                 ContainerUtil.RunDocker("stop", MOCK_CONTAINER);
@@ -94,8 +108,8 @@ namespace Test4giis.Selema.Video
 
             // Preload creates a video, but in the regular lifecycle, the recorded video should have been deleted after copy
             PreloadRecorder(true);
-            CommandLine.FileDelete(RECORDED_VIDEO, true);
-            Asserts.AssertIsTrue(!CommandLine.FileExists(RECORDED_VIDEO), "Video file generated by the mock should have been deleted by this test");
+            CommandLine.FileDelete(recordedVideo, true);
+            Asserts.AssertIsTrue(!CommandLine.FileExists(recordedVideo), "Video file generated by the mock should have been deleted by this test");
             DoTestLifeCycle();
         }
 
@@ -119,8 +133,8 @@ namespace Test4giis.Selema.Video
             // To simulate this situation, we delete now the video:
             // If the controller does not restart the container in this situation, no new video will be created
             // at the start will fail because video is not present during lifecycle
-            CommandLine.FileDelete(RECORDED_VIDEO, true);
-            Asserts.AssertIsTrue(!CommandLine.FileExists(RECORDED_VIDEO), "Video file generated by the mock should have been deleted by this test");
+            CommandLine.FileDelete(recordedVideo, true);
+            Asserts.AssertIsTrue(!CommandLine.FileExists(recordedVideo), "Video file generated by the mock should have been deleted by this test");
             DoTestLifeCycle();
         }
 
@@ -128,12 +142,12 @@ namespace Test4giis.Selema.Video
         {
             IVideoController vc = GetController();
             vc.Start();
-            Asserts.AssertIsTrue(CommandLine.FileExists(RECORDED_VIDEO), "Video file should be present during the lifecycle");
+            Asserts.AssertIsTrue(CommandLine.FileExists(recordedVideo), "Video file should be present during the lifecycle");
             vc.Stop("copied-video.mp4");
 
             // The video should have been copied to target and removed from the mapped volume, and the container stopped
-            Asserts.AssertIsTrue(!CommandLine.FileExists(RECORDED_VIDEO), "Video file generated by the mock container should have been removed");
-            Asserts.AssertIsTrue(CommandLine.FileExists(TARGET_FOLDER + "/copied-video.mp4"), "Video file to be copied to the target folder does not exist");
+            Asserts.AssertIsTrue(!CommandLine.FileExists(recordedVideo), "Video file generated by the mock container should have been removed");
+            Asserts.AssertIsTrue(CommandLine.FileExists(targetFolder + "/copied-video.mp4"), "Video file to be copied to the target folder does not exist");
             NUnit.Framework.Legacy.ClassicAssert.AreEqual("exited", ContainerUtil.GetContainerStatus(MOCK_CONTAINER));
         }
 
@@ -142,7 +156,7 @@ namespace Test4giis.Selema.Video
         {
 
             // Do not preload, so that the containers are missing
-            Exception e = NUnit.Framework.Assert.Throws(typeof(SelemaException), () =>
+            Exception e = NUnit.Framework.Assert.Throws(typeof(VideoControllerException), () =>
             {
                 IVideoController vc = GetController();
                 vc.Start();
@@ -159,12 +173,12 @@ namespace Test4giis.Selema.Video
             PreloadRecorder(true);
             IVideoController vc = GetController();
             vc.Start();
-            CommandLine.FileDelete(RECORDED_VIDEO, true);
-            Exception e = NUnit.Framework.Assert.Throws(typeof(PortableException), () =>
+            CommandLine.FileDelete(recordedVideo, true);
+            Exception e = NUnit.Framework.Assert.Throws(typeof(VideoControllerException), () =>
             {
                 vc.Stop("not-copied-video.mp4");
             });
-            Asserts.AssertContains("Can't copy", e.Message);
+            Asserts.AssertContains("Video file not found after recording", e.Message);
         }
 
         [Test]
@@ -178,7 +192,7 @@ namespace Test4giis.Selema.Video
             vc.Start();
             Run("docker stop " + MOCK_CONTAINER);
             Run("docker rm " + MOCK_CONTAINER);
-            Exception e = NUnit.Framework.Assert.Throws(typeof(SelemaException), () =>
+            Exception e = NUnit.Framework.Assert.Throws(typeof(VideoControllerException), () =>
             {
                 vc.Stop("not-copied-video2.mp4");
             });
@@ -191,7 +205,7 @@ namespace Test4giis.Selema.Video
 
             // To complement the above, check that the waiting for the container log is able to fail after timeout
             Run("docker run -d --name " + MOCK_CONTAINER + " " + MOCK_IMAGE);
-            Exception e = NUnit.Framework.Assert.Throws(typeof(SelemaException), () =>
+            Exception e = NUnit.Framework.Assert.Throws(typeof(VideoControllerException), () =>
             {
                 ContainerUtil.WaitDocker(MOCK_CONTAINER, "Other docker log message", "that is not present", 1);
             });

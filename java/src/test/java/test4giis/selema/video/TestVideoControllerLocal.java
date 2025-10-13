@@ -13,9 +13,8 @@ import org.slf4j.LoggerFactory;
 
 import giis.portable.util.FileUtil;
 import giis.portable.util.Parameters;
-import giis.portable.util.PortableException;
-import giis.selema.manager.SelemaException;
 import giis.selema.portable.selenium.CommandLine;
+import giis.selema.portable.selenium.VideoControllerException;
 import giis.selema.services.IVideoController;
 import giis.selema.services.impl.ContainerUtil;
 import giis.selema.services.impl.VideoControllerLocal;
@@ -27,28 +26,34 @@ import test4giis.selema.portable.Asserts;
  * Tests are integrated with docker and do not need any external sever, 
  * but mock the video recorder using a lightweight
  * container. To be run in an independent workflow to run in CI.
+ * 
+ * This test does not requires a previous external setup (container is created in the code):
+ * - Files to create the mock container are in video-controller/vcmock
+ * - Folder were the mock video is created is video-controller/target/vcmock-mapped
+ * - Folder were the mock video is copied is video-controller/target/vcmock-target
  */
 public class TestVideoControllerLocal {
 	static final Logger log = LoggerFactory.getLogger(TestVideoControllerLocal.class);
 
-	private static final String MOCK_CONTAINER = "selenium-video-mock";
-	private static final String MOCK_IMAGE = "selenium-video-mock-image";
+	protected static final String MOCK_CONTAINER = "selenium-video-mock";
+	protected static final String MOCK_IMAGE = "selenium-video-mock-image";
 	
-	private static final String ROOT = Parameters.getProjectRoot(); // for .NET compatibility
-	private static final String REPORTS = FileUtil.getPath(ROOT, Parameters.getReportSubdir());
+	protected static final String ROOT = Parameters.getProjectRoot(); // for .NET compatibility
+	protected static final String REPORTS = FileUtil.getPath(ROOT, Parameters.getReportSubdir());
 	// note that the build context is platform independent, located in the java project
-	private static final String DOCKER_BUILD_CONTEXT = FileUtil.getPath(ROOT, "../java", "src/test/resources/vcmock");
+	protected static final String DOCKER_BUILD_CONTEXT = FileUtil.getPath(ROOT, "..", "video-controller/vcmock");
 
-	private static final String MAPPED_FOLDER = FileUtil.getPath(REPORTS, "selema/vcmock-mapped");
-	private static final String RECORDED_VIDEO = MAPPED_FOLDER + "/video.mp4";
-	private static final String TARGET_FOLDER = FileUtil.getPath(REPORTS, "selema/vcmock-target");
+	// definitions of where the videos are stored, different setup for this and the subclasses
+	protected String mappedFolder;
+	protected String recordedVideo;
+	protected String targetFolder;
 
 	@Rule
 	public TestName testName = new TestName();
 
 	@BeforeClass
 	public static void setUpAll() {
-		log.debug("Building the mock video recorder docker container");
+		log.debug("****** Building the mock video recorder docker image ******");
 		String buildCommand = "docker build -t " + MOCK_IMAGE + " " + DOCKER_BUILD_CONTEXT;
 		System.out.println(buildCommand);
 		run(buildCommand);
@@ -57,18 +62,26 @@ public class TestVideoControllerLocal {
 	@Before
 	public void setUp() {
 		log.info("****** Running test: {} ******", testName.getMethodName());
+		fileSystemSetup();
 		// Ensures a clean environment for both container and video files and folders
 		run("docker stop " + MOCK_CONTAINER);
 		run("docker rm " + MOCK_CONTAINER);
-		FileUtil.createDirectory(MAPPED_FOLDER);
-		FileUtil.createDirectory(TARGET_FOLDER);
-		FileUtil.deleteFilesInDirectory(MAPPED_FOLDER);
-		FileUtil.deleteFilesInDirectory(TARGET_FOLDER);
+		FileUtil.createDirectory(FileUtil.getPath(REPORTS, "selema")); // just to do avoid report failures in GHA
+		FileUtil.createDirectory(mappedFolder);
+		FileUtil.createDirectory(targetFolder);
+		FileUtil.deleteFilesInDirectory(mappedFolder);
+		FileUtil.deleteFilesInDirectory(targetFolder);
 		log.info("Test setup done");
+	}
+	
+	protected void fileSystemSetup() {
+		mappedFolder = FileUtil.getPath(ROOT, "..", "video-controller/target/vcmock-mapped");
+		recordedVideo = mappedFolder + "/mock.mp4";
+		targetFolder = FileUtil.getPath(ROOT, "..", "video-controller/target/vcmock-target");
 	}
 
 	protected IVideoController getController() {
-		return new VideoControllerLocal(MOCK_CONTAINER, RECORDED_VIDEO, TARGET_FOLDER);
+		return new VideoControllerLocal(MOCK_CONTAINER, recordedVideo, targetFolder);
 	}
 
 	protected static void run(String command) {
@@ -78,7 +91,7 @@ public class TestVideoControllerLocal {
 
 	// This mocks what the external script will do to preload the containers, with some additional verification
 	protected void preloadRecorder(boolean stopAfterRun) {
-		String mappedVolume = FileUtil.getFullPath(MAPPED_FOLDER);
+		String mappedVolume = FileUtil.getFullPath(mappedFolder);
 		mappedVolume = mappedVolume.replace("\\", "/").replace("C:/", "//c/"); // fix for windows
 
 		String runCommand = "docker run -d --name " + MOCK_CONTAINER + " -v " + mappedVolume + ":/app/videos "
@@ -87,7 +100,7 @@ public class TestVideoControllerLocal {
 		run(runCommand);
 		ContainerUtil.waitDocker(MOCK_CONTAINER, "Display", "is open", 5);
 
-		Asserts.assertIsTrue(CommandLine.fileExists(RECORDED_VIDEO),
+		Asserts.assertIsTrue(CommandLine.fileExists(recordedVideo),
 				"Video file generated by the mock container after preload does not exist");
 		if (stopAfterRun) {
 			ContainerUtil.runDocker("stop", MOCK_CONTAINER);
@@ -99,8 +112,8 @@ public class TestVideoControllerLocal {
 	public void testPassRegularLifeCycle() {
 		// Preload creates a video, but in the regular lifecycle, the recorded video should have been deleted after copy
 		preloadRecorder(true);
-		CommandLine.fileDelete(RECORDED_VIDEO, true);
-		Asserts.assertIsTrue(!CommandLine.fileExists(RECORDED_VIDEO),
+		CommandLine.fileDelete(recordedVideo, true);
+		Asserts.assertIsTrue(!CommandLine.fileExists(recordedVideo),
 				"Video file generated by the mock should have been deleted by this test");
 
 		doTestLifeCycle();
@@ -122,8 +135,8 @@ public class TestVideoControllerLocal {
 		// To simulate this situation, we delete now the video:
 		// If the controller does not restart the container in this situation, no new video will be created
 		// at the start will fail because video is not present during lifecycle
-		CommandLine.fileDelete(RECORDED_VIDEO, true);
-		Asserts.assertIsTrue(!CommandLine.fileExists(RECORDED_VIDEO),
+		CommandLine.fileDelete(recordedVideo, true);
+		Asserts.assertIsTrue(!CommandLine.fileExists(recordedVideo),
 				"Video file generated by the mock should have been deleted by this test");
 
 		doTestLifeCycle();
@@ -132,14 +145,14 @@ public class TestVideoControllerLocal {
 	protected void doTestLifeCycle() {
 		IVideoController vc = getController();
 		vc.start();
-		Asserts.assertIsTrue(CommandLine.fileExists(RECORDED_VIDEO),
+		Asserts.assertIsTrue(CommandLine.fileExists(recordedVideo),
 				"Video file should be present during the lifecycle");
 		vc.stop("copied-video.mp4");
 
 		// The video should have been copied to target and removed from the mapped volume, and the container stopped
-		Asserts.assertIsTrue(!CommandLine.fileExists(RECORDED_VIDEO),
+		Asserts.assertIsTrue(!CommandLine.fileExists(recordedVideo),
 				"Video file generated by the mock container should have been removed");
-		Asserts.assertIsTrue(CommandLine.fileExists(TARGET_FOLDER + "/copied-video.mp4"),
+		Asserts.assertIsTrue(CommandLine.fileExists(targetFolder + "/copied-video.mp4"),
 				"Video file to be copied to the target folder does not exist");
 		assertEquals("exited", ContainerUtil.getContainerStatus(MOCK_CONTAINER));
 	}
@@ -147,7 +160,7 @@ public class TestVideoControllerLocal {
 	@Test
 	public void testFailOnStartBecauseRecorderDoesNotExist() {
 		// Do not preload, so that the containers are missing
-		RuntimeException e = assertThrows(SelemaException.class, () -> {
+		RuntimeException e = assertThrows(VideoControllerException.class, () -> {
 			IVideoController vc = getController();
 			vc.start();
 		});
@@ -161,11 +174,11 @@ public class TestVideoControllerLocal {
 		preloadRecorder(true);
 		IVideoController vc = getController();
 		vc.start();
-		CommandLine.fileDelete(RECORDED_VIDEO, true);
-		RuntimeException e = assertThrows(PortableException.class, () -> {
+		CommandLine.fileDelete(recordedVideo, true);
+		RuntimeException e = assertThrows(VideoControllerException.class, () -> {
 			vc.stop("not-copied-video.mp4");
 		});
-		Asserts.assertContains("Can't copy", e.getMessage());
+		Asserts.assertContains("Video file not found after recording", e.getMessage());
 	}
 
 	@Test
@@ -177,7 +190,7 @@ public class TestVideoControllerLocal {
 		vc.start();
 		run("docker stop " + MOCK_CONTAINER);
 		run("docker rm " + MOCK_CONTAINER);
-		RuntimeException e = assertThrows(SelemaException.class, () -> {
+		RuntimeException e = assertThrows(VideoControllerException.class, () -> {
 			vc.stop("not-copied-video2.mp4");
 		});
 		Asserts.assertContains("No such container", e.getMessage());
@@ -187,7 +200,7 @@ public class TestVideoControllerLocal {
 	public void testContainerNotReadyAfterWaitForLogMessage() {
 		// To complement the above, check that the waiting for the container log is able to fail after timeout
 		run("docker run -d --name " + MOCK_CONTAINER + " " + MOCK_IMAGE);
-		RuntimeException e = assertThrows(SelemaException.class, () -> {
+		RuntimeException e = assertThrows(VideoControllerException.class, () -> {
 			ContainerUtil.waitDocker(MOCK_CONTAINER, "Other docker log message", "that is not present", 1);
 		});
 		Asserts.assertContains("Container did not become ready in time", e.getMessage());

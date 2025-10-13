@@ -1,5 +1,4 @@
 using Giis.Portable.Util;
-using Giis.Selema.Manager;
 using Giis.Selema.Portable.Selenium;
 using System;
 using System.Collections.Generic;
@@ -25,7 +24,7 @@ namespace Giis.Selema.Services.Impl
             string command = "docker " + verb + " " + container;
             string dockerOut = CommandLine.RunCommand(command);
             if (!container.Equals(dockerOut.Trim()))
-                throw new SelemaException(command + " failed. " + dockerOut);
+                throw new VideoControllerException(command + " failed. " + dockerOut);
         }
 
         /// <summary>
@@ -44,7 +43,7 @@ namespace Giis.Selema.Services.Impl
                 JavaCs.Sleep(100);
             }
 
-            throw new SelemaException("Container did not become ready in time, last log message was: " + logOut);
+            throw new VideoControllerException("Container did not become ready in time, last log message was: " + logOut);
         }
 
         /// <summary>

@@ -23,7 +23,7 @@ docker run -d --name selenium --shm-size="2g" `
 
 # http://localhost:4444/ui/#/sessions
 
-# Standalone + video recording
+# Preloaded + video recording (local), 
 docker network create grid
 docker stop selenium-chrome
 docker rm selenium-chrome
@@ -38,5 +38,27 @@ docker run -d --net grid --name selenium-video `
   -v ${PWD}/java/target/preload-local:/videos `
   selenium/video:ffmpeg-8.0-20250909
 # stop recoder here, the video service will start an stop when needed
-sleep 5
+sleep 2
 docker stop selenium-video
+
+# Standalone + video recording (remote)
+docker network create grid
+docker stop selenium-node-test
+docker rm selenium-node-test
+docker stop selenium-video-test
+docker rm selenium-video-test
+docker run -d -p 4444:4444 -p 6900:5900 --net grid --name selenium-node-test --shm-size="2g" `
+  -e SE_NODE_MAX_SESSIONS=8 `
+  selenium/standalone-chrome:4.35.0-20250909
+docker run -d --net grid --name selenium-video-test `
+  -e SE_VIDEO_FILE_NAME=test.mp4 `
+  -e DISPLAY_CONTAINER_NAME=selenium-node-test `
+  -v ${PWD}/video-controller/app/videos:/videos `
+  selenium/video:ffmpeg-8.0-20250909
+# stop recoder here, the video service will start an stop when needed
+sleep 5
+docker stop selenium-video-test
+
+# start video recorder server
+cd video-controller/app
+npm start video-controller

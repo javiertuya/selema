@@ -12,9 +12,10 @@ using System.Text;
 namespace Giis.Selema.Services.Impl
 {
     /// <summary>
-    /// Video controller to use when both the recorder container and the tests run in the same VM. Requires the container
-    /// running the test have access to docker and to the folders when the videos are stored. Any unexpected behaviour raises
-    /// an exception that must be handled by the caller video service.
+    /// Video controller to use when both the recorder container and the tests run in the same VM.
+    /// 
+    /// Requires the container running the test have access to docker and to the folders when the videos are stored. Any
+    /// unexpected behaviour raises an exception that must be handled by the caller video service.
     /// </summary>
     public class VideoControllerLocal : IVideoController
     {
@@ -22,6 +23,12 @@ namespace Giis.Selema.Services.Impl
         private string videoContainer;
         private string sourceFile;
         private string targetFolder;
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="videoContainer">name of the video recorder container</param>
+        /// <param name="sourceFile">name of the recorded video (with path)</param>
+        /// <param name="targetFolder">where the recorded videos will be stored after recording</param>
         public VideoControllerLocal(string videoContainer, string sourceFile, string targetFolder)
         {
             this.videoContainer = videoContainer;
@@ -56,6 +63,8 @@ namespace Giis.Selema.Services.Impl
             ContainerUtil.WaitDocker(videoContainer, "Shutdown complete", "", 5);
 
             // copy the video file to its destination and then remove, this should not fail
+            if (!CommandLine.FileExists(sourceFile))
+                throw new VideoControllerException("Video file not found after recording: " + sourceFile);
             log.Debug("Saving recorded video file to: " + videoName);
             CommandLine.FileCopy(sourceFile, FileUtil.GetPath(targetFolder, videoName));
             CommandLine.FileDelete(sourceFile, true);

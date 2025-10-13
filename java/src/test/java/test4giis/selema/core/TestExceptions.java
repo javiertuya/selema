@@ -22,7 +22,6 @@ import giis.selema.portable.selenium.DriverUtil;
 import giis.selema.manager.SeleManager;
 import giis.selema.services.IMediaContext;
 import giis.selema.services.impl.MediaContext;
-import giis.selema.services.impl.RemoteBrowserService;
 import giis.selema.services.impl.WatermarkService;
 
 /**

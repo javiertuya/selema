@@ -18,7 +18,7 @@ export class ContainerUtil {
     const command = `docker ${verb} ${container}`;
     const dockerOut = await CommandLine.runCommand(command);
     if (dockerOut.trim() !== container) {
-      throw new Error(`${command} failed. ${dockerOut}`);
+      throw new Error(`${command} failed. ${dockerOut.trim()}`);
     }
   }
 
@@ -51,7 +51,13 @@ export class ContainerUtil {
    * @returns {Promise<string>}
    */
   static async getContainerStatus(name) {
-    const output = await CommandLine.runCommand(`docker inspect -f '{{.State.Status}}' ${name}`);
-    return output.replace(/'/g, '').trim();
+    // In java, this does not raises an exception if the container does not exist, but returns the error message.
+    // Catch the exception to mimic that behavior.
+    try {
+      const output = await CommandLine.runCommand(`docker inspect -f '{{.State.Status}}' ${name}`);
+      return output.replace(/'/g, '').trim();
+    } catch (error) {
+      return error.message;
+    }
   }
 }
