@@ -12,6 +12,10 @@ import giis.portable.util.PortableException;
 
 public class CommandLine {
 
+	private CommandLine() {
+		throw new IllegalStateException("Utility class");
+	}
+
 	/**
 	 * Runs a shell/cmd command and returns a string with the standard output
 	 */

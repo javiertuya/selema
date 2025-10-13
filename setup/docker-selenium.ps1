@@ -41,9 +41,6 @@ docker run -d --net grid --name selenium-video `
 sleep 5
 docker stop selenium-video
 
-  -e SE_VIDEO_FILE_NAME_SUFFIX=true `
-  -e SE_VIDEO_FILE_NAME=auto `
-
 docker start selenium-video
 #docker exec -it video sudo chmod 777 /videos
 

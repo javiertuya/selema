@@ -45,6 +45,7 @@ namespace Test4giis.Selema.Core
             return new CiServiceFactory().GetCurrent().IsLocal() || new Config4test().UseHeadlessDriver();
         }
 
+        IWebDriver driver;
         [NUnit.Framework.SetUp]
         public virtual void SetUp()
         {
@@ -53,6 +54,9 @@ namespace Test4giis.Selema.Core
         [NUnit.Framework.TearDown]
         public virtual void TearDown()
         {
+            if (driver != null)
+                DriverUtil.QuitDriver(driver);
+            driver = null;
         }
 
         [Test]
@@ -61,9 +65,8 @@ namespace Test4giis.Selema.Core
             if (!IsLocal())
                 return;
             SeleniumDriverFactory factory = new SeleniumDriverFactory();
-            IWebDriver driver = factory.GetSeleniumDriver("chrome", "", "", null, new string[] { "--remote-allow-origins=*" }, null);
+            driver = factory.GetSeleniumDriver("chrome", "", "", null, new string[] { "--remote-allow-origins=*" }, null);
             AssertOptions(factory, "{browserName:chrome,goog:chromeOptions:{args:[--remote-allow-origins=*]}}");
-            DriverUtil.CloseDriver(driver);
         }
 
         [Test]
@@ -72,9 +75,8 @@ namespace Test4giis.Selema.Core
             if (!IsLocal())
                 return;
             SeleniumDriverFactory factory = new SeleniumDriverFactory();
-            IWebDriver driver = factory.GetSeleniumDriver("edge", "", "", null, null, null);
+            driver = factory.GetSeleniumDriver("edge", "", "", null, null, null);
             AssertOptions(factory, Parameters.IsJava() ? "{browserName:MicrosoftEdge,ms:edgeOptions:{args:[]}}" : "{browserName:MicrosoftEdge,ms:edgeOptions:{}}");
-            DriverUtil.CloseDriver(driver);
         }
 
         [Test]
@@ -83,11 +85,10 @@ namespace Test4giis.Selema.Core
             if (!IsLocal())
                 return;
             SeleniumDriverFactory factory = new SeleniumDriverFactory();
-            IWebDriver driver = factory.GetSeleniumDriver("firefox", "", "", null, null, null);
+            driver = factory.GetSeleniumDriver("firefox", "", "", null, null, null);
 
             // #801 no toString method implemented for firefox
             AssertOptions(factory, Parameters.IsJava() ? "{browserName:firefox,moz:firefoxOptions:{prefs:{remote.active-protocols:3}}}" : "OpenQA.Selenium.Firefox.FirefoxOptions");
-            DriverUtil.CloseDriver(driver);
         }
 
         //next tests use chrome
@@ -97,14 +98,20 @@ namespace Test4giis.Selema.Core
             if (!UseHeadless())
                 return;
             SeleniumDriverFactory factory = new SeleniumDriverFactory();
-            IWebDriver driver = factory.GetSeleniumDriver("chrome", "", "", null, chromeHeadlesArgument, null);
+            driver = factory.GetSeleniumDriver("chrome", "", "", null, chromeHeadlesArgument, null);
             AssertOptions(factory, "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]}}");
-            DriverUtil.CloseDriver(driver);
+        }
 
-            //browser name is case insensitive, browser already downloaded, null remote url
+        [Test]
+        public virtual void TestHeadlessIWebDriverDefaultCaseInsensitive()
+        {
+            if (!UseHeadless())
+                return;
+
+            //browser name is case insensitive
+            SeleniumDriverFactory factory = new SeleniumDriverFactory();
             driver = factory.GetSeleniumDriver("CHRome", null, null, null, chromeHeadlesArgument, null);
             AssertOptions(factory, "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]}}");
-            DriverUtil.CloseDriver(driver);
         }
 
         [Test]
@@ -118,11 +125,10 @@ namespace Test4giis.Selema.Core
             //As of Selenium 4.9.0 non standard capabilities must have a prefix
             caps.Put("testprefix:key1", "value1");
             caps.Put("testprefix:key2", "value2");
-            IWebDriver driver = factory.GetSeleniumDriver("chrome", "", "", caps, chromeHeadlesArgument, null);
+            driver = factory.GetSeleniumDriver("chrome", "", "", caps, chromeHeadlesArgument, null);
 
             // #801 the toString method is not able to get other custom capabilities than the standard and chromeOptions
             AssertOptions(factory, Parameters.IsJava() ? "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]},testprefix:key1:value1,testprefix:key2:value2}" : "{browserName:chrome,goog:chromeOptions:{args:[--headless,--remote-allow-origins=*]}}");
-            DriverUtil.CloseDriver(driver);
         }
 
         //testHeadlessIWebDriverWithOptionsAndOptionsInstance tested in separate class (transformed manually to C#)
@@ -170,12 +176,11 @@ namespace Test4giis.Selema.Core
             if (!UseRemote())
                 return;
             SeleniumDriverFactory factory = new SeleniumDriverFactory();
-            IWebDriver driver = factory.GetSeleniumDriver("chrome", new Config4test().GetRemoteDriverUrl(), null, null, null, null);
+            driver = factory.GetSeleniumDriver("chrome", new Config4test().GetRemoteDriverUrl(), null, null, null, null);
 
             //NOTE: Selenium 4.8.2/3 (java) adds --remote-allow-origins=* to prevent the Chrome Driver 111 breaking change
             //As of Selenium 4.14.1 remote-allow-origins is removed
             AssertOptions(factory, Parameters.IsJava() ? "{browserName:chrome,goog:chromeOptions:{args:[]}}" : "{browserName:chrome,goog:chromeOptions:{}}");
-            DriverUtil.CloseDriver(driver);
         }
 
         [Test]
@@ -186,12 +191,11 @@ namespace Test4giis.Selema.Core
 
             //setting options has been tested with local
             SeleniumDriverFactory factory = new SeleniumDriverFactory();
-            IWebDriver driver = factory.GetSeleniumDriver("chrome", new Config4test().GetRemoteDriverUrl(), null, null, new string[] { "--start-maximized" }, null);
+            driver = factory.GetSeleniumDriver("chrome", new Config4test().GetRemoteDriverUrl(), null, null, new string[] { "--start-maximized" }, null);
 
             //NOTE: Selenium 4.8.2/3 (java) adds --remote-allow-origins=* to prevent the Chrome Driver 111 breaking change
             //As of Selenium 4.14.1 remote-allow-origins is removed
             AssertOptions(factory, Parameters.IsJava() ? "{browserName:chrome,goog:chromeOptions:{args:[--start-maximized]}}" : "{browserName:chrome,goog:chromeOptions:{args:[--start-maximized]}}");
-            DriverUtil.CloseDriver(driver);
         }
 
         [Test]
@@ -239,7 +243,7 @@ namespace Test4giis.Selema.Core
             else if (new Config4test().UseSeleniumRemoteWebDriver())
                 sm.Add(new SeleniumGridService().SetCapability("se:screenResolution", "800x600"));
             else
-                NUnit.Framework.Legacy.ClassicAssert.Fail("This test should execute only with remote web driver");
+                return;
             sm.OnSetUp("TestDriver", "TestDriver.testRemoteWebDriverFromManager");
             sm.OnFailure("TestDriver", "TestDriver.testRemoteWebDriverFromManager");
             AssertLogRemoteWebDriver();

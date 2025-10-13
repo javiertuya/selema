@@ -15,11 +15,6 @@ namespace Giis.Selema.Services.Impl
     /// </summary>
     public class SelenoidVideoService : AbstractVideoService
     {
-        protected override string GetVideoFileNameWithRelativePath(string videoFileName)
-        {
-            return videoFileName; // video file strucutre is flat
-        }
-
         public override Map<string, object> GetSeleniumOptions(IMediaContext context, string testName)
         {
             string videoFileName = context.GetVideoFileName(testName);

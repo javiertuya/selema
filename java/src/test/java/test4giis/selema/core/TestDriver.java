@@ -214,7 +214,6 @@ public class TestDriver {
 			sm.add(new SeleniumGridService().setCapability("se:screenResolution", "800x600"));
 		else
 			return;
-			//fail("This test should execute only with remote web driver");
 		
 		sm.onSetUp("TestDriver", "TestDriver.testRemoteWebDriverFromManager");
 		sm.onFailure("TestDriver", "TestDriver.testRemoteWebDriverFromManager");

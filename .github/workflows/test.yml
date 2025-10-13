@@ -26,8 +26,6 @@ jobs:
         exclude:
           - platform: net
             mode: grid
-          - platform: net
-            mode: preload-local
       fail-fast: false
     defaults:
       run:
@@ -119,7 +117,7 @@ jobs:
           set -x
           sed -i "s|selema.test.remote.webdriver=none|selema.test.remote.webdriver=http://localhost:4444|g" selema.properties
           echo "selema.test.preload.video.container=selenium-video" >> selema.properties
-          echo "selema.test.preload.video.location=target/selema" >> selema.properties
+          echo "selema.test.preload.video.location=${{ env.REPORT_FOLDER }}/selema" >> selema.properties
           mkdir -p ${{ env.REPORT_FOLDER }}/selema
           docker network create grid
           docker run -d -p 4444:4444 -p 6900:5900 --net grid --name selenium-chrome --shm-size="2g" \
@@ -175,7 +173,7 @@ jobs:
             java/target/selema/*.log
             java/target/selema/*.json
             java/target/selema/*.png
-            java/target/selema/video*.mp4
+            java/target/selema/*.mp4
             net/reports
             !**/selenoid*.mp4
       - name: JAVA - Reports for Sonar
