@@ -21,20 +21,20 @@ namespace Giis.Selema.Services.Impl
     {
         readonly Logger log = LogManager.GetCurrentClassLogger();
         private string videoContainer;
-        private string videoFolder;
-        private string defaultVideoName;
-        public VideoControllerLocal(string videoContainer, string videoFolder, string defaultVideoName)
+        private string sourceFile;
+        private string targetFolder;
+        public VideoControllerLocal(string videoContainer, string sourceFile, string targetFolder)
         {
             this.videoContainer = videoContainer;
-            this.videoFolder = FileUtil.GetPath(Parameters.DefaultProjectRoot, videoFolder);
-            this.defaultVideoName = defaultVideoName;
+            this.sourceFile = sourceFile;
+            this.targetFolder = targetFolder;
         }
 
         public virtual void Start()
         {
 
             // First clean the video file (if exists) to prevent the recorder concatenating videos
-            CommandLine.FileDelete(FileUtil.GetPath(videoFolder, defaultVideoName), false);
+            CommandLine.FileDelete(sourceFile, false);
             log.Debug("Starting video container: " + videoContainer);
             RunDockerWait("start", videoContainer, "Display selenium-chrome:99.0 is open", 5);
         }
@@ -46,8 +46,8 @@ namespace Giis.Selema.Services.Impl
 
             // copy the video file to its destination and then remove, this should not fail
             log.Debug("Saving recorded video file to: " + videoName);
-            CommandLine.FileCopy(FileUtil.GetPath(videoFolder, defaultVideoName), FileUtil.GetPath(videoFolder, videoName));
-            CommandLine.FileDelete(FileUtil.GetPath(videoFolder, defaultVideoName), true);
+            CommandLine.FileCopy(sourceFile, FileUtil.GetPath(targetFolder, videoName));
+            CommandLine.FileDelete(sourceFile, true);
         }
 
         /// <summary>

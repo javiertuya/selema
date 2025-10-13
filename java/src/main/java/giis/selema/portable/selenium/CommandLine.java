@@ -61,5 +61,10 @@ public class CommandLine {
 			throw new PortableException("Can't copy " + fileFrom + " to " + fileTo);
 		}
 	}
+	
+	public static boolean isAbsolute(String fileName) {
+		return fileName.startsWith("/") ||
+				fileName.length() >=3 && fileName.charAt(1) == ':' && fileName.charAt(2) == '/';
+	}
 
 }

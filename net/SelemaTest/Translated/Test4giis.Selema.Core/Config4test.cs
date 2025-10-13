@@ -1,6 +1,7 @@
 using Java.Util;
 using Giis.Portable.Util;
 using Giis.Selema.Manager;
+using Giis.Selema.Portable.Selenium;
 using Giis.Selema.Services;
 using Giis.Selema.Services.Impl;
 using System;
@@ -63,8 +64,11 @@ namespace Test4giis.Selema.Core
             else if (UsePreloadLocal())
             {
                 string videoContainer = prop.GetProperty("selema.test.preload.video.container");
-                string videoLocation = prop.GetProperty("selema.test.preload.video.location");
-                VideoControllerLocal controller = new VideoControllerLocal(videoContainer, videoLocation, "video.mp4");
+                string videoSourceFile = prop.GetProperty("selema.test.preload.video.sourcefile");
+                string targetFolder = prop.GetProperty("selema.test.preload.video.targetfolder");
+                videoSourceFile = CommandLine.IsAbsolute(videoSourceFile) ? videoSourceFile : FileUtil.GetPath(Parameters.DefaultProjectRoot, videoSourceFile);
+                targetFolder = CommandLine.IsAbsolute(targetFolder) ? targetFolder : FileUtil.GetPath(Parameters.DefaultProjectRoot, targetFolder);
+                VideoControllerLocal controller = new VideoControllerLocal(videoContainer, videoSourceFile, targetFolder);
                 return new RemoteBrowserService().SetVideo(controller);
             }
             else
