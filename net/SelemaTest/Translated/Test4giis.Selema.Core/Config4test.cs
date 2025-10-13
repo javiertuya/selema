@@ -59,7 +59,7 @@ namespace Test4giis.Selema.Core
             // assume that is using remote web driver
             if (UseSelenoidRemoteWebDriver())
                 return new SelenoidService().SetVideo().SetVnc();
-            else if (UseSeleniumRemoteWebDriver())
+            else if (UseGridRemoteWebDriver())
                 return new SeleniumGridService().SetVideo().SetVnc();
             else if (UsePreloadLocal())
             {
@@ -80,7 +80,7 @@ namespace Test4giis.Selema.Core
             return "selenoid".Equals(prop.GetProperty("selema.test.mode"));
         }
 
-        public virtual bool UseSeleniumRemoteWebDriver()
+        public virtual bool UseGridRemoteWebDriver()
         {
             return "grid".Equals(prop.GetProperty("selema.test.mode"));
         }
@@ -92,7 +92,7 @@ namespace Test4giis.Selema.Core
 
         public virtual bool UseRemoteWebDriver()
         {
-            return UseSelenoidRemoteWebDriver() || UseSeleniumRemoteWebDriver() || UsePreloadLocal();
+            return UseSelenoidRemoteWebDriver() || UseGridRemoteWebDriver() || UsePreloadLocal();
         }
 
         public virtual bool UseHeadlessDriver()

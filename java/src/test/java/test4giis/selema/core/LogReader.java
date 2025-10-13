@@ -1,7 +1,5 @@
 package test4giis.selema.core;
 
-import static org.junit.Assert.fail;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,11 +70,5 @@ public class LogReader {
 				+ "'\n  Not contained in: '"+actual+"'";
 	}
 	
-	//para compatibilidad con el orden de los argumentos entre pataformas
-	public void assertIsTrue(boolean value, String message) {
-		if (!value)
-			fail(message);		
-	}
-
 }
 

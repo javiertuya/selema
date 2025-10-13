@@ -224,6 +224,8 @@ public class SeleManager {
 	 */
 	public SeleManager add(IBrowserService browserSvc) {
 		log.debug("Add browser service: " + browserSvc.getClass().getSimpleName());
+		if (browserService != null)
+			throw new SelemaException("A browser service has been already added to this SeleManager");
 		browserService=browserSvc;
 		//when creating this service a compatible video recorder service is created too
 		videoRecorder=browserService.getVideoRecorder();
@@ -303,7 +305,7 @@ public class SeleManager {
 		mediaDiffContext=new MediaContext(conf.getReportDir(), conf.getQualifier(), instanceCount, sessionCount);
 		if (this.usesRemoteDriver()) {
 			lastSessionRemote=true;
-			selemaLog.info("Remote session " + currentBrowser + " starting...");
+			selemaLog.info("Remote session " + currentBrowser + " starting on " + currentDriverUrl + " ...");
 			//Colecciona los datos para identificacion de nombre de sesion para visualizacion en selenoid-ui y nombrado de videos
 			String driverScope=getDriverScope(className, testName);
 			//Colecciona la informacion para localizar posteriormente el instante del fallo en los videos y obtiene el driver
@@ -313,7 +315,7 @@ public class SeleManager {
 			WebDriver rdriver=getRemoteSeleniumDriver(driverScope);
 			if (videoRecorder!=null)
 				videoRecorder.afterCreateDriver(rdriver);
-			selemaLog.info("Remote session " + currentBrowser + " started. Remote web driver at " + currentDriverUrl + ", scope: " + driverScope);
+			selemaLog.info("Remote session " + currentBrowser + " started. Scope: " + driverScope);
 			currentDriver=rdriver;
 		} else {
 			lastSessionRemote=false;

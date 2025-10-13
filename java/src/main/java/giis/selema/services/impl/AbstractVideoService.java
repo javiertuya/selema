@@ -47,7 +47,7 @@ public abstract class AbstractVideoService implements IVideoService {
 	@Override
 	public String onTestFailure(IMediaContext context, String testName) {
 		long nowTimestamp = JavaCs.currentTimeMillis();
-		String videoFileName = context.getVideoFileName(testName);
+		String videoFileName = getVideoFileNameWithRelativePath(context, testName);
 		String videoUrl = "<a href=\"" + videoFileName + "\">" + videoFileName + "</a>";
 		String videoMsg = "Recording video at " + getSessionTimestamp(nowTimestamp) + " (aprox.): " + videoUrl;
 		if (log != null)

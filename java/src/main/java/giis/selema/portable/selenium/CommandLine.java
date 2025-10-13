@@ -62,6 +62,11 @@ public class CommandLine {
 		}
 	}
 	
+	public static boolean fileExists(String fileName) {
+		File f = new File(fileName);
+		return f.exists();
+	}
+	
 	public static boolean isAbsolute(String fileName) {
 		return fileName.startsWith("/") ||
 				fileName.length() >=3 && fileName.charAt(1) == ':' && fileName.charAt(2) == '/';

@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import giis.portable.util.FileUtil;
 import giis.portable.util.JavaCs;
-import giis.portable.util.Parameters;
 import giis.selema.manager.SelemaException;
 import giis.selema.portable.selenium.CommandLine;
 import giis.selema.services.IVideoController;

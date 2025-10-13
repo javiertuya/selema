@@ -100,17 +100,17 @@ jobs:
           set -x
           sed -i "s|selema.test.remote.webdriver=none|selema.test.remote.webdriver=http://localhost:4444|g" selema.properties
           mkdir -p ${{ env.REPORT_FOLDER }}/selema
-          # mkdir -p ${{ env.REPORT_FOLDER }}/assets
+          mkdir -p ${{ env.REPORT_FOLDER }}/selema/assets
+          sudo chown 1200:1201 ${{ env.REPORT_FOLDER }}/selema/assets
           docker run -d --name selenium --shm-size="2g" -p 4444:4444 \
             -v $GITHUB_WORKSPACE/setup/docker-selenium.toml:/opt/selenium/docker.toml \
-            -v $GITHUB_WORKSPACE/${{ matrix.platform}}/${{ env.REPORT_FOLDER }}/assets:/opt/selenium/assets \
+            -v $GITHUB_WORKSPACE/${{ matrix.platform}}/${{ env.REPORT_FOLDER }}/selema/assets:/opt/selenium/assets \
             -v /var/run/docker.sock:/var/run/docker.sock \
             selenium/standalone-docker:4.35.0-20250909
-          # chown 1200:1201 ${{ env.REPORT_FOLDER }}/assets
           sleep 10
           docker logs selenium
 
-      #
+      #spin up a docker-selenium standalone selenium browser with a sidecar video recorder
       - name: launch services - preloaded selenium standalone, local with video recorder sidecar
         if: ${{ matrix.mode=='preload-local' }}
         run: |
@@ -143,6 +143,11 @@ jobs:
       - name: NET - Build and test
         if: ${{ matrix.platform=='net' }}
         run: dotnet test ${{ env.NET_TEST_SCOPE }} --logger "trx;LogFileName=../../reports/test-result.trx"
+        
+      - name: Display contents of the selema report folder (for debug)
+        if: always()
+        run: sudo ls -laR ${{ env.REPORT_FOLDER }}/selema
+
       - name: NET - Generate junit html reports
         if: ${{ always() && matrix.platform=='net' }}
         uses: javiertuya/junit-report-action@v1.3.0
@@ -159,10 +164,6 @@ jobs:
           check_name: "test-result-${{ matrix.platform }}-${{ matrix.mode }}"
           report_paths: "**/${{ env.REPORT_FOLDER }}/surefire-reports/TEST-*.xml"
           fail_on_failure: 'true'
-      - if: ${{ always() && matrix.platform=='java' }}
-        run: ls -la target/selema
-      - if: ${{ always() && matrix.platform=='net' }}
-        run: ls -la reports/selema
 
       - if: always()
         name: Publish test report files
@@ -171,13 +172,10 @@ jobs:
           name: "test-report-${{ matrix.platform }}-${{ matrix.mode }}-files"
           path: |
             java/target/site
-            java/target/selema/*.html
-            java/target/selema/*.log
-            java/target/selema/*.json
-            java/target/selema/*.png
-            java/target/selema/*.mp4
+            java/target/selema/**/*
             net/reports
-            !**/selenoid*.mp4
+            java/reports/selema/**/*
+      #      !**/selenoid*.mp4
       - name: JAVA - Reports for Sonar
         if: ${{ always() && matrix.platform=='java' }}
         uses: actions/upload-artifact@v4.6.2

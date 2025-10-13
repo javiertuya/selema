@@ -87,6 +87,11 @@ namespace Giis.Selema.Portable.Selenium
             }
         }
 
+        public static bool FileExists(string fileName)
+        {
+            return File.Exists(fileName);
+        }
+
         public static bool IsAbsolute(string fileName)
         {
             return fileName.StartsWith("/") ||

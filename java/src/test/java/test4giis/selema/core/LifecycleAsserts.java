@@ -7,6 +7,8 @@ import java.util.List;
 import giis.portable.util.FileUtil;
 import giis.portable.util.JavaCs;
 import giis.selema.manager.SeleManager;
+import giis.selema.portable.selenium.CommandLine;
+import test4giis.selema.portable.Asserts;
 
 public class LifecycleAsserts {
 	private LogReader logReader=new LogReader(Config4test.getConfig().getReportDir());
@@ -79,13 +81,28 @@ public class LifecycleAsserts {
 		}
 		logReader.assertEnd();
 		
-		//comprueba el video, en este caso no se trata de un fichero pues estos se guardan en selenoid
-		//y solo son copiado tras la ejecucion del job, pero esta el log de los videos
+		// Check the recorded video, only when driver is managed at the test level
+		// This seems flaky if the tests run multiple times without cleaning the selema report folder before
 		if (sm.usesRemoteDriver() && sm.getManageAtTest()) {
-			List<String> videoList=FileUtil.fileReadLines(FileUtil.getPath(sm.getConfig().getReportDir(),"video-index.log"));
-			String videoPartialName=normalizedTestName.replace(".","-");
-			logReader.assertIsTrue(videoList.get(videoList.size()-1).contains(videoPartialName),
-					"No se encuentra el video de nombre "+videoPartialName+" al final del indice");
+			String reportDir = sm.getConfig().getReportDir();
+
+			// Last name in the video index should match with the current test name
+			List<String> videoList = FileUtil.fileReadLines(FileUtil.getPath(reportDir, "video-index.log"));
+			String lastVideoName = videoList.get(videoList.size() - 1);
+			String videoPartialName = normalizedTestName.replace(".", "-");
+			Asserts.assertIsTrue(lastVideoName.contains(videoPartialName),
+					"Can't find a video named " + videoPartialName + " at the end of video-index.log");
+
+			// And the video file must exist, excluding:
+			// - selenoid (the server writes to a temp file that is later renamed, so that, at this
+			//   moment the final video file is not ready)
+			// - grid: the files must be created under a different user, not accesible when runnint tests
+			// Note that the browser server must be configured to place the videos at the selema reports folder
+			Config4test cfg = new Config4test();
+			if (cfg.useSelenoidRemoteWebDriver() || cfg.useGridRemoteWebDriver())
+				return;
+			Asserts.assertIsTrue(CommandLine.fileExists(FileUtil.getPath(reportDir, lastVideoName)),
+					"File " + lastVideoName + " should exist in the selema log folder");
 		}
 	}
 	
@@ -108,7 +125,7 @@ public class LifecycleAsserts {
 	}
 	private void checkScreenShotFile(String reportDir, String fullTestName) {
 		String screenShotName="screen-*-"+fullTestName.replace(".","-")+"*";
-		logReader.assertIsTrue(FileUtil.getFilesMatchingWildcard(reportDir, screenShotName).size() >= 1,
+		Asserts.assertIsTrue(FileUtil.getFilesMatchingWildcard(reportDir, screenShotName).size() >= 1,
 				"No hay ningun archivo de nombre "+screenShotName); //no =1 pues puede haber de otras ejecucione interactivas
 	}
 	
