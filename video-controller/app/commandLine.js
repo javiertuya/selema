@@ -19,9 +19,9 @@ export class CommandLine {
     return new Promise((resolve, reject) => {
       exec(command, (error, stdout, stderr) => {
         if (error) {
-          reject(new Error(`Can't execute command: ${command}\n${stderr}`));
+          reject(new Error(`Can't execute command: ${command}\n${stderr.trim()}`));
         } else {
-          resolve(stdout + stderr);
+          resolve((stdout + stderr).trim());
         }
       });
     });

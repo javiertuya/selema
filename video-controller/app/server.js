@@ -15,17 +15,18 @@ import { Log } from './log.js';
  * they have been transformed with the help of Copilot from Java to JS/Node.
  */
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4449;
+const PATH = process.env.PORT || "/selema-video-controller";
 
 // Parámetros del controlador de vídeo (puedes parametrizar por entorno si lo deseas)
-const videoContainerPrefix = 'selenium-video';
+const VIDEO_CONTAINER_PREFIX = process.env.VIDEO_CONTAINER_PREFIX || 'selenium-video';
 const sourceFolder = './videos';
 
 function sourceFile(name) {
     return `${sourceFolder}/${name}.mp4`;
 }
 function containerName(name) {
-    return `${videoContainerPrefix}-${name}`;
+    return `${VIDEO_CONTAINER_PREFIX}-${name}`;
 }
 function info(req) {
     const ip = req.connection.remoteAddress;
@@ -34,7 +35,7 @@ function info(req) {
 }
 
 // Endpoint REST
-app.post('/selema-video-controller/:name', async (req, res) => {
+app.post(`${PATH}/:name`, async (req, res) => {
   info(req);
   const name = req.params.name;
   const videoController = new VideoControllerLocal();
@@ -47,7 +48,7 @@ app.post('/selema-video-controller/:name', async (req, res) => {
   }
 });
 
-app.get('/selema-video-controller/:name', async (req, res) => {
+app.get(`${PATH}/:name`, async (req, res) => {
   info(req);
   const name = req.params.name;
   const videoController = new VideoControllerLocal();
@@ -75,7 +76,7 @@ app.get('/selema-video-controller/:name', async (req, res) => {
   }
 });
 
-app.delete('/selema-video-controller/:name', async (req, res) => {
+app.delete(`${PATH}/:name`, async (req, res) => {
   info(req);
   const name = req.params.name;
   try {
@@ -89,5 +90,7 @@ app.delete('/selema-video-controller/:name', async (req, res) => {
 
 // Inicio del servidor
 app.listen(PORT, () => {
-  console.log(`Video service listening on port ${PORT}`);
+  console.log(`Video service started at ${new Date().toLocaleString()}`);
+  console.log(`Video container prefix: ${VIDEO_CONTAINER_PREFIX}`);
+  console.log(`Listening on port ${PORT}, endpoint path ${PATH}`);
 });

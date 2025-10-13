@@ -1,0 +1,13 @@
+
+> video-controller@1.0.0 start
+> node server.js
+
+Video service started at 13/10/2025, 12:15:40
+Video container prefix: selenium-video
+Listening on port 4449, endpoint path /selema-video-controller
+13/10/2025, 12:16:38 [INFO]  POST mock from 127.0.0.1
+13/10/2025, 12:16:38 [DEBUG] Starting video recorder: selenium-video-mock
+13/10/2025, 12:16:39 [INFO]  GET mock from 127.0.0.1
+13/10/2025, 12:16:39 [DEBUG] Stopping video recorder: selenium-video-mock
+13/10/2025, 12:16:50 [DEBUG] Saving recorded video file: ./videos/mock.mp4
+13/10/2025, 12:16:50 [INFO]  DELETE mock from 127.0.0.1

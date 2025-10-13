@@ -17,20 +17,18 @@ namespace Test4giis.Selema.Video
     /// 
     /// Tests inherit from the local video controller tests and share the same mock recorder container. The only difference
     /// is where the mock recorded video is stored (under a folder in the video-controller server).
+    /// 
+    /// This requires a previous setting to launch the server (with or without a container).
+    /// See commands at video-controller/setup-controller-local-dev.sh
     /// </summary>
     public class TestVideoControllerRemote : TestVideoControllerLocal
     {
         static readonly Logger log = LogManager.GetCurrentClassLogger(); //TestVideoControllerRemote));
-        [NUnit.Framework.OneTimeSetUp]
-        public static void SetUpAll()
-        {
-            TestVideoControllerLocal.SetUpAll();
-        }
-
+        protected static readonly string CONTROLLER_URL = "http://localhost:4449/selema-video-controller";
         protected override void FileSystemSetup()
         {
 
-            // In remote the mapped folder is inside the remote controller, called at the test setup
+            // In remote, the mapped folder is inside the remote controller app (with or withot container)
             mappedFolder = FileUtil.GetPath(ROOT, "../video-controller/app/videos");
             recordedVideo = mappedFolder + "/mock.mp4";
             targetFolder = FileUtil.GetPath(ROOT, "..", "video-controller/target/vcmock-target");
@@ -38,7 +36,7 @@ namespace Test4giis.Selema.Video
 
         protected override IVideoController GetController()
         {
-            return new VideoControllerRemote("mock", "http://localhost:3000/selema-video-controller", targetFolder);
+            return new VideoControllerRemote("mock", CONTROLLER_URL, targetFolder);
         }
 
         [Test]

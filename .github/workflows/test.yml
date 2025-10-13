@@ -18,7 +18,7 @@ jobs:
     strategy:
       matrix:
         platform: [java, net]
-        mode: [headless, selenoid, grid, preload-local, vcmock-local]
+        mode: [headless, selenoid, grid, preload-local, vcmock-local, vcmock-remote]
         #When dynamic grid address is localhost or 127.0.0.1, Net+Grid work on local, but fail with timeout when creating remote web driver in GHA.
         #If set the address to ${hostname -i), then the driver is successfully created, but a different failure is raised:
         #The HTTP request to the remote WebDriver server for URL http://10.1.0.124:4444/session timed out after 60 seconds
@@ -64,11 +64,16 @@ jobs:
         run: |
           echo "JAVA_TEST_SCOPE=-Dtest=TestLifecycle4#testFailMethod" >> $GITHUB_ENV
           echo "NET_TEST_SCOPE=--filter FullyQualifiedName=Test4giis.Selema.Mstest2.TestLifecycle4.testFailMethod" >> $GITHUB_ENV
-      - name: Test scope (override), only video controller mock tests
+      - name: Test scope (override for vcmock-local), only local video controller mock tests
         if: ${{ matrix.mode == 'vcmock-local' }}
         run: |
           echo "JAVA_TEST_SCOPE=-Dtest=**/video/TestVideoControllerLocal" >> $GITHUB_ENV
           echo "NET_TEST_SCOPE=--filter FullyQualifiedName~Video.TestVideoControllerLocal" >> $GITHUB_ENV
+      - name: Test scope (override for vcmock-remote), only remote video controller mock tests
+        if: ${{ matrix.mode == 'vcmock-remote' }}
+        run: |
+          echo "JAVA_TEST_SCOPE=-Dtest=**/video/TestVideoControllerRemote" >> $GITHUB_ENV
+          echo "NET_TEST_SCOPE=--filter FullyQualifiedName~Video.TestVideoControllerRemote" >> $GITHUB_ENV
 
       - name: test properties configuration
         run: |
@@ -119,7 +124,7 @@ jobs:
           sleep 10
           docker logs selenium
 
-      #spin up a docker-selenium standalone selenium browser with a sidecar video recorder
+      # spin up a docker-selenium standalone selenium browser with a sidecar video recorder
       - name: launch services - preloaded selenium standalone, local with video recorder sidecar
         if: ${{ matrix.mode=='preload-local' }}
         run: |
@@ -145,6 +150,17 @@ jobs:
           docker logs selenium-chrome
           docker logs selenium-video
 
+      # spin up the video controller, do not use containres because of it needs access to the docker socket
+      - name: launch services - remote video controller
+        if: ${{ matrix.mode=='vcmock-remote' }}
+        run: |
+          set -x
+          mkdir -p $GITHUB_WORKSPACE/${{ matrix.platform}}/${{ env.REPORT_FOLDER }}/selema
+          cd $GITHUB_WORKSPACE/video-controller/app
+          mkdir -p videos
+          npm install
+          npm start > $GITHUB_WORKSPACE/${{ matrix.platform}}/${{ env.REPORT_FOLDER }}/selema/video-controller.log 2>&1 &
+
       - name: JAVA - Build and test
         if: ${{ matrix.platform=='java' }}
         run: mvn test -Dmaven.test.failure.ignore=true ${{ env.JAVA_TEST_SCOPE }} -U --no-transfer-progress
@@ -152,7 +168,7 @@ jobs:
       - name: NET - Build and test
         if: ${{ matrix.platform=='net' }}
         run: dotnet test ${{ env.NET_TEST_SCOPE }} --logger "trx;LogFileName=../../reports/test-result.trx"
-        
+
       - name: Display contents of the selema report folder (for debug)
         if: always()
         run: sudo ls -laR ${{ env.REPORT_FOLDER }}/selema
@@ -184,7 +200,6 @@ jobs:
             java/target/selema/**/*
             net/reports
             java/reports/selema/**/*
-      #      !**/selenoid*.mp4
       - name: JAVA - Reports for Sonar
         if: ${{ always() && matrix.platform=='java' }}
         uses: actions/upload-artifact@v4.6.2
@@ -244,6 +259,8 @@ jobs:
           restore-artifact-path4: "target-preload-local"
           restore-artifact-name5: "sonar-java-vcmock-local"
           restore-artifact-path5: "target-vcmock-local"
+          restore-artifact-name6: "sonar-java-vcmock-remote"
+          restore-artifact-path6: "target-vcmock-remote"
 
   publish-java-snapshot:
     #avoid publishing PRs and dependabot branches

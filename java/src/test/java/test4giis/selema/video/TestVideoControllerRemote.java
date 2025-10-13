@@ -1,7 +1,5 @@
 package test4giis.selema.video;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,18 +13,18 @@ import giis.selema.services.impl.VideoControllerRemote;
  * 
  * Tests inherit from the local video controller tests and share the same mock recorder container. The only difference
  * is where the mock recorded video is stored (under a folder in the video-controller server).
+ * 
+ * This requires a previous setting to launch the server (with or without a container).
+ * See commands at video-controller/setup-controller-local-dev.sh
  */
 public class TestVideoControllerRemote extends TestVideoControllerLocal {
 	static final Logger log = LoggerFactory.getLogger(TestVideoControllerRemote.class);
 
-	@BeforeClass
-	public static void setUpAll() {
-		TestVideoControllerLocal.setUpAll();
-	}
-
+	protected static final String CONTROLLER_URL = "http://localhost:4449/selema-video-controller";
+	
 	@Override
 	protected void fileSystemSetup() {
-		// In remote the mapped folder is inside the remote controller, called at the test setup
+		// In remote, the mapped folder is inside the remote controller app (with or withot container)
 		mappedFolder = FileUtil.getPath(ROOT, "../video-controller/app/videos");
 		recordedVideo = mappedFolder + "/mock.mp4";
 		targetFolder = FileUtil.getPath(ROOT, "..", "video-controller/target/vcmock-target");
@@ -34,7 +32,7 @@ public class TestVideoControllerRemote extends TestVideoControllerLocal {
 
 	@Override
 	protected IVideoController getController() {
-		return new VideoControllerRemote("mock", "http://localhost:3000/selema-video-controller", targetFolder);
+		return new VideoControllerRemote("mock", CONTROLLER_URL, targetFolder);
 	}
 	
 	@Override
