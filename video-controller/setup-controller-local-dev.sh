@@ -1,24 +1,44 @@
 #!/bin/bash
 
-# run from the root folder to build and start the video controller docker container in your development environment
-docker build -t selema-video-controller ./video-controller
-docker stop selema-video-controller
-docker rm selema-video-controller
+#To run tests with with selema.properties set to preload-local
 
-# From windows, first set: docker desktop -> settings -> General -> Expose daemon on tcp://localhost:2375 without TLS
-# and set DOCKER_SOCKET to the environment variable
-# From linux, set DOCKER_SOCKET to the volume mount
-DOCKER_SOCKET="-e DOCKER_HOST=tcp://host.docker.internal:2375"
-#DOCKER_SOCKET="-v /var/run/docker.sock:/var/run/docker.sock"
-
-docker run -d -p 4449:4449 --name selema-video-controller --restart unless-stopped \
-    -v /$PWD/video-controller/app/videos:/app/videos \
-    $DOCKER_SOCKET \
-    selema-video-controller
-docker logs selema-video-controller
-docker exec -it selema-video-controller ls -la videos
+###### preload-local (browser node) ###### 
+./video-controller/preload-start.sh chrome grid /$PWD/java/target/preload-local "4444:4444" "root"
+# to stop containers: ./video-controller/preload-stop.sh chrome
+mkdir -p $PWD/java/target/preload-local
+NODE_IMAGE="selenium/standalone-chrome:4.35.0-20250909" VIDEO_IMAGE="selenium/video:ffmpeg-8.0-20250909" \
+LABEL=chrome NETWORK=grid FOLDER=/$PWD/java/target/preload-local PORTS=4444:4444 \
+  docker compose -f ./video-controller/docker-compose-preload.yml up -d 
+# down:
+LABEL=chrome NETWORK=grid FOLDER=/$PWD/java/target/preload-local PORTS=4444:4444 \
+  docker compose -f ./video-controller/docker-compose-preload.yml down
 
 
-# To start video recorder server (same port) without a container (for debugging)
+###### preload-remote (browser node) ###### 
+./video-controller/preload-start.sh chrome grid "4444:4444"  "root"
+# to stop containers: ./video-controller/preload-stop.sh chrome
+
+mkdir -p $PWD/video-controller/app/videos
+NODE_IMAGE="selenium/standalone-chrome:4.35.0-20250909" VIDEO_IMAGE="selenium/video:ffmpeg-8.0-20250909" \
+LABEL=chrome NETWORK=grid FOLDER=/$PWD/video-controller/app/videos PORTS=4444:4444 \
+  docker compose -f ./video-controller/docker-compose-preload.yml up -d 
+# down:
+LABEL=chrome NETWORK=grid FOLDER=/$PWD/video-controller/app/videos PORTS=4444:4444 \
+  docker compose -f ./video-controller/docker-compose-preload.yml down
+
+
+###### preload-remote and vcmock-remote (video controller) ###### 
+./video-controller/preload-controller.sh ./video-controller grid /$PWD/video-controller/app/videos "4449:4449"  "root" tcp
+
+mkdir -p $PWD/video-controller/app/videos
+NETWORK=grid FOLDER=/$PWD/video-controller/app/videos PORTS=4449:4449 \
+docker compose -f ./video-controller/docker-compose-controller.yml up -d --build
+
+# don't needed in compose:
+# note: on linux, use "socket" instead of "tcp"
+# note: on windows, first set: docker desktop -> settings -> General -> Expose daemon on tcp://localhost:2375 without TLS
+
+# Alternative for debugging: start video recorder server (same port) without a container
 cd video-controller/app
-npm start video-controller
+npm install
+npm start

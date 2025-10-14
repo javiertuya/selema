@@ -71,6 +71,15 @@ namespace Test4giis.Selema.Core
                 VideoControllerLocal controller = new VideoControllerLocal(videoContainer, videoSourceFile, targetFolder);
                 return new RemoteBrowserService().SetVideo(controller);
             }
+            else if (UsePreloadRemote())
+            {
+                string label = prop.GetProperty("selema.test.preload.label");
+                string videoController = prop.GetProperty("selema.test.preload.video.controller");
+                string targetFolder = prop.GetProperty("selema.test.preload.video.targetfolder");
+                targetFolder = CommandLine.IsAbsolute(targetFolder) ? targetFolder : FileUtil.GetPath(Parameters.DefaultProjectRoot, targetFolder);
+                VideoControllerRemote controller = new VideoControllerRemote(label, videoController, targetFolder);
+                return new RemoteBrowserService().SetVideo(controller);
+            }
             else
                 return null;
         }
@@ -90,9 +99,14 @@ namespace Test4giis.Selema.Core
             return "preload-local".Equals(prop.GetProperty("selema.test.mode"));
         }
 
+        public virtual bool UsePreloadRemote()
+        {
+            return "preload-remote".Equals(prop.GetProperty("selema.test.mode"));
+        }
+
         public virtual bool UseRemoteWebDriver()
         {
-            return UseSelenoidRemoteWebDriver() || UseGridRemoteWebDriver() || UsePreloadLocal();
+            return UseSelenoidRemoteWebDriver() || UseGridRemoteWebDriver() || UsePreloadLocal() || UsePreloadRemote();
         }
 
         public virtual bool UseHeadlessDriver()

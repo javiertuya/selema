@@ -57,7 +57,8 @@ namespace Giis.Selema.Portable.Selenium
             }
             catch (Exception ex)
             {
-                throw new VideoControllerException("Unexpected http client error: " + ex.Message, ex);
+                throw new VideoControllerException("Unexpected http client exception, method: "
+                    + method + ", url: " + url + ", message: " + ex.Message, ex);
             }
         }
     }

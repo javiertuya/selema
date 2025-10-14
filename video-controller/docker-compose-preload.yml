@@ -1,0 +1,41 @@
+# Starts a preloaded selenium browser node and sidecar video recorder container
+# The containers are identified by a label, which is part of the container names
+# The video recorder saves the recorded video to a specified folder with the name <label>.mp4
+
+# Environment variables:
+# - LABEL: identifier for the selenium node and video recorder containers, the name of the containers will be <prefix>-<label>
+# - NETWORK: the name of the docker network to connect the container to
+# - FOLDER: the folder to save the recorded videos to
+# - PORTS: port mappings for the video controller container (optional, default a localhost ephemeral port, format: [ip:]hostPort:containerPort)"
+# - USER: the user to run the video controller container as (optional, default is root, format: uid[:gid])" 
+
+name: selenium-stack-${LABEL:?}
+services:
+  node:
+    image: ${NODE_IMAGE:-selenium/standalone-chrome:latest}
+    container_name: selenium-node-${LABEL:?}
+    networks:
+      - ${NETWORK:?}
+    ports:
+      - ${PORTS:-127.0.0.1::4444}
+    environment:
+      SE_NODE_MAX_SESSIONS: 8
+    shm_size: '2g'
+
+  video:
+    image: ${VIDEO_IMAGE:-selenium/video:latest}
+    container_name: selenium-video-${LABEL:?}
+    networks:
+      - ${NETWORK:?}
+    user: ${USER:-root}
+    environment:
+      SE_VIDEO_FILE_NAME: ${LABEL}.mp4
+      DISPLAY_CONTAINER_NAME: selenium-node-${LABEL?}
+    volumes:
+      - ${FOLDER}:/videos
+
+networks:
+  # In addition to the environment variable, this key must be set to the network name
+  grid:
+    external: true
+    name: ${NETWORK:?}

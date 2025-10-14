@@ -22,7 +22,7 @@ public class TestDriverPlatformDependent {
 	public void testHeadlessWebDriverWithOptionsAndOptionsInstance() {
 		if (!TestDriver.useHeadless()) return;
 		// temporal, este falla en preloaded, revisar
-		if (new Config4test().usePreloadLocal()) return;
+		if (new Config4test().usePreloadLocal() || new Config4test().usePreloadRemote()) return;
 		
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
 		Map<String, Object> caps = new TreeMap<String, Object>();

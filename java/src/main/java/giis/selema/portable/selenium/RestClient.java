@@ -69,7 +69,8 @@ public class RestClient {
 				}
 			}
 		} catch (Exception e) {
-			throw new VideoControllerException("Unexpected http client error: " + e.getMessage(), e);
+			throw new VideoControllerException("Unexpected http client exception, method: " 
+					+ method + ", url: " + url + ", message: " + e.getMessage(), e);
 		}
 	}
     
