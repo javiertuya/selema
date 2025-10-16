@@ -72,7 +72,7 @@ namespace Test4giis.Selema.Core
                 throw new SelemaException("Log file has less lines than expected");
             StringBuilder sb = new StringBuilder();
 
-            //compares all assertItems at the end of logLines
+            //compares all assertItems at the offset from the end of logLines
             for (int i = 0; i < assertItems.Count; i++)
             {
                 int offset = logLines.Count - assertItems.Count - offsetFromLast;
@@ -83,7 +83,7 @@ namespace Test4giis.Selema.Core
                     //each of the items that must be included in the current log line
                     string expected = assertItems[i][j];
                     if (!actual.ToLower().Contains(expected.ToLower()))
-                        sb.Append(GetAssertMessage(offset + i, i, expected, actual));
+                        sb.Append(sb.Length > 0 ? "\n" : "").Append(GetAssertMessage(offsetFromLast, offset + i, j, expected, actual));
                 }
             }
 
@@ -91,9 +91,9 @@ namespace Test4giis.Selema.Core
                 throw new SelemaException("LogReader has differences:\n" + sb.ToString());
         }
 
-        private string GetAssertMessage(int logLine, int assertItemLine, string expected, string actual)
+        private string GetAssertMessage(int offsetFromLast, int logLine, int assertItemLine, string expected, string actual)
         {
-            return "Log line " + logLine + " item " + assertItemLine + "\n  Expected '" + expected + "'\n  Not contained in: '" + actual + "'";
+            return "Log line " + logLine + " (row " + offsetFromLast + " before end), expected item " + assertItemLine + "\n  Expected '" + expected + "'\n  Not contained in: '" + actual + "'";
         }
     }
 }
