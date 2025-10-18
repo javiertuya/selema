@@ -41,6 +41,10 @@ public class SeleManager {
 	private Capabilities currentOptionsInstance=null;
 	private String driverVersion=DriverVersion.DEFAULT; // string with strategy to use or a given version
 	
+	// Control of retries during remote driver warm-up
+	long startTime = JavaCs.currentTimeMillis();
+	int warmUpPeriod = 0; // default 0: no retry
+	
 	//Currently managed driver
 	private WebDriver currentDriver=null;
 	//Current context, only used for external calls from tests as watermark or getting driver in unmanaged mode
@@ -117,7 +121,7 @@ public class SeleManager {
 	}
 
 	/**
-	 * Sets the WebDriver for the specified browser ("chrome","firefox","edge","safari","opera"), default is chrome
+	 * Configures the WebDriver for the specified browser ("chrome","firefox","edge","safari","opera"), default is chrome
 	 */
 	public SeleManager setBrowser(String browser) {
 		log.debug("Set browser: "+browser);
@@ -125,7 +129,7 @@ public class SeleManager {
 		return this;
 	}
 	/**
-	 * Sets a RemoteWebDriver instead a local one (default); The driverUrl must point to the browser service
+	 * Configures a RemoteWebDriver instead of the default local one; The driverUrl must point to the browser service
 	 */
 	public SeleManager setDriverUrl(String driverUrl) {
 		log.debug("Set driver url: "+driverUrl);
@@ -133,7 +137,17 @@ public class SeleManager {
 		return this;
 	}
 	/**
-	 * Sets an object that can be used to provide additional configurations to the driver just after its creation
+	 * Configures a RemoteWebDriver instead of the default local one, with an optional warm-up period specified in seconds.
+	 * Setting this value to a positive number helps in scenarios where a test initializes the driver immediately after
+	 * the remote browser server starts, which may require a few seconds to become ready. During this warm-up period
+	 * (measured from the manager's instantiation) any failures in obtaining the driver will be retried.
+	 */
+	public SeleManager setDriverUrl(String driverUrl, int warmUpPeriod) {
+		this.warmUpPeriod = warmUpPeriod;
+		return setDriverUrl(driverUrl);
+	}
+	/**
+	 * Configures an object that can be used to provide additional configurations to the driver just after its creation
 	 */
 	public SeleManager setDriverDelegate(IDriverConfigDelegate driverConfig) {
 		log.debug("Set driver Config instance");
@@ -144,7 +158,7 @@ public class SeleManager {
 		return this.currentDriverUrl;
 	}
 	/**
-	 * Sets the driver version selection strategy or the value of the desired driver version to set
+	 * Configures the driver version selection strategy or the value of the desired driver version to set
 	 */
 	public SeleManager setDriverVersion(String driverVersion) {
 		this.driverVersion = driverVersion;
@@ -514,7 +528,23 @@ public class SeleManager {
 		if (browserService!=null)
 			browserService.addBrowserServiceOptions(allOptions, videoRecorder, mediaVideoContext, driverScope);
 		
-		return new SeleniumDriverFactory().getSeleniumDriver(currentBrowser, currentDriverUrl, driverVersion, allOptions, currentArguments, currentOptionsInstance);
+		// Retry during warm-up period (if set to a positive number of seconds).
+		// This helps to avoid unrecoverable exceptions if the browser server was started just before creating the
+		// driver and it is not already ready.
+		int retryCount = 0;
+		while (warmUpPeriod > 0 && JavaCs.currentTimeMillis() < startTime + warmUpPeriod * 1000) {
+			try {
+				return new SeleniumDriverFactory().getSeleniumDriver(currentBrowser, currentDriverUrl, driverVersion,
+						allOptions, currentArguments, currentOptionsInstance);
+			} catch (Exception e) {
+				String message = "Remote driver creation failure during warm-up period of " + warmUpPeriod + " seconds. Retry " + retryCount++;
+				this.selemaLog.warn(message);
+				JavaCs.sleep(1000);
+			}
+		}
+		// unconditional creation of driver (if warm-up period not set or fails after the time elapsed)
+		return new SeleniumDriverFactory().getSeleniumDriver(currentBrowser, currentDriverUrl, driverVersion,
+				allOptions, currentArguments, currentOptionsInstance);
 	}
 	
 }
