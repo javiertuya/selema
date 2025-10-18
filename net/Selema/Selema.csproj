@@ -52,17 +52,17 @@
 
     <PackageReference Include="HtmlAgilityPack" Version="1.12.1" />
 
-    <PackageReference Include="NLog" Version="5.4.0" />
+    <PackageReference Include="NLog" Version="5.5.0" />
 
     <PackageReference Include="NUnit" Version="3.14.0" />
 
-    <PackageReference Include="PortableCs" Version="2.4.0" />
+    <PackageReference Include="PortableCs" Version="2.4.3" />
 
-    <PackageReference Include="VisualAssert" Version="2.6.0" />
+    <PackageReference Include="VisualAssert" Version="2.6.1" />
 
     <PackageReference Include="WebDriverManager" Version="2.17.6" />
 
-    <PackageReference Include="Selenium.WebDriver" Version="4.31.0" />
+    <PackageReference Include="Selenium.WebDriver" Version="4.37.0" />
   </ItemGroup>
 
 </Project>

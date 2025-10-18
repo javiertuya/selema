@@ -22,6 +22,18 @@ updates:
       interval: monthly
     open-pull-requests-limit: 20
 
+  # to cover other dependencies not in the above group we need an entry without groups afther the one with groups: 
+  # https://github.com/dependabot/dependabot-core/issues/12904
+  # (although doc says: Any outdated dependencies that do not match a rule are updated in individual pull requests.)
+  - package-ecosystem: nuget
+    directories: 
+      - "/net"
+      - "/samples/samples-selema-mstest2"
+      - "/samples/samples-selema-nunit3"
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 20
+
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
