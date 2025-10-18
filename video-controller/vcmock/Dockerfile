@@ -8,6 +8,7 @@ WORKDIR /app
 
 COPY entrypoint.sh shutdown.sh sample.mp4 ./
 RUN mkdir videos && chmod +x entrypoint.sh shutdown.sh
+# KEEP THE .sh FILES WITH LINUX LINE ENDINGS
 
 # Copia el video al arranque
 ENTRYPOINT ["./entrypoint.sh"]

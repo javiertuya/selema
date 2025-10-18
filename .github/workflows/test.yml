@@ -18,7 +18,7 @@ jobs:
     strategy:
       matrix:
         platform: [java, net]
-        mode: [headless, selenoid, grid, preload-local, vcmock-local, vcmock-remote]
+        mode: [headless, selenoid, grid, preload-local, vcmock-local, preload-remote, vcmock-remote]
         #When dynamic grid address is localhost or 127.0.0.1, Net+Grid work on local, but fail with timeout when creating remote web driver in GHA.
         #If set the address to ${hostname -i), then the driver is successfully created, but a different failure is raised:
         #The HTTP request to the remote WebDriver server for URL http://10.1.0.124:4444/session timed out after 60 seconds
@@ -77,6 +77,7 @@ jobs:
 
       - name: test properties configuration
         run: |
+          mkdir -p ${{ env.REPORT_FOLDER }}/selema
           echo "selema.test.mode=${{ matrix.mode }}" > selema.properties
           echo "selema.test.browser=chrome" >> selema.properties
           # remote web driver will be updated later before launching the remote service
@@ -96,7 +97,6 @@ jobs:
           set -x
           mkdir -p ${{ env.REPORT_FOLDER }}/browsers
           echo '{"chrome": {"default": "latest", "versions": {"latest": {"image":"selenoid/chrome:latest","port":"4444","tmpfs": {"/tmp":"size=512m"} } } } }' > ${{ env.REPORT_FOLDER }}/browsers/browsers.json
-          mkdir -p ${{ env.REPORT_FOLDER }}/selema
           docker pull selenoid/chrome:latest
           docker pull selenoid/video-recorder:latest-release
           docker run -d --name selenoid -p 4444:4444 \
@@ -113,11 +113,10 @@ jobs:
         run: |
           set -x
           sed -i "s|selema.test.remote.webdriver=none|selema.test.remote.webdriver=http://localhost:4444|g" selema.properties
-          mkdir -p ${{ env.REPORT_FOLDER }}/selema
           mkdir -p ${{ env.REPORT_FOLDER }}/selema/assets
           sudo chown 1200:1201 ${{ env.REPORT_FOLDER }}/selema/assets
           docker run -d --name selenium --shm-size="2g" -p 4444:4444 \
-            -v $GITHUB_WORKSPACE/setup/docker-selenium.toml:/opt/selenium/docker.toml \
+            -v $GITHUB_WORKSPACE/java/src/test/resources/selenium-dynamic-grid.toml:/opt/selenium/docker.toml \
             -v $GITHUB_WORKSPACE/${{ matrix.platform}}/${{ env.REPORT_FOLDER }}/selema/assets:/opt/selenium/assets \
             -v /var/run/docker.sock:/var/run/docker.sock \
             selenium/standalone-docker:4.35.0-20250909
@@ -125,37 +124,44 @@ jobs:
           docker logs selenium
 
       # spin up a docker-selenium standalone selenium browser with a sidecar video recorder
-      - name: launch services - preloaded selenium standalone, local with video recorder sidecar
+      - name: launch services - preloaded selenium standalone with video recorder sidecar
         if: ${{ matrix.mode=='preload-local' }}
         run: |
-          set -x
           sed -i "s|selema.test.remote.webdriver=none|selema.test.remote.webdriver=http://localhost:4444|g" selema.properties
-          echo "selema.test.preload.video.container=selenium-video" >> selema.properties
-          echo "selema.test.preload.video.sourcefile=${{ env.REPORT_FOLDER }}/preload-local/video.mp4" >> selema.properties
+          echo "selema.test.preload.video.container=selenium-video-chrome" >> selema.properties
+          echo "selema.test.preload.video.sourcefile=$GITHUB_WORKSPACE/preload-local/chrome.mp4" >> selema.properties
           echo "selema.test.preload.video.targetfolder=${{ env.REPORT_FOLDER }}/selema" >> selema.properties
-          mkdir -p ${{ env.REPORT_FOLDER }}/preload-local
-          mkdir -p ${{ env.REPORT_FOLDER }}/selema
+          set -x
           docker network create grid
-          docker run -d -p 4444:4444 -p 6900:5900 --net grid --name selenium-chrome --shm-size="2g" \
-            -e SE_NODE_MAX_SESSIONS=8 \
-            selenium/standalone-chrome:4.35.0-20250909
-          docker run -d --net grid --name selenium-video --user $UID \
-            -e SE_VIDEO_FILE_NAME=video.mp4 \
-            -e DISPLAY_CONTAINER_NAME=selenium-chrome \
-            -v $GITHUB_WORKSPACE/${{ matrix.platform}}/${{ env.REPORT_FOLDER }}/preload-local:/videos \
-            selenium/video:ffmpeg-8.0-20250909
-          # stop recoder here, the video service will start an stop when needed
-          sleep 5
-          docker stop selenium-video
-          docker logs selenium-chrome
-          docker logs selenium-video
+          mkdir -p $GITHUB_WORKSPACE/preload-local
+          LABEL=chrome NETWORK=grid FOLDER=$GITHUB_WORKSPACE/preload-local PORTS=4444:4444 USER=$UID \
+            docker compose -f ../video-controller/docker-compose-preload.yml up -d 
+
+#          chmod ug+rx ../video-controller/preload-start.sh         
+#          ../video-controller/preload-start.sh chrome grid $GITHUB_WORKSPACE/preload-local "4444:4444" $UID
+
+      # samb, but to use a remote video controller
+      - name: launch services - preloaded selenium standalone with video recorder sidecar (remote video controller)
+        if: ${{ matrix.mode=='preload-remote' }}
+        run: |
+          sed -i "s|selema.test.remote.webdriver=none|selema.test.remote.webdriver=http://localhost:4444|g" selema.properties
+          echo "selema.test.preload.label=chrome" >> selema.properties
+          echo "selema.test.preload.video.controller=http://localhost:4449/selema-video-controller" >> selema.properties
+          echo "selema.test.preload.video.targetfolder=${{ env.REPORT_FOLDER }}/selema" >> selema.properties
+          set -x
+          docker network create grid
+          mkdir -p $GITHUB_WORKSPACE/video-controller/app/videos
+          LABEL=chrome NETWORK=grid FOLDER=$GITHUB_WORKSPACE/video-controller/app/videos PORTS=4444:4444 USER=$UID \
+            docker compose -f ../video-controller/docker-compose-preload.yml up -d 
+
+#          chmod ug+rx ../video-controller/preload-start.sh         
+#          ../video-controller/preload-start.sh chrome grid $GITHUB_WORKSPACE/video-controller/app/videos "4444:4444" $UID
 
       # spin up the video controller, do not use containres because of it needs access to the docker socket
       - name: launch services - remote video controller
-        if: ${{ matrix.mode=='vcmock-remote' }}
+        if: ${{ matrix.mode=='vcmock-remote' }} || ${{ matrix.mode=='preload-remote' }}
         run: |
           set -x
-          mkdir -p $GITHUB_WORKSPACE/${{ matrix.platform}}/${{ env.REPORT_FOLDER }}/selema
           cd $GITHUB_WORKSPACE/video-controller/app
           mkdir -p videos
           npm install
@@ -259,8 +265,10 @@ jobs:
           restore-artifact-path4: "target-preload-local"
           restore-artifact-name5: "sonar-java-vcmock-local"
           restore-artifact-path5: "target-vcmock-local"
-          restore-artifact-name6: "sonar-java-vcmock-remote"
-          restore-artifact-path6: "target-vcmock-remote"
+          restore-artifact-name6: "sonar-java-preload-remote"
+          restore-artifact-path6: "target-preload-remote"
+          restore-artifact-name7: "sonar-java-vcmock-remote"
+          restore-artifact-path7: "target-vcmock-remote"
 
   publish-java-snapshot:
     #avoid publishing PRs and dependabot branches

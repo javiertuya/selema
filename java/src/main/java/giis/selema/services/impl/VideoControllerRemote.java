@@ -17,18 +17,19 @@ import giis.selema.services.IVideoController;
 public class VideoControllerRemote implements IVideoController {
 	final Logger log = LoggerFactory.getLogger(this.getClass());
 
+	private static final String PATH = "/recording";
 	private String endpoint;
 	private String targetFolder;
 
 	/**
 	 * Creates a new instance
 	 * 
-	 * @param name an identifier of the pair of selenium node and video recorder, that will be passed as a path parameter
+	 * @param label an identifier of the pair of selenium node and video recorder, that will be passed as a path parameter
 	 * @param controllerUrl the endpoint of the video-controller
 	 * @param targetFolder where the recorded videos will be stored after recording
 	 */
-	public VideoControllerRemote(String name, String controllerUrl, String targetFolder) {
-		this.endpoint = controllerUrl + "/" + name;
+	public VideoControllerRemote(String label, String controllerUrl, String targetFolder) {
+		this.endpoint = controllerUrl + PATH + "/" + label;
 		this.targetFolder = targetFolder;
 	}
 

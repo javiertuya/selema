@@ -21,17 +21,18 @@ namespace Giis.Selema.Services.Impl
     public class VideoControllerRemote : IVideoController
     {
         readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly string PATH = "/recording";
         private string endpoint;
         private string targetFolder;
         /// <summary>
         /// Creates a new instance
         /// </summary>
-        /// <param name="name">an identifier of the pair of selenium node and video recorder, that will be passed as a path parameter</param>
+        /// <param name="label">an identifier of the pair of selenium node and video recorder, that will be passed as a path parameter</param>
         /// <param name="controllerUrl">the endpoint of the video-controller</param>
         /// <param name="targetFolder">where the recorded videos will be stored after recording</param>
-        public VideoControllerRemote(string name, string controllerUrl, string targetFolder)
+        public VideoControllerRemote(string label, string controllerUrl, string targetFolder)
         {
-            this.endpoint = controllerUrl + "/" + name;
+            this.endpoint = controllerUrl + PATH + "/" + label;
             this.targetFolder = targetFolder;
         }
 

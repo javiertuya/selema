@@ -14,6 +14,7 @@ import giis.selema.services.impl.RemoteBrowserService;
 import giis.selema.services.impl.SeleniumGridService;
 import giis.selema.services.impl.SelenoidService;
 import giis.selema.services.impl.VideoControllerLocal;
+import giis.selema.services.impl.VideoControllerRemote;
 import giis.selema.services.impl.WatermarkService;
 
 public class Config4test implements IManagerConfigDelegate {
@@ -61,6 +62,13 @@ public class Config4test implements IManagerConfigDelegate {
 			targetFolder = CommandLine.isAbsolute(targetFolder) ? targetFolder : FileUtil.getPath(Parameters.DEFAULT_PROJECT_ROOT, targetFolder);
 			VideoControllerLocal controller = new VideoControllerLocal(videoContainer, videoSourceFile, targetFolder);
 			return new RemoteBrowserService().setVideo(controller);
+		} else if (usePreloadRemote()) {
+			String label = prop.getProperty("selema.test.preload.label");
+			String videoController = prop.getProperty("selema.test.preload.video.controller");
+			String targetFolder = prop.getProperty("selema.test.preload.video.targetfolder");
+			targetFolder = CommandLine.isAbsolute(targetFolder) ? targetFolder : FileUtil.getPath(Parameters.DEFAULT_PROJECT_ROOT, targetFolder);
+			VideoControllerRemote controller = new VideoControllerRemote(label, videoController, targetFolder);
+			return new RemoteBrowserService().setVideo(controller);
 		} else
 			return null;
 	}
@@ -73,9 +81,12 @@ public class Config4test implements IManagerConfigDelegate {
 	public boolean usePreloadLocal() {
 		return "preload-local".equals(prop.getProperty("selema.test.mode"));
 	}
+	public boolean usePreloadRemote() {
+		return "preload-remote".equals(prop.getProperty("selema.test.mode"));
+	}
 	public boolean useRemoteWebDriver() {
 		return useSelenoidRemoteWebDriver() || useGridRemoteWebDriver() 
-				|| usePreloadLocal();
+				|| usePreloadLocal() || usePreloadRemote();
 	}
 	public boolean useHeadlessDriver() {
 		return "headless".equals(prop.getProperty("selema.test.mode"));

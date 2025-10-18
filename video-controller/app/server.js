@@ -4,43 +4,43 @@ import { CommandLine } from './commandLine.js';
 import { Log } from './log.js';
 
 /**
- * Video Controller Server that manages video recording via Docker containers.
- * 
- * Provides the endpoints to start the recorder (post), stop and download the video (get) and delete the recorded
- * video to get ready for next session.
- * A path parameter (name) is used to identify the video file (stored under the videos folder) 
- * and the container (with a prefix) used for recording.
+ * Video Controller Server to manage the recordings of sessions in a selenium browser node and a sidecar video recorder.
+ *
+ * Workflow:
+ * - Prerequisite: A selenium browser node with a sidecar video recorder must be running in a docker container.
+ *   Both containers must be in the same docker network.
+ * - A POST request starts the video recorder container with a name based on a prefix and a label (the path parameter).
+ *   The video is recorded to a file named <path parmeter>.mp4 in the videos folder.
+ * - A GET request stops the recorder container and streams the recorded video file as a download.
+ * - A DELETE request deletes the recorded video file to prepare for the next session.
  * 
  * The support classes used by this server reproduce the behavior of the Java version of the local video controller,
  * they have been transformed with the help of Copilot from Java to JS/Node.
  */
 const app = express();
-const PORT = process.env.PORT || 4449;
-const PATH = process.env.PORT || "/selema-video-controller";
-
-// Parámetros del controlador de vídeo (puedes parametrizar por entorno si lo deseas)
-const VIDEO_CONTAINER_PREFIX = process.env.VIDEO_CONTAINER_PREFIX || 'selenium-video';
+const PORT = process.env.SVR_PORT || 4449;
+const PATH = process.env.SVR_PATH || "/selema-video-controller";
+const VIDEO_CONTAINER_PREFIX = process.env.SVR_VIDEO_CONTAINER_PREFIX || 'selenium-video';
 const sourceFolder = './videos';
 
-function sourceFile(name) {
-    return `${sourceFolder}/${name}.mp4`;
+function sourceFile(label) {
+    return `${sourceFolder}/${label}.mp4`;
 }
-function containerName(name) {
-    return `${VIDEO_CONTAINER_PREFIX}-${name}`;
+function containerName(label) {
+    return `${VIDEO_CONTAINER_PREFIX}-${label}`;
 }
 function info(req) {
     const ip = req.connection.remoteAddress;
     const ipv4 = ip.startsWith('::ffff:') ? ip.substring(7) : ip;
-    Log.info(`${req.method} ${req.params.name} from ${ipv4}`);
+    Log.info(`${req.method} ${req.params.label} from ${ipv4}`);
 }
 
-// Endpoint REST
-app.post(`${PATH}/:name`, async (req, res) => {
+app.post(`${PATH}/recording/:label`, async (req, res) => {
   info(req);
-  const name = req.params.name;
+  const label = req.params.label;
   const videoController = new VideoControllerLocal();
   try {
-    await videoController.start(containerName(name), sourceFile(name));
+    await videoController.start(containerName(label), sourceFile(label));
     res.status(200).json({ message: 'Recording started successfully' });
   } catch (error) {
     Log.error(error.message)
@@ -48,17 +48,17 @@ app.post(`${PATH}/:name`, async (req, res) => {
   }
 });
 
-app.get(`${PATH}/:name`, async (req, res) => {
+app.get(`${PATH}/recording/:label`, async (req, res) => {
   info(req);
-  const name = req.params.name;
+  const label = req.params.label;
   const videoController = new VideoControllerLocal();
-  const file = sourceFile(name);
+  const file = sourceFile(label);
   try {
-    await videoController.stop(containerName(name));
+    await videoController.stop(containerName(label));
 
     const fsSync = await import('fs');
     if (!fsSync.existsSync(file)) {
-      const message = `Video file not found after recording: ${name}.mp4 `;
+      const message = `Video file not found after recording: ${label}.mp4 `;
       Log.error(message)
       return res.status(404).json({ error: message });
     }
@@ -76,11 +76,11 @@ app.get(`${PATH}/:name`, async (req, res) => {
   }
 });
 
-app.delete(`${PATH}/:name`, async (req, res) => {
+app.delete(`${PATH}/recording/:label`, async (req, res) => {
   info(req);
-  const name = req.params.name;
+  const label = req.params.label;
   try {
-    await CommandLine.fileDelete(sourceFile(name), true);
+    await CommandLine.fileDelete(sourceFile(label), true);
     res.status(200).json({ message: 'Video file deleted successfully' });
   } catch (error) {
     Log.error(error.message)

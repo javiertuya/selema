@@ -1,0 +1,32 @@
+# Start a video controller container to manage video recording for selenium nodes with a sidecar video recorder
+
+# Environment variables:
+# - NETWORK: the name of the docker network to connect the container to
+# - FOLDER: the folder to save the recorded videos to
+# - PORTS: port mappings for the video controller container (optional, default is 4449:4449, format: [ip:]hostPort:containerPort)"
+# - USER: the user to run the video controller container as (optional, default is root, format: uid[:gid])" 
+
+name: selema-stack-controller
+services:
+  node:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    image: selema-video-controller
+    container_name: selema-video-controller
+    networks:
+      - ${NETWORK:?}
+    ports:
+      - ${PORTS:-4449:4449}
+    user: ${USER:-root}
+    restart: unless-stopped
+    volumes:
+      - ${FOLDER}:/app/videos
+      - /var/run/docker.sock:/var/run/docker.sock
+#    environment:
+#      - DOCKER_HOST=tcp://host.docker.internal:2375"
+networks:
+  # In addition to the environment variable, this key must be set to the network name
+  grid:
+    external: true
+    name: ${NETWORK:?}
