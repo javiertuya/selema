@@ -5,58 +5,59 @@
 
 # Selema - Selenium Test Lifecycle Manager
 
-A multi-platform, multi-framework Selenium Test Lifecycle Manager on Java and .NET.
-Automates the WebDriver instantiation and configuration, 
-providing an unified test log, clues for debugging
-and integration with CI platforms and Browser services.
+A cross-platform, multi-framework Selenium Test Lifecycle Manager for Java and .NET.
+It automates WebDriver instantiation and configuration, provides a unified HTML test log,
+useful debugging information, and integrates with CI platforms and remote browser services.
 
 - Support:
   - Platforms: Java (>=11) and .NET (netstandard 2.0)
-  - Test frameworks: JUnit 4, JUnit 5, NUnit 3/4, MSTest 2/3
-  - CI/CD environments: Jenkins, GiHhub Actions
-  - Browser services: Selenoid
+  - Test frameworks: JUnit 4, JUnit 5, NUnit 3–4, MSTest 2–3
+  - CI/CD environments: Jenkins, GitHub Actions
+  - Browser services with video recording:
+    - Selenoid
+    - Selenium Docker Dynamic Grid
+    - Selenium Docker Preloaded Containers
 - Features:
-  - Transparent download/creation/disposal of the Selenium WebDriver
-  - Configurable driver mode (per test, per class)
-  - Configurable strategy to determine the driver version
-  - Unified log in html format
-  - Take a screenshot when a test fails
-  - Video recording and display a timestamp when test fails
-  - Watermark with the test being executed and its status
-  - Visual differences when comparing large strings (Visual Assert)
-  - Flaky test handling (Retry failed tests) on all supported frameworks
+  - Transparent download, creation and disposal of Selenium WebDriver instances
+  - Configurable driver lifetime (per test, per class)
+  - Configurable strategy for resolving driver versions
+  - Unified HTML test log
+  - Automatic screenshot capture on test failure
+  - Video recording with failure timestamping
+  - Watermark showing the test name and status
+  - Visual diffs for comparing large strings (Visual Assert)
+  - Flaky test handling (retry failed tests) across supported test frameworks
 
 ## Breaking changes (v4.0.0)
 
-- As this version added several browser services, they are now placed in their own namespace: The browser service for Selenoid has been moved/renamed to `giis.selema.services.browser.SelenoidBrowserService`
+- This release adds several browser services and moves them to their own namespace. The Selenoid browser service has been renamed/moved to `giis.selema.services.browser.SelenoidBrowserService`.
 
 # Getting started
 
-On Java, include the `selema` dependency as indicated in
+On Java, include the `selema` dependency as shown on
 [Maven Central](https://search.maven.org/artifact/io.github.javiertuya/selema).
-On .NET, include the `Selema` package in you project as indicated in
-[NuGet](https://www.nuget.org/packages/Selema/)
+On .NET, include the `Selema` package in your project as shown on
+[NuGet](https://www.nuget.org/packages/Selema/).
 
-Selema works around two main components: 
-A `Lifecycle*` controller class that detects the events during the test lifecycle 
-and calls the `SeleManager` to manage the required actions.
+Selema is organized around two main components:
+A `Lifecycle*` controller class that detects test lifecycle events
+and a `SeleManager` that performs the required actions.
 
 ## Basic usage
 
-To use Selema with your tests you only need:
+To use Selema in your tests you only need to:
 - Instantiate a `SeleManager` object (`sm` in the examples).
 - Configure the test class with a `Lifecycle*` annotation or rule (depending on the test framework).
 
 The appropriate Selenium WebDriver will be instantiated and closed before and after test execution
-and accesible to the tests using the `driver()` method (Java) or the `Driver` property (net).
+and is accessible to tests using the `driver()` method (Java) or the `Driver` property (.NET).
 
-Expand/collapse the below items for instructions and examples on each of the supported platforms.
+Expand/collapse the items below for instructions and examples for each supported platform.
 [Full source of examples can be found here](samples):
 
 <details open><summary><strong>JUnit 5</strong></summary>
 
-(1) Extend the test class with a `@ExtendWith(LifecycleJunit5.class)` annotation
-and (2) declare a static instance `sm` of `SeleManager`:
+(1) Extend the test class with `@ExtendWith(LifecycleJunit5.class)` and (2) declare a static `SeleManager` instance:
 
 ```java
 @ExtendWith(LifecycleJunit5.class)
@@ -119,7 +120,7 @@ and (2) a decorate the test class with the `[LifecycleNunit3]` annotation:
 
 </details>
 
-<details><summary><strong>MSTest 2</strong></summary>
+<details><summary><strong>MSTest 3</strong></summary>
 
 Declare (1) a static object `sm` of `SeleManager`, (2) instantiate `sm` in the class constructor
 and (3) inherit the test class from `LifecycleMstest2`. 
@@ -152,117 +153,101 @@ See comments in the example for additional explanations:
 
 ## Log files
 
-Test execution produces an html log file `selema-log.html` in the `target` folder (on Java) or `reports` folder (on .NET) 
-with links to screenshots taken when some test fails, difference files and videos. 
-Log info is also sent to the configured application logger (if any): slf4j on Java and NLog on .NET.
+Test execution produces an HTML log file named `selema-log.html` in the `target` folder (Java) or the `reports` folder (.NET). The log contains links to screenshots captured on failures, diff files and videos. Log entries are also written to the configured application logger (slf4j on Java, NLog on .NET).
 
 ![log-example](docs/log-file-example.png "Diff example")
 
 # Basic configuration
 
-Basic configuration is made using setter methods on the SeleManager instance. 
-All `set*` methods follow a fluent style, so they can be concatenated in a single statement.
+Basic configuration is performed using setter methods on the SeleManager instance. All `set*` methods use a fluent style and can be chained in a single statement.
 
-NOTE: The below sections use the the Java syntax. 
-Unless otherwise stated, on .NET, all packages, classes and methods have the same names than on Java, but package and methods names are capitalized.
+NOTE: The sections below use Java syntax. Unless otherwise stated, on .NET the packages, classes and methods have the same names but follow .NET naming conventions (capitalized).
 
 ## Driver management
 
-- **Browser**: `setBrowser(String browser)` sets the WebDriver for the specified browser ("chrome", "firefox", "edge", "safari", "opera"), default is chrome.
-- **Drivers**: `setDriverUrl(String driverUrl)` sets a RemoteWebDriver instead a local one (default). The driverUrl must point to the browser service.
-- **Versions**: `setDriverVersion(String versionStrategy)` modifies the default version resolution strategy, see next section for details.
-- **Modes of Operation**: By default, Selema starts a WebDriver before each test executions and quits after each test execution, but this behaviour can be modified:
-  - `setManageAtClass()`: Starts a WebDriver before the first test at each class, and quits after all tests in the class
-  - `setManageNone()`: Do not start/quit automatically any webdriver. Useful to test scenarios that involve users closing browsers.
-    If needed, tester can instantiate and close a driver by calling `createDriver()` and `quitDriver(WebDriver driver)` on the SeleManager Instance.
-    Method `hasDriver()` indicates if an instance of the driver has been created (accesing a non instantiated driver thwows an exception).
-  - `setManagedAtTest()`: Returns to the default behaviour.
-- **WebDriver Capabilities (options)**: `setOptions(Map<String,Object> options)` adds the specific capabilities to the WebDriver prior to its creation.
-- **WebDriver Arguments**: `setArguments(String[] arguments)` adds the specific arguments to the WebDriver execution. 
-  For example, use `setArguments(new String[] {"--headless"})` to run the browser in headless mode
-- **Browser dependent WebDriver Capabilities (options)**: `setOptionsInstance(Capabilities optionsInstance)`
-  adds a browser dependent instance of options to set the W3C WebDriver standard capabilities.
+- **Browser**: `setBrowser(String browser)` sets the WebDriver for the specified browser ("chrome", "firefox", "edge", "safari", "opera"). Default: chrome.
+- **Remote driver**: `setDriverUrl(String driverUrl)` configures a RemoteWebDriver instead of a local one. The URL must point to the remote browser server. An overloaded `setDriverUrl(String driverUrl, int warmUpPeriod)` is useful when tests start immediately after the browser server is launched and the service needs a short warm-up period; during the warm-up period unsuccessful connections are retried.
+- **Versions**: `setDriverVersion(String versionStrategy)` changes the driver version resolution strategy (see next section).
+- **Modes of operation**: By default, Selema starts a WebDriver before each test and quits it after each test. You can change this behavior:
+  - `setManageAtClass()`: Start a WebDriver before the first test in a class and quit it after all tests in the class.
+  - `setManageNone()`: Do not start/quit WebDriver automatically. Useful to test scenarios where the user closes the browser. In this mode you can call `createDriver()` and `quitDriver(WebDriver driver)` manually. Use `hasDriver()` to check whether a driver has been created (accessing a non-created driver throws an exception).
+  - `setManagedAtTest()`: Restore the default per-test behavior.
+- **WebDriver capabilities (options)**: `setOptions(Map<String,Object> options)` adds specific capabilities to the WebDriver before creation.
+- **WebDriver arguments**: `setArguments(String[] arguments)` adds execution arguments (for example `setArguments(new String[] {"--headless"})`).
+- **Browser-specific options instance**: `setOptionsInstance(Capabilities optionsInstance)` provides a browser-specific options instance; capabilities from `setOptions` and `setArguments` are also applied.
 
-NOTE: As of Selenium v4.9.0 no standard capabilities need to include a vendor prefix:
-https://www.selenium.dev/documentation/webdriver/getting_started/upgrade_to_selenium_4/#after. 
-If using `setOptionsInstance` the capabilities specified with `setOptions` and `setArguments` will be added as well to the WebDriver prior to its creation.
+NOTE: Since Selenium v4.9.0 standard capabilities no longer require vendor prefixes. When using `setOptionsInstance`, values provided via `setOptions` and `setArguments` are applied as well.
 
 ## Driver versions
 
-By default, Selema relies on third party Web Driver Managers
+By default Selema relies on third-party WebDriver managers
 ([Java](https://github.com/bonigarcia/webdrivermanager) and
 [.NET](https://github.com/rosolko/WebDriverManager.Net))
-configured to get the local driver version that best matches with the installed browser.
+to obtain a driver version that best matches the installed browser.
 
-This is suited for most scenarios, but sometimes, the tester wants to have more control on the versions, 
-or changes in Selenium, browsers or driver managers lead to incompatible versions.
-The SeleManager `setDriverVersion` method allows to change this strategy:
-- `setDriverVersion(DriverVersion.LATEST_AVAILABLE)`: Use the latest available version without taking into account the browser version.
-- `setDriverVersion(DriverVersion.SELENIUM_MANAGER)`: Deactivate the third party Driver Managers.
-  Since Selenium V4.6 it relies on the native Selenium capabilities to download drivers using the 
-  [SeleniumManager](https://www.selenium.dev/documentation/selenium_manager/).
-  Note that SeleniumManager is still in beta (August 2023).
-- `setDriverVersion(DriverVersion.MATCH_BROWSER)`: Set the default behaviour back (driver version that closely matches the browser version).
-- `setDriverVersion(<VERSION_NUMBER>)`: Forces to download the specified version.
+This suits most scenarios, but sometimes you need more control or compatibility fixes. Use `setDriverVersion` to change the strategy:
+- `setDriverVersion(DriverVersion.LATEST_AVAILABLE)`: Use the latest available driver version regardless of browser version.
+- `setDriverVersion(DriverVersion.SELENIUM_MANAGER)`: Disable third-party driver managers and rely on SeleniumManager (introduced in Selenium 4.6). Note: SeleniumManager is still considered beta.
+- `setDriverVersion(DriverVersion.MATCH_BROWSER)`: Restore the default behavior (match the driver to the browser).
+- `setDriverVersion(<VERSION_NUMBER>)`: Force a specific driver version.
 
 ## Log file location
 
-Default location of selema log file and log file name can be overriden by pasing a `SelemaConfig` instance as argument at the SeleManager instantiation. 
-`SelemaConfig` admits the following fluent style customization methods:
+The default report folder and log file name can be overridden by passing a `SelemaConfig` when constructing `SeleManager`. `SelemaConfig` supports these fluent methods:
 
-- `setReportSubdir(String subdir)`: changes the name of the report folder (relative to the project root). Default is `target` (on Java) and `reports` (on .NET).
-- `setProjectRoot(String root)`: changes the location of the project root. 
-  Default is `.` on Java and `../../../..` on .NET (this is the solution folder provided that the test project is located just below the solution folder).
-- `setName(String name)`: changes the name of the log and the log file. Useful when you need to separate logs in different files.
+- `setReportSubdir(String subdir)`: Change the reports folder name (relative to project root). Default: `target` (Java) and `reports` (.NET).
+- `setProjectRoot(String root)`: Change the project root. Default: `.` (Java) and `../../../..` (.NET) — the latter assumes the test project is directly under the solution folder.
+- `setName(String name)`: Change the log name. Useful to separate logs into different files.
 
-For instance, `new SeleManager(new SelemaConfig().setReportSubdir("target/site").setName("custom"))` 
-instantiates a SeleManager that places the reports in the `target/site` folder 
-and produces a log file named `selema-custom-log.html`.
+Example:
+`new SeleManager(new SelemaConfig().setReportSubdir("target/site").setName("custom"))`
+produces reports in `target/site` and a log file named `selema-custom-log.html`.
 
 ## Delegated configurations
 
-Additional or new configurations can be delegated to an tester suplied object that implments a given interface
-and establishes these configurations in its `configure` method:
+You can delegate configuration to a user-supplied object that implements an interface with a `configure` method:
 
-- `setManagerDelegate(IManagerConfigDelegate configDelegate)`: Sets a delegate that executes the configuration actions specified in the `configure` method
-  at the Selenium Manager instantiation.
-  Useful when same configuration is made on multiple test classes, or configuration is complex, maybe read from a properties file.
-- `setDriverDelegate(IDriverConfigDelegate driverConfig)` Sets a delegate that executes the configuration actions specified in the `configure` method
-  just after each driver is created.
+- `setManagerDelegate(IManagerConfigDelegate configDelegate)`: The delegate executes configuration actions at manager instantiation. Useful for shared or complex configuration.
+- `setDriverDelegate(IDriverConfigDelegate driverConfig)`: The delegate executes configuration actions after each driver is created.
 
 # Advanced configuration and services
 
-Most of actions performed by the SeleManager instance are implemented as services that are attached to the instance using a set of overloaded `add` methods. 
-Some services are predefined (attached during the SeleManager instantiation) 
-and others are optional (attached by calling to `add(<service-instance>)` on the SelenimManager instance). 
-All `add` methods and service configuration methods follow a fluent style.
+Most actions performed by SeleManager are implemented as services injected via overloaded `add(...)` methods. Some services are attached by default; others are optional and can be added with `add(<service-instance>)`. All `add` and service configuration methods use a fluent style.
 
-## Watermark service
+## Remote browser servers and services
 
-Inserts a text at the top left side of the browser with the name of test being executed and the failure status. 
-Use `add(new WatermarkService())` to attach an instance. The service instance can be cusomized with these methods:
-- `setDelayOnFailure(int delayOnFailure`): After a test failure, waits for the specified time in seconds to give more time to watch the state of the browser (interactively or in a video).
-- `setBackground(String color)`: Sets a background color to better differentiate the watermark from the web content (by default watermark has no background).
+Setting the remote browser URL with `setDriverUrl()` is enough for Selema to create a `RemoteWebDriver` that connects to that URL. However, to use features such as video recording or VNC, add a specialized browser service to the SeleManager using `add(IBrowserService)`. `IBrowserService` exposes `setVideo()` and `setVnc()` to enable video recording and VNC (if supported).
 
-Watermarks are automatically inserted after a test fails.
-Additional watermark with the test name can be inserted by the tester using the `watermark()` method of the SeleManager instance (tipically just after moving to an url). 
-During test execution the user can also write arbitrary text using the `watermarkText(String value)` method.
+Recorded videos are linked from the Selema log and uniquely identified by test class, test name, and CI context. The CI context includes branch and build number (Jenkins) or workflow name, job name, and run id (GitHub Actions). When a test fails, the log includes an approximate failure timestamp and a watermark is displayed in the browser for a few seconds. This is especially helpful when Selema manages drivers at the class level.
 
-## Browser service (Selenoid)
+The concrete `IBrowserService` to inject depends on the kind of remote browser server, which falls into two main categories:
 
-Use `add(new SelenoidBrowserService())` to attach an instance that allows integrate and configure [Selenoid](https://aerokube.com/selenoid/latest/), 
-in particular, recording videos of each driver session. 
-The Selenoid service instance can be cusomized with these methods:
-- `setVideo()`: Activates the video recording, provided that the Selenoid server is 
-  properly [configured for video recording](https://aerokube.com/selenoid/latest/#_video_recording)
-- `setVnc()`: Activates the VNC capabilities to be able to watch the test execution in real time (e.g. using selenoid-ui). 
-  Note that Selenoid requires special driver containers to allow this capability.
-- `setCapability(String key, Object value)`: Adds a [special capability](https://aerokube.com/selenoid/latest/#_special_capabilities)
-  other than the predefined video and vnc.
+- **Dynamic browser containers**: automatically create and dispose browser and video recorder containers.
+- **Preloaded browser containers**: use pre-created browser containers paired with a sidecar video recorder.
 
-To use a remote driver the driver url must be configured by calling `setDriverUrl(String driverUrl)` on the SeleManager instance.
+The supported remote browser platforms and their corresponding services are described below and illustrated with examples.
 
-An example of a Selenoid set up accesible from the `http://localhost:4444/wd/hub` url is shown below:
+### Dynamic browser containers
+
+- [Selenoid](https://aerokube.com/selenoid/latest/): Add `new SelenoidBrowserService()`. Default URL: `http://localhost:4444/wd/hub`. Use `setBrowserCapability(String key, Object value)` to configure Selenoid-specific capabilities.
+- [Selenium Dynamic Grid](https://github.com/SeleniumHQ/docker-selenium): Add `new DynamicGridBrowserService()`. Default URL: `http://localhost:4444`. A `.toml` configuration file is required; see the docker-selenium project for details.
+
+### Preloaded browser containers
+
+Dynamic containers are flexible and easy to configure, but they have drawbacks: Selenoid is no longer maintained as of December 2024, and Selenium Dynamic Grid can introduce significant overhead because of starting and stopping containers for every Selenium session.
+
+A compromise between ease of configuration and performance is to use preloaded containers. Before running tests, start a standalone browser container (docker-selenium) paired with a sidecar video recorder. Current video recorder implementations record continuously, producing very large video files that can become unmanageable. To address this, Selema manages recording by starting and stopping the recorder for each test/class and copying each video to the destination folder. This approach can be much faster than a dynamic grid [#37](https://github.com/javiertuya/selema/issues/37).
+
+To use preloaded browser containers, instantiate `RemoteBrowserService()` and configure the video management with `setVideo(IVideoController)` by providing a video controller implementation. Two variants are supported:
+
+- **Local**: If tests and browsers share Docker and file access, use `VideoControllerLocal(String label, String sourceFile, String targetFolder)`. Arguments: a label to identify containers when running in parallel, the temporary video filename recorded, and the folder where each video will be copied when the session ends.
+- **Remote**: If tests do not have access to Docker or run on a different VM, use `VideoControllerRemote(String label, String controllerUrl, String targetFolder)`. The video controller is a tiny REST server that runs in the browsers' VM and is accesible at the `controllerUrl` endpoint. Multiple tests can share the same controller.
+
+The `./video-controller` folder contains the video controller source (`app` folder) and parameterized Docker Compose files to start/stop preloaded browser containers and the video controller server. Params such as port or paths can be configured via environment variables (see `server.js`). Examples follow.
+
+### Browser severs and services examples
+
+<details><summary><strong>Selenoid</strong></summary>
 
 ```bash
 # Creates the required browser configuration file and required folders that will be mapped in the containers
@@ -279,63 +264,135 @@ docker run -d --name selenoid -p 4444:4444 \
   aerokube/selenoid:latest-release
 ```
 
-Recorded videos are linked to the Selema log. 
-When a test fails a timestamp of the approximate time in which the filure appeared is included (useful when using a single web driver session for all tests in a class).
+Instanciate the Selema manager as follows:
+```java
+SeleManager sm = new SeleManager().setDriverUrl("http://localhost:4444/wd/hub")
+		.add(new SelenoidBrowserService().setVideo());
+```
 
-## Browser service (Selenium Server)
+</details>
 
-(Planned #36 #37)
 
-## Javascript coverage service (JSCover)
+<details><summary><strong>Selenium Dynamic Grid</strong></summary>
 
-Use `add(JsCoverService.getInstance(<instrumented-root-url>))` to attach an instance that allows integrate and configure [JSCover](http://tntim96.github.io/JSCover/) 
-to measure javscript coverage:
+Assume recordings are placed in `/assets` and the required grid configuration file is `/grid.toml` (see [docker-selenium](https://github.com/SeleniumHQ/docker-selenium) for examples):
 
-- When executing the instrumented javascript code, coverage is stored in the browser local memory
-- Each time that a driver is open, the previously recorded coverage is loaded to the browser local memory (except first time that it is reset)
-- Before closing each driver, the coverage is saved from browser local memory to file storage (`jscover.json' file)
 
-Important notes:
+```bash
+mkdir -p /assets
+sudo chown 1200:1201 /assets
+docker run -d --name selenium --shm-size="2g" -p 4444:4444 \
+  -v /grid.toml:/opt/selenium/docker.toml \
+  -v /assets:/opt/selenium/assets \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  selenium/standalone-docker:4.35.0-20250909
+```
 
-- The service instance has to be instantiated as a singleton by `JsCoverService.getInstance`.
-- The javascript code has to be preveviously instrumented using JSCover. The `<instrumented-root-url>` parameter indicates the designated root for all html and js files.
-- And additional html file [jscoverage-restore-local-storage.html](java/src/main/resources/jscoverage-restore-local-storage.html) provided by 
-  must be added to the instrumented root url to allow restoring coverage between sessions.
-- This integration has been tested with JSCover version 2.0.6 and instrumented in [File Mode](http://tntim96.github.io/JSCover/manual/manual.xml#fileMode).
+Instanciate the Selema manager as follows:
+```java
+SeleManager sm = new SeleManager().setDriverUrl("http://localhost:4444")
+		.add(new DynamicGridBrowserService().setVideo());
+```
+
+</details>
+
+
+<details><summary><strong>Preloaded browser containers (local)</strong></summary>
+
+Assuming the repository root is the current folder, a Docker network `grid` exists, the tests have access to the `grid` network, and the temporary folder for recordings is `/tmp/videos`. To create a pair labeled `chrome`:
+
+```bash
+mkdir -p /tmp/videos
+LABEL=chrome NETWORK=grid FOLDER=/tmp/videos docker compose -f ./video-controller/docker-compose-preload.yml up -d 
+```
+
+Container names use the label with prefixes `selenium-node-` and `selenium-video-`. AIf they share a network with the tests, access them by container name and internal port. Additional environment variables can configure exported ports (e.g., `PORTS=4444:4444`) or the user that runs the containers (e.g., `USER=$UID`).
+
+Instanciate the Selema manager as follows:
+```java
+SeleManager sm = new SeleManager().setDriverUrl("http://selenium-node-chrome:4444")
+		.add(new RemoteBrowserService()
+				.setVideo(new VideoControllerLocal("chrome", "/tmp/videos/chrome.mp4", "./target"))
+		);
+```
+
+</details>
+
+
+<details open><summary><strong>Preloaded browser containers (remote)</strong></summary>
+
+Assuming the repository root is the current folder, a Docker network `grid` exists, and the temporary folder for recordings is `/tmp/videos`. To start the video controller:
+
+```bash
+mkdir -p /tmp/videos
+NETWORK=grid FOLDER=/tmp/videos PORTS=4449:4449 docker compose -f ./video-controller/docker-compose-controller.yml up -d --build
+# Alternative for debugging: start video recorder server (same port) without a container
+# cd video-controller/app
+# npm install && npm start
+```
+
+To start a pair of browser and recorder labeled `chrome`:
+```bash
+LABEL=chrome NETWORK=grid FOLDER=/tmp/videos docker compose -f ./video-controller/docker-compose-preload.yml up -d 
+```
+
+Container names use the label with prefixes `selenium-node-` and `selenium-video-`. If they share a network with the tests, access them by container name and internal port. Additional environment variables can configure exported ports (e.g., `PORTS=4444:4444`) or the user that runs the containers (e.g., `USER=$UID`).
+
+Instanciate the Selema manager as follows:
+```java
+SeleManager sm = new SeleManager().setDriverUrl("http://selenium-node-chrome:4444")
+		.add(new RemoteBrowserService()
+				.setVideo(new VideoControllerRemote("chrome", "http://localhost:4449/selema-video-controller", "./target"))
+		);
+```
+
+</details>
+
+
+## Watermark service
+
+Displays text in the browser's top-left corner showing the test name and its status.
+Attach it with `add(new WatermarkService())`. Customize the service with:
+
+- `setDelayOnFailure(int seconds)`: After a test failure, wait the given number of seconds to allow interactive inspection or to capture video.
+- `setBackground(String color)`: Set a background color to improve visibility (default: no background).
+
+Watermarks are inserted automatically after a test failure. You can also insert a watermark manually with `watermark()` (for example, after navigating to a URL) or write arbitrary text using `watermarkText(String value)`.
+
+## JavaScript coverage service (JSCover)
+
+Attach JSCover integration with `add(JsCoverService.getInstance(<instrumented-root-url>))` to collect JavaScript coverage:
+
+- Coverage is stored in the browser's local storage while running instrumented code.
+- When a new driver session starts, previously recorded coverage is restored to local storage (except on the very first run).
+- Before closing a driver, coverage is saved from local storage to a file (`jscover.json`).
+
+Notes:
+
+- Instantiate the service as a singleton using `JsCoverService.getInstance`.
+- JavaScript must be pre-instrumented with JSCover; `<instrumented-root-url>` is the root for instrumented files.
+- Add the provided helper HTML file `jscoverage-restore-local-storage.html` (java/src/main/resources/...) to the instrumented root to allow restoring coverage between sessions.
+- Tested with JSCover 2.0.6 in [File Mode](http://tntim96.github.io/JSCover/manual/manual.xml#fileMode).
 
 ## Predefined services
 
-- **CI/CD Services**: `ICiService` defines this interface. 
-  At the instantiation, the SeleManager detects if tests are running under one of the recognized CI platforms and attaches the corresponding service instance. 
-  Method `getCiService()`  retrieves the attached service, allowing access to a number of methods useful to perform conditional actions depending on the run platform:
-  - `isLocal()`: Returns true if tests are not running in any of the recognized CI platforms.
-  - `getName()`: Returns the name of the platform (local for local mode, jenkins pr github)
-  - `getJobId()`: Returns an unique job identifier including the build number.
-  - `getJobName()`: Returns the job identifier without the build number.
-- **Screenshot service**: To take screenshots of the browser state and place the picture accesible from the log. 
-  Usually, the tests do not access directly to this service, but can use the `screenshot(String fileName)` method on the SeleManager instance to take a picture at any time.
-- **Visual Assert service**: To compare large strings. Places an html file with the differences accesible from the log.
-  - The Methods `visualAssertEquals(...)` can be invoked on the SeleManager instance to perform the assert on the strings.
-  - See the [Visual Assert documentation](https://github.com/javiertuya/visual-assert) for more information.
-- **Soft Assert service**: A variant of Visual Assert that implements soft assertions.
-  - The methods `softAssertEquals(...)` that fail record the message and the diff files instead of throwing an exception.
-  - Method `softAssertAll()` must be called at the end of each test to cause an exception to be thrown including all assertion messages
-    (if one or more assertions failed).
-  - Method `softAssertClear()` must be called at the beginning of each test to reset the assertion messages of the Selenium Manager instance.
+- **CI/CD services** (`ICiService`): SeleManager detects known CI platforms and attaches the appropriate service. Use `getCiService()` to access:
+  - `isLocal()`: true when running outside recognized CI platforms.
+  - `getName()`: platform name (e.g., local, jenkins, github).
+  - `getJobId()`: unique job identifier including build number.
+  - `getJobName()`: job identifier without the build number.
+- **Screenshot service**: Captures screenshots and links them in the log. Tests can call `screenshot(String fileName)` on SeleManager.
+- **Visual Assert service**: Compares large strings and writes an HTML diff accessible from the log. Use `visualAssertEquals(...)` on SeleManager. See the [Visual Assert documentation](https://github.com/javiertuya/visual-assert) for details.
+- **Soft Assert service**: A soft-assert variant of Visual Assert:
+  - `softAssertEquals(...)` records failures and generates diffs without throwing immediately.
+  - Call `softAssertAll()` at the end of a test to throw an exception if any soft assertions failed.
+  - Call `softAssertClear()` at the start of a test to reset recorded soft-assert messages.
 
 # Handling flaky tests
 
-A common approach to mitigate the problem of flaky tests is to retry the test execution until test passes or a maximum number of retries. 
-Support for this feature is managed differently (or not managed at all) by the test frameworks. 
-Selema includes the required support on all supported frameworks. [See examples on each platform here](samples).
+A common mitigation for flaky tests is to retry the test until it passes or a maximum number of retries is reached. Selema provides helpers for retries; examples are in the samples folder.
 
-- **JUnit 5**: Declare the [rerunner-jupiter](https://search.maven.org/artifact/io.github.artsok/rerunner-jupiter) dependency
-  and set the annotation `@RepeatedIfExceptionsTest(repeats = <repetitions>)` to the appropriate tests.
-  Note that you **MUST NOT** add the `@Test` annotation.
-- **JUnit 4**: Selema provides a custom rule implementation. 
-  After declaring rules for the selenum manager, delcare a new instance of rule class `RepeatedTestRule` 
-  and add the annotation `@RepeatedIfExceptionsTest(repeats = <repetitions>)` to the appropriate tests.
-  Note that you **MUST** add the `@Test` annotation.
-- **NUnit 3**: Use the native `Retry` annotation. Add the annotation `[Retry(<repetitions>)]` to the appropriate tests.
-- **MSTest 2**: Selema provides a custom implementation. 
-  Replace the `[TestMethod]` annotation by `[RetryTestMethod(<repetitions>)]` in the appropriate tests.
+- **JUnit 5**: Add the rerunner-jupiter dependency and annotate tests with `@RepeatedIfExceptionsTest(repeats = <repetitions>)`. Do NOT also annotate with `@Test`.
+- **JUnit 4**: Use Selema's custom rule. After declaring the manager rules, declare a `RepeatedTestRule` instance and annotate tests with `@RepeatedIfExceptionsTest(repeats = <repetitions>)`. You MUST still use `@Test`.
+- **NUnit 3–4**: Use the built-in retry attribute: `[Retry(<repetitions>)]`.
+- **MSTest 2–3**: Use Selema's custom attribute: replace `[TestMethod]` with `[RetryTestMethod(<repetitions>)]` for tests that should be retried.

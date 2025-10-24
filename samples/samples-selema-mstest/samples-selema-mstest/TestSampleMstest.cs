@@ -2,17 +2,17 @@ using Giis.Selema.Framework.Mstest2;
 using Giis.Selema.Manager;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Giis.Samples.Selema.Mstest2
+namespace Giis.Samples.Selema.Mstest
 {
     /// <summary>
-    /// Selenium Test Lifecycle Manager (selema) sample on the MSTest 2 framework, 
+    /// Selenium Test Lifecycle Manager (selema) sample on the MSTest 2/3 framework, 
     /// see usage at https://github.com/javiertuya/selema#readme
     /// </summary>
     [TestClass]
-    public class TestSampleMstest2 : LifecycleMstest2
+    public class TestSampleMstest : LifecycleMstest2
     {
         protected static SeleManager sm;
-        public TestSampleMstest2()
+        public TestSampleMstest()
         {
             sm = LifecycleMstest2.GetManager(sm).SetBrowser("chrome");
         }

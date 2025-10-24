@@ -237,8 +237,8 @@ jobs:
       - name: NET - compile samples
         if: ${{ matrix.platform=='net' && matrix.mode=='headless' }}
         run: |
-          cd ../samples/samples-selema-mstest2 && dotnet build
-          cd ../samples-selema-nunit3 && dotnet build
+          cd ../samples/samples-selema-mstest && dotnet build
+          cd ../samples-selema-nunit && dotnet build
 
   # Example using a custom action, see https://github.com/javiertuya/sonarqube-action
   sonarqube:

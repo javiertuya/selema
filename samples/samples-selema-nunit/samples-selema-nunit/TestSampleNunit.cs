@@ -2,14 +2,14 @@ using Giis.Selema.Framework.Nunit3;
 using Giis.Selema.Manager;
 using NUnit.Framework;
 
-namespace Giis.Samples.Selema.Nunit3
+namespace Giis.Samples.Selema.Nunit
 {
     /// <summary>
     /// Selenium Test Lifecycle Manager (selema) sample on the NUnit 3 framework, 
     /// see usage at https://github.com/javiertuya/selema#readme
     /// </summary>
     [LifecycleNunit3]
-    public class SampleNunit3
+    public class SampleNunit
     {
         protected SeleManager sm = new SeleManager().SetBrowser("chrome");
         //More customizations of sm can be made in the OneTimeSetUp method 
