@@ -509,7 +509,7 @@ namespace Giis.Selema.Manager
             catch (Exception e)
             {
                 string msg = "Can't write onFailure watermark " + value + ". Message: " + e.Message;
-                log.Error(msg);
+                Giis.Portable.Util.NLogUtil.Error(log, msg);
                 selemaLog.Error(msg);
                 return msg;
             }
@@ -565,7 +565,7 @@ namespace Giis.Selema.Manager
             catch (Exception e)
             {
                 string msg = "Can't write onFailure watermark " + value + ". Message: " + e.Message;
-                log.Warn(msg);
+                Giis.Portable.Util.NLogUtil.Warn(log, msg);
                 selemaLog.Warn(msg);
             }
         }

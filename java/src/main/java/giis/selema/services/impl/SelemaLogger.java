@@ -16,12 +16,12 @@ public class SelemaLogger implements ISelemaLogger {
 	private static final String SPAN_RED = "<span style=\"color:red;\">";
 	private static final String SPAN_RED_BOLD = "<span style=\"color:red;font-weight:bold;\">";
 	private static final String SPAN_END = "</span>";
-	private final Logger syslog;
+	private final Logger log;
 	private String loggerName;
 	private String reportDir;
 	private String logFile;
 	public SelemaLogger(String loggerName, String reportDir, String logFileName) {
-		this.syslog=LoggerFactory.getLogger(loggerName);
+		this.log=LoggerFactory.getLogger(loggerName);
 		this.loggerName=loggerName;
 		this.reportDir=reportDir;
 		this.logFile=FileUtil.getPath(this.reportDir, logFileName);
@@ -31,26 +31,26 @@ public class SelemaLogger implements ISelemaLogger {
 	}
 	@Override
 	public void trace(String message) {
-		syslog.trace(message);
+		log.trace(message);
 	}
 	@Override
 	public void debug(String message) {
-		syslog.debug(message);
+		log.debug(message);
 	}
 	@Override
 	public void info(String message) {
 		write("INFO", message);
-		syslog.info(message);
+		log.info(message);
 	}
 	@Override
 	public void warn(String message) {
 		write("WARN", SPAN_RED + message + SPAN_END);
-		syslog.warn(message);
+		log.warn(message);
 	}
 	@Override
 	public void error(String message) {
 		write("ERROR", SPAN_RED_BOLD + message + SPAN_END);
-		syslog.error(message);
+		log.error(message);
 	}
 	
 	//only for testing

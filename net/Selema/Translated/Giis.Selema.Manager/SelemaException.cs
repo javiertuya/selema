@@ -21,7 +21,7 @@ namespace Giis.Selema.Manager
 
         public SelemaException(Logger log, string message, Exception cause) : base(message, cause)
         {
-            log.Error(message, cause);
+            Giis.Portable.Util.NLogUtil.Error(log, message, cause);
         }
     }
 }

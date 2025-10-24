@@ -45,7 +45,7 @@ namespace Giis.Selema.Services.Impl
             {
 
                 //
-                log.Error("Video controller start failure - " + e.Message);
+                logSelema.Error("Video controller start failure - " + e.Message);
             }
         }
 
@@ -59,7 +59,7 @@ namespace Giis.Selema.Services.Impl
             {
 
                 //
-                log.Error("Video controller stop failure - " + e.Message);
+                logSelema.Error("Video controller stop failure - " + e.Message);
             }
         }
     }

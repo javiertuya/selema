@@ -20,13 +20,13 @@ namespace Giis.Selema.Services.Impl
         private static readonly string SPAN_RED = "<span style=\"color:red;\">";
         private static readonly string SPAN_RED_BOLD = "<span style=\"color:red;font-weight:bold;\">";
         private static readonly string SPAN_END = "</span>";
-        private readonly Logger syslog;
+        private readonly Logger log;
         private string loggerName;
         private string reportDir;
         private string logFile;
         public SelemaLogger(string loggerName, string reportDir, string logFileName)
         {
-            this.syslog = LogManager.GetLogger(loggerName);
+            this.log = LogManager.GetLogger(loggerName);
             this.loggerName = loggerName;
             this.reportDir = reportDir;
             this.logFile = FileUtil.GetPath(this.reportDir, logFileName);
@@ -38,30 +38,30 @@ namespace Giis.Selema.Services.Impl
 
         public virtual void Trace(string message)
         {
-            syslog.Trace(message);
+            log.Trace(message);
         }
 
         public virtual void Debug(string message)
         {
-            syslog.Debug(message);
+            log.Debug(message);
         }
 
         public virtual void Info(string message)
         {
             Write("INFO", message);
-            syslog.Info(message);
+            log.Info(message);
         }
 
         public virtual void Warn(string message)
         {
             Write("WARN", SPAN_RED + message + SPAN_END);
-            syslog.Warn(message);
+            Giis.Portable.Util.NLogUtil.Warn(log, message);
         }
 
         public virtual void Error(string message)
         {
             Write("ERROR", SPAN_RED_BOLD + message + SPAN_END);
-            syslog.Error(message);
+            Giis.Portable.Util.NLogUtil.Error(log, message);
         }
 
         //only for testing

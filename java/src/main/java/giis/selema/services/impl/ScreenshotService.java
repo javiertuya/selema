@@ -12,14 +12,14 @@ import giis.selema.services.ISelemaLogger;
  * Screenshot management
  */
 public class ScreenshotService implements IScreenshotService {
-	private ISelemaLogger log;
+	private ISelemaLogger logSelema;
 
 	/**
 	 * Configures this service, called on attaching the service to a SeleManager
 	 */
 	@Override
 	public IScreenshotService configure(ISelemaLogger thisLog) {
-	    log=thisLog;
+	    logSelema=thisLog;
 	    return this;
 	}
 	/**
@@ -32,14 +32,14 @@ public class ScreenshotService implements IScreenshotService {
 			String fileName=FileUtil.getPath(context.getReportFolder(), screenshotFile);
 			String screenshotUrl="<a href=\"" + screenshotFile + "\">" + screenshotFile + "</a>";
 			String msg="Taking screenshot: " + screenshotUrl;
-			if (log!=null)
-				log.info(msg);
+			if (logSelema!=null)
+				logSelema.info(msg);
 			SeleniumActions.takeScreenshotToFile(driver, fileName);
 			return msg;
 		} catch (RuntimeException e) {
 			String msg="Can't take screenshot or write the content to file "+screenshotFile+". Message: " + e.getMessage();
-			if (log!=null)
-				log.error(msg);
+			if (logSelema!=null)
+				logSelema.error(msg);
 			return msg;
 		}
 	}

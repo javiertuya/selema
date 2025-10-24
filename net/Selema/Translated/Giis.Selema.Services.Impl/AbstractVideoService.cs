@@ -17,7 +17,7 @@ namespace Giis.Selema.Services.Impl
     /// </summary>
     public abstract class AbstractVideoService : IVideoService
     {
-        protected ISelemaLogger log;
+        protected ISelemaLogger logSelema;
         private static readonly string VIDEO_INDEX_NAME = "video-index.log";
         protected string seleniumSessionId = "";
         //los timestamps no se miden de forma precisa, pero se tomara como referencia el intervalo que se conoce
@@ -28,7 +28,7 @@ namespace Giis.Selema.Services.Impl
         /// </summary>
         public virtual IVideoService Configure(ISelemaLogger thisLog)
         {
-            log = thisLog;
+            logSelema = thisLog;
             return this;
         }
 
@@ -50,8 +50,8 @@ namespace Giis.Selema.Services.Impl
             string videoFileName = GetVideoFileNameWithRelativePath(context, testName);
             string videoUrl = "<a href=\"" + videoFileName + "\">" + videoFileName + "</a>";
             string videoMsg = "Recording video at " + GetSessionTimestamp(nowTimestamp) + " (aprox.): " + videoUrl;
-            if (log != null)
-                log.Info(videoMsg);
+            if (logSelema != null)
+                logSelema.Info(videoMsg);
             return videoMsg;
         }
 
@@ -85,8 +85,8 @@ namespace Giis.Selema.Services.Impl
         public virtual void BeforeQuitDriver(IMediaContext context, string testName)
         {
             string videoFileName = GetVideoFileNameWithRelativePath(context, testName);
-            if (log != null)
-                log.Info("Saving video: " + "<a href=\"" + videoFileName + "\">" + videoFileName + "</a>");
+            if (logSelema != null)
+                logSelema.Info("Saving video: " + "<a href=\"" + videoFileName + "\">" + videoFileName + "</a>");
             string videoIndex = FileUtil.GetPath(context.GetReportFolder(), VIDEO_INDEX_NAME);
             FileUtil.FileAppend(videoIndex, videoFileName + "\n");
         }

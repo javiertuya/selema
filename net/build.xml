@@ -53,6 +53,8 @@
       <replacefilter token="LoggerFactory" value="LogManager" />
       <replacefilter token="LogManager.GetLogger(this.GetType());" value="LogManager.GetCurrentClassLogger();" />
       <replacefilter token="LogManager.GetLogger(typeof(" value="LogManager.GetCurrentClassLogger(); //" />
+      <replacefilter token="log.Error(" value="Giis.Portable.Util.NLogUtil.Error(log, " />
+      <replacefilter token="log.Warn(" value="Giis.Portable.Util.NLogUtil.Warn(log, " />
       <replacefilter token="Throwable" value="Exception" />
       <replacefilter token="InvocationTargetException" value="TargetInvocationException" />
       <replacefilter token="((TargetInvocationException)e).GetTargetException().GetMessage()" value="((TargetInvocationException)e).InnerException.Message" />

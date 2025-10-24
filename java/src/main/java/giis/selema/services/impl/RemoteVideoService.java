@@ -35,7 +35,7 @@ public class RemoteVideoService extends AbstractVideoService {
 		try {
 			videoController.start();
 		} catch (Exception e) { //
-			log.error("Video controller start failure - " + e.getMessage());
+			logSelema.error("Video controller start failure - " + e.getMessage());
 		}
 	}
 
@@ -43,7 +43,7 @@ public class RemoteVideoService extends AbstractVideoService {
 		try {
 			videoController.stop(videoFileName);
 		} catch (Exception e) { //
-			log.error("Video controller stop failure - " + e.getMessage());
+			logSelema.error("Video controller stop failure - " + e.getMessage());
 		}
 	}
 

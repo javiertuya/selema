@@ -16,13 +16,13 @@ namespace Giis.Selema.Services.Impl
     /// </summary>
     public class ScreenshotService : IScreenshotService
     {
-        private ISelemaLogger log;
+        private ISelemaLogger logSelema;
         /// <summary>
         /// Configures this service, called on attaching the service to a SeleManager
         /// </summary>
         public virtual IScreenshotService Configure(ISelemaLogger thisLog)
         {
-            log = thisLog;
+            logSelema = thisLog;
             return this;
         }
 
@@ -37,16 +37,16 @@ namespace Giis.Selema.Services.Impl
                 string fileName = FileUtil.GetPath(context.GetReportFolder(), screenshotFile);
                 string screenshotUrl = "<a href=\"" + screenshotFile + "\">" + screenshotFile + "</a>";
                 string msg = "Taking screenshot: " + screenshotUrl;
-                if (log != null)
-                    log.Info(msg);
+                if (logSelema != null)
+                    logSelema.Info(msg);
                 SeleniumActions.TakeScreenshotToFile(driver, fileName);
                 return msg;
             }
             catch (Exception e)
             {
                 string msg = "Can't take screenshot or write the content to file " + screenshotFile + ". Message: " + e.Message;
-                if (log != null)
-                    log.Error(msg);
+                if (logSelema != null)
+                    logSelema.Error(msg);
                 return msg;
             }
         }
