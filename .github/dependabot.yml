@@ -9,27 +9,33 @@ updates:
       interval: monthly
     open-pull-requests-limit: 20
 
+  # Core .NET dependencies (MSTest, NUnit and Selenium) are declared as private assets to prevent propagation to the client
+  # and must be kept to lower versions to prevent deprecation warnings/errors in the clients
   - package-ecosystem: nuget
     directories: 
-      - "/net"
-      - "/samples/samples-selema-mstest2"
-      - "/samples/samples-selema-nunit3"
-    groups:
-      MSTest:
-        patterns:
-          - "MSTest.*"
+      - "/net/Selema"
+    ignore:
+      - dependency-name: "MSTest.TestFramework"
+        versions: [ ">2.2.8" ]
+      - dependency-name: "NUnit"
+        versions: [ ">3.14.0" ]
+      - dependency-name: "Selenium.WebDriver"
+        versions: [ ">4.7.0" ]
     schedule:
       interval: monthly
     open-pull-requests-limit: 20
 
-  # to cover other dependencies not in the above group we need an entry without groups afther the one with groups: 
-  # https://github.com/dependabot/dependabot-core/issues/12904
-  # (although doc says: Any outdated dependencies that do not match a rule are updated in individual pull requests.)
+  # The rest of projects (tests and samples) must group MSTest to prevent deprecation warnings/errors
   - package-ecosystem: nuget
     directories: 
-      - "/net"
-      - "/samples/samples-selema-mstest2"
-      - "/samples/samples-selema-nunit3"
+      - "/net/SelemaTest"
+      - "/samples/samples-selema-mstest"
+      - "/samples/samples-selema-nunit"
+    # Groups do not work with nuget (it is a known bug), if I define a group, any other dependency is ignored, waiting to be fixed
+    #groups:
+    #  MSTest:
+    #    patterns:
+    #      - "MSTest.*"
     schedule:
       interval: monthly
     open-pull-requests-limit: 20

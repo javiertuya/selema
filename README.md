@@ -31,6 +31,7 @@ useful debugging information, and integrates with CI platforms and remote browse
 ## Breaking changes (v4.0.0)
 
 - This release adds several browser services and moves them to their own namespace. The Selenoid browser service has been renamed/moved to `giis.selema.services.browser.SelenoidBrowserService`.
+- .NET core packages (MSTest, NUnit and Selenium) are declared as private assets (like java provided) to prevent propagation to the client. The client must declare the chosen packages and the versions for each framework.
 
 # Getting started
 

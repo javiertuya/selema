@@ -37,16 +37,21 @@
 
   <ItemGroup>
     <!--
-    NOTE: mstest 2.1.0 and nunit 3.12.0 are not the most up to date versions to avoid deprecation errors
-    (versions are the used by new VS 2017 projects, 
-    but user should declare more updated versions in the test project.
-    Same for Selenium
-    Change: MSTest bumped to 2.2.8 to support ClassCleanupBehavior in ClassInitialize attribute)
+    MSTest, NUnit and Selenium are declared as private assets (like java provided) to prevent propagation to the client.
+    The client must declare the chosen packages and the versions for each framework.
+    Private assets are kept to lower versions to avoid deprecation warnings/errors in the clients
     -->
-    <!-- required only for selenium 3
-    <PackageReference Include="Microsoft.Edge.SeleniumTools" Version="3.141.2" />
-    -->
-    <PackageReference Include="MSTest.TestFramework" Version="3.10.5" />
+    <PackageReference Include="MSTest.TestFramework" Version="2.2.8" >
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+
+    <PackageReference Include="NUnit" Version="3.14.0" >
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+
+    <PackageReference Include="Selenium.WebDriver" Version="4.7.0" >
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
 
     <PackageReference Include="DotNetSeleniumExtras.WaitHelpers" Version="3.11.0" />
 
@@ -56,15 +61,12 @@
     <PackageReference Include="NLog" Version="5.5.0" />
     -->
 
-    <PackageReference Include="NUnit" Version="3.14.0" />
-
     <PackageReference Include="PortableCs" Version="2.4.3" />
 
     <PackageReference Include="VisualAssert" Version="2.6.1" />
 
     <PackageReference Include="WebDriverManager" Version="2.17.6" />
 
-    <PackageReference Include="Selenium.WebDriver" Version="4.37.0" />
   </ItemGroup>
 
   <ItemGroup>
