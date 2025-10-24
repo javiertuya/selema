@@ -7,14 +7,14 @@ import giis.portable.util.Parameters;
 import giis.portable.util.PropertiesFactory;
 import giis.selema.manager.IManagerConfigDelegate;
 import giis.selema.manager.SelemaConfig;
-import giis.selema.portable.selenium.CommandLine;
+import giis.selema.portable.CommandLine;
 import giis.selema.manager.SeleManager;
 import giis.selema.services.IBrowserService;
-import giis.selema.services.impl.RemoteBrowserService;
-import giis.selema.services.impl.SeleniumGridService;
-import giis.selema.services.impl.SelenoidService;
-import giis.selema.services.impl.VideoControllerLocal;
-import giis.selema.services.impl.VideoControllerRemote;
+import giis.selema.services.browser.RemoteBrowserService;
+import giis.selema.services.browser.DynamicGridBrowserService;
+import giis.selema.services.browser.SelenoidBrowserService;
+import giis.selema.services.browser.VideoControllerLocal;
+import giis.selema.services.browser.VideoControllerRemote;
 import giis.selema.services.impl.WatermarkService;
 
 public class Config4test implements IManagerConfigDelegate {
@@ -51,9 +51,9 @@ public class Config4test implements IManagerConfigDelegate {
 	
 	private IBrowserService getRemoteBrowserService() { // assume that is using remote web driver
 		if (useSelenoidRemoteWebDriver())
-			return new SelenoidService().setVideo().setVnc();
+			return new SelenoidBrowserService().setVideo().setVnc();
 		else if (useGridRemoteWebDriver())
-			return new SeleniumGridService().setVideo().setVnc();
+			return new DynamicGridBrowserService().setVideo().setVnc();
 		else if (usePreloadLocal()) {
 			String videoContainer = prop.getProperty("selema.test.preload.video.container");
 			String videoSourceFile = prop.getProperty("selema.test.preload.video.sourcefile");

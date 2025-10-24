@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 /////// THIS FILE HAS BEEN AUTOMATICALLY CONVERTED FROM THE JAVA SOURCES. DO NOT EDIT ///////
 
-namespace Giis.Selema.Services.Impl
+namespace Giis.Selema.Services.Browser
 {
-    public class SeleniumGridService : AbstractBrowserService
+    public class DynamicGridBrowserService : AbstractBrowserService
     {
         public override void AddBrowserServiceOptions(Map<string, object> allOptions, IVideoService videoRecorder, IMediaContext mediaVideoContext, string driverScope)
         {
@@ -20,13 +20,15 @@ namespace Giis.Selema.Services.Impl
                 allOptions.PutAll(videoRecorder.GetSeleniumOptions(mediaVideoContext, driverScope));
         }
 
-        public override IVideoService GetVideoRecorder()
+        public override IVideoService GetNewVideoRecorder()
         {
-            return recordVideo ? new SeleniumGridVideoService() : null;
+            return recordVideo ? new DynamicGridVideoService() : null;
         }
 
-        public override Map<string, object> GetSeleniumOptions(string sessionName)
+        protected override Map<string, object> GetSeleniumOptions(string sessionName)
         {
+
+            // NOSONAR not all methods will require sessionName
             Map<string, object> opts = new HashMap<string, object>(); // NOSONAR net compatibility
             opts.Put("se:vncEnabled", enableVnc); // can't be controlled ad driver instantiation?
             opts.PutAll(specialDriverOptions);

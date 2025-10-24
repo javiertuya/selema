@@ -1,4 +1,4 @@
-package giis.selema.services.impl;
+package giis.selema.services.browser;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -8,9 +8,9 @@ using System.Linq;
 using System.Text;
 /////// THIS FILE HAS BEEN AUTOMATICALLY CONVERTED FROM THE JAVA SOURCES. DO NOT EDIT ///////
 
-namespace Giis.Selema.Services.Impl
+namespace Giis.Selema.Services.Browser
 {
-    public class SeleniumGridVideoService : AbstractVideoService
+    public class DynamicGridVideoService : AbstractVideoService
     {
         protected override string GetVideoFileNameWithRelativePath(IMediaContext context, string testName)
         {

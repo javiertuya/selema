@@ -1,4 +1,4 @@
-package giis.selema.services.impl;
+package giis.selema.services.browser;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,7 +6,7 @@ import java.util.Map;
 import giis.portable.util.JavaCs;
 import giis.selema.services.IMediaContext;
 
-public class SeleniumGridVideoService extends AbstractVideoService {
+public class DynamicGridVideoService extends AbstractVideoService {
 
 	@Override
 	protected String getVideoFileNameWithRelativePath(IMediaContext context, String testName) {

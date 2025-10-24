@@ -1,6 +1,6 @@
 using Giis.Portable.Util;
 using Giis.Selema.Manager;
-using Giis.Selema.Portable.Selenium;
+using Giis.Selema.Portable;
 using Test4giis.Selema.Portable;
 using System;
 using System.Collections.Generic;

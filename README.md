@@ -26,12 +26,9 @@ and integration with CI platforms and Browser services.
   - Visual differences when comparing large strings (Visual Assert)
   - Flaky test handling (Retry failed tests) on all supported frameworks
 
-## Breaking changes
+## Breaking changes (v4.0.0)
 
-- NET only: As of v3.4.0 the java to .NET conversion has been migrated from Sharpen to [JavaToCsharp](https://github.com/paulirwin/JavaToCSharp),
-  all constants are capitalized as uppercase.
-- Java only: As of V3.1.0, Java 11 is the minimum version supported (requirement of the upcoming Selenium v5)
-- As of v3.0.0 the class `SeleniumManager` is renamed to `SeleManager` to avoid naming conflics with Selenium >=v4.6
+- As this version added several browser services, they are now placed in their own namespace: The browser service for Selenoid has been moved/renamed to `giis.selema.services.browser.SelenoidBrowserService`
 
 # Getting started
 
@@ -253,7 +250,7 @@ During test execution the user can also write arbitrary text using the `watermar
 
 ## Browser service (Selenoid)
 
-Use `add(new SelenoidService())` to attach an instance that allows integrate and configure [Selenoid](https://aerokube.com/selenoid/latest/), 
+Use `add(new SelenoidBrowserService())` to attach an instance that allows integrate and configure [Selenoid](https://aerokube.com/selenoid/latest/), 
 in particular, recording videos of each driver session. 
 The Selenoid service instance can be cusomized with these methods:
 - `setVideo()`: Activates the video recording, provided that the Selenoid server is 

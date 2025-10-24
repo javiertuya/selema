@@ -265,7 +265,7 @@ namespace Giis.Selema.Manager
             browserService = browserSvc;
 
             //when creating this service a compatible video recorder service is created too
-            videoRecorder = browserService.GetVideoRecorder();
+            videoRecorder = browserService.GetNewVideoRecorder();
             if (videoRecorder != null)
                 videoRecorder.Configure(selemaLog);
             return this;

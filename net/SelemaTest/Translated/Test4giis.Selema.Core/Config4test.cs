@@ -1,8 +1,9 @@
 using Java.Util;
 using Giis.Portable.Util;
 using Giis.Selema.Manager;
-using Giis.Selema.Portable.Selenium;
+using Giis.Selema.Portable;
 using Giis.Selema.Services;
+using Giis.Selema.Services.Browser;
 using Giis.Selema.Services.Impl;
 using System;
 using System.Collections.Generic;
@@ -58,9 +59,9 @@ namespace Test4giis.Selema.Core
 
             // assume that is using remote web driver
             if (UseSelenoidRemoteWebDriver())
-                return new SelenoidService().SetVideo().SetVnc();
+                return new SelenoidBrowserService().SetVideo().SetVnc();
             else if (UseGridRemoteWebDriver())
-                return new SeleniumGridService().SetVideo().SetVnc();
+                return new DynamicGridBrowserService().SetVideo().SetVnc();
             else if (UsePreloadLocal())
             {
                 string videoContainer = prop.GetProperty("selema.test.preload.video.container");

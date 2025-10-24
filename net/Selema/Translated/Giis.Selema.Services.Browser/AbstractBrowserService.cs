@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 /////// THIS FILE HAS BEEN AUTOMATICALLY CONVERTED FROM THE JAVA SOURCES. DO NOT EDIT ///////
 
-namespace Giis.Selema.Services.Impl
+namespace Giis.Selema.Services.Browser
 {
     /// <summary>
     /// Base class for all remote browser services
@@ -38,7 +38,7 @@ namespace Giis.Selema.Services.Impl
         /// <summary>
         /// Adds a special capability other than the predefined video and vnc
         /// </summary>
-        public virtual IBrowserService SetCapability(string key, object value)
+        public virtual IBrowserService SetBrowserCapability(string key, object value)
         {
             specialDriverOptions.Put(key, value);
             return this;
@@ -49,22 +49,22 @@ namespace Giis.Selema.Services.Impl
         /// </summary>
         public virtual void AddBrowserServiceOptions(Map<string, object> allOptions, IVideoService videoRecorder, IMediaContext mediaVideoContext, string driverScope)
         {
-
-            // Unlike selenoid, by default, browser specific options in grid are not grouped
             allOptions.PutAll(this.GetSeleniumOptions(driverScope));
             if (videoRecorder != null)
                 allOptions.PutAll(videoRecorder.GetSeleniumOptions(mediaVideoContext, driverScope));
         }
 
         /// <summary>
-        /// Gets a new instance of the video recorder service associated with this browser service
+        /// Gets a new instance of the video recorder service associated with this browser service to manage a selenium session
         /// </summary>
-        public abstract IVideoService GetVideoRecorder(); // NOSONAR java redundant, but needed for C# conversion
+        public abstract IVideoService GetNewVideoRecorder(); // NOSONAR java redundant, but needed for C# conversion
         /// <summary>
         /// Gets the capabilities that the IWebDriver must configure to integrate with this service
         /// </summary>
-        public virtual Map<string, object> GetSeleniumOptions(string sessionName)
+        protected virtual Map<string, object> GetSeleniumOptions(string sessionName)
         {
+
+            // NOSONAR not all methods will require sessionName
             Map<string, object> opts = new HashMap<string, object>(); // NOSONAR net compatibility
 
             // By default, no additional options are added

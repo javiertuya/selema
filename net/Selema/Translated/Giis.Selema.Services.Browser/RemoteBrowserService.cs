@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 /////// THIS FILE HAS BEEN AUTOMATICALLY CONVERTED FROM THE JAVA SOURCES. DO NOT EDIT ///////
 
-namespace Giis.Selema.Services.Impl
+namespace Giis.Selema.Services.Browser
 {
     /// <summary>
     /// This browser service video recording works differently than the Selenoid and Selenium dynamic grid, because here, the
@@ -31,7 +31,7 @@ namespace Giis.Selema.Services.Impl
             return this;
         }
 
-        public override IVideoService GetVideoRecorder()
+        public override IVideoService GetNewVideoRecorder()
         {
             return recordVideo ? new RemoteVideoService(videoController) : null;
         }

@@ -1,6 +1,6 @@
 using NLog;
 using Giis.Portable.Util;
-using Giis.Selema.Portable.Selenium;
+using Giis.Selema.Portable;
 using Giis.Selema.Services;
 using System;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 /////// THIS FILE HAS BEEN AUTOMATICALLY CONVERTED FROM THE JAVA SOURCES. DO NOT EDIT ///////
 
-namespace Giis.Selema.Services.Impl
+namespace Giis.Selema.Services.Browser
 {
     /// <summary>
     /// Video controller to use when both the recorder container and the tests run in the same VM.
@@ -26,12 +26,12 @@ namespace Giis.Selema.Services.Impl
         /// <summary>
         /// Creates a new instance
         /// </summary>
-        /// <param name="videoContainer">name of the video recorder container</param>
+        /// <param name="label">to uniquely identify the video recorder container</param>
         /// <param name="sourceFile">name of the recorded video (with path)</param>
         /// <param name="targetFolder">where the recorded videos will be stored after recording</param>
-        public VideoControllerLocal(string videoContainer, string sourceFile, string targetFolder)
+        public VideoControllerLocal(string label, string sourceFile, string targetFolder)
         {
-            this.videoContainer = videoContainer;
+            this.videoContainer = label;
             this.sourceFile = sourceFile;
             this.targetFolder = targetFolder;
         }
@@ -44,23 +44,23 @@ namespace Giis.Selema.Services.Impl
 
             // The recorder should be created and stopped in order to start and record video now.
             // If not, stop now
-            if (!"exited".Equals(ContainerUtil.GetContainerStatus(videoContainer)))
+            if (!"exited".Equals(Docker.GetContainerStatus(videoContainer)))
             {
                 log.Debug("Video recorder " + videoContainer + " is not stopped, restarting");
-                ContainerUtil.RunDocker("stop", videoContainer);
-                ContainerUtil.WaitDocker(videoContainer, "Shutdown complete", "", 5);
+                Docker.RunDocker("stop", videoContainer);
+                Docker.WaitDocker(videoContainer, "Shutdown complete", "", 5);
             }
 
             log.Debug("Starting video recorder: " + videoContainer);
-            ContainerUtil.RunDocker("start", videoContainer);
-            ContainerUtil.WaitDocker(videoContainer, "Display", "is open", 5);
+            Docker.RunDocker("start", videoContainer);
+            Docker.WaitDocker(videoContainer, "Display", "is open", 5);
         }
 
         public virtual void Stop(string videoName)
         {
             log.Debug("Stopping video recorder: " + videoContainer);
-            ContainerUtil.RunDocker("stop", videoContainer);
-            ContainerUtil.WaitDocker(videoContainer, "Shutdown complete", "", 5);
+            Docker.RunDocker("stop", videoContainer);
+            Docker.WaitDocker(videoContainer, "Shutdown complete", "", 5);
 
             // copy the video file to its destination and then remove, this should not fail
             if (!CommandLine.FileExists(sourceFile))

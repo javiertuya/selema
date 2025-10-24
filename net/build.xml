@@ -35,6 +35,7 @@
     <runConvert input="../java/src/main/java/giis/selema/manager" output="Selema/Translated/Giis.Selema.Manager"  mapping="java-mapping.yml" />
     <runConvert input="../java/src/main/java/giis/selema/services" output="Selema/Translated/Giis.Selema.Services"  mapping="java-mapping.yml" />
     <runConvert input="../java/src/main/java/giis/selema/services/impl" output="Selema/Translated/Giis.Selema.Services.Impl"  mapping="java-mapping.yml" />
+    <runConvert input="../java/src/main/java/giis/selema/services/browser" output="Selema/Translated/Giis.Selema.Services.Browser"  mapping="java-mapping.yml" />
     <runConvert input="../java/src/test/java/test4giis/selema/core" output="SelemaTest/Translated/Test4giis.Selema.Core"  mapping="java-mapping.yml" />
     <runConvert input="../java/src/test/java/test4giis/selema/video" output="SelemaTest/Translated/Test4giis.Selema.Video"  mapping="java-mapping.yml" />
     <runConvert input="../java/src/test/java/test4giis/selema/junit4" output="SelemaTest/Translated/Test4giis.Selema.Nunit3"  mapping="java-mapping.yml" />
@@ -44,6 +45,7 @@
       <include name="Selema/Translated/Giis.Selema.Manager/*.cs" />
       <include name="Selema/Translated/Giis.Selema.Services/*.cs" />
       <include name="Selema/Translated/Giis.Selema.Services.Impl/*.cs" />
+      <include name="Selema/Translated/Giis.Selema.Services.Browser/*.cs" />
       <include name="SelemaTest/Translated/Test4giis.Selema.Video/*.cs" />
       <include name="SelemaTest/Translated/Test4giis.Selema.Core/*.cs" />
       <include name="SelemaTest/Translated/Test4giis.Selema.Nunit3/*.cs" />
@@ -148,9 +150,11 @@
         <replacetoken>public virtual void RunAfterCallback(string testName, bool success)</replacetoken>
         <replacevalue>
           <![CDATA[[ClassCleanup(ClassCleanupBehavior.EndOfClass)]
+#pragma warning disable MSTEST0036 // Do not use shadowing
 		      public static new void TearDownClass() { 
             LifecycleMstest2.TearDownClass(); 
           }
+#pragma warning restore MSTEST0036 // Do not use shadowing
           public override void RunAfterCallback(string testName, bool success)]]>
         </replacevalue>
       </replacefilter>

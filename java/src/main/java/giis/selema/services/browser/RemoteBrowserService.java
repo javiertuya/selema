@@ -1,4 +1,4 @@
-package giis.selema.services.impl;
+package giis.selema.services.browser;
 
 import giis.selema.services.IBrowserService;
 import giis.selema.services.IVideoController;
@@ -29,7 +29,7 @@ public class RemoteBrowserService extends AbstractBrowserService {
 	}
 
 	@Override
-	public IVideoService getVideoRecorder() {
+	public IVideoService getNewVideoRecorder() {
 		return recordVideo ? new RemoteVideoService(videoController) : null;
 	}
 

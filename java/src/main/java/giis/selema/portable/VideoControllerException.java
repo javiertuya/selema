@@ -1,4 +1,4 @@
-package giis.selema.portable.selenium;
+package giis.selema.portable;
 
 public class VideoControllerException extends RuntimeException {
 	private static final long serialVersionUID = -2848837670059731155L;

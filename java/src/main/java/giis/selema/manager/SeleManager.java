@@ -240,7 +240,7 @@ public class SeleManager {
 		log.debug("Add browser service: " + browserSvc.getClass().getSimpleName());
 		browserService=browserSvc;
 		//when creating this service a compatible video recorder service is created too
-		videoRecorder=browserService.getVideoRecorder();
+		videoRecorder=browserService.getNewVideoRecorder();
 		if (videoRecorder!=null)
 			videoRecorder.configure(selemaLog);
 		return this;

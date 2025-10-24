@@ -17,8 +17,8 @@ import giis.selema.manager.SeleManager;
 import giis.selema.manager.SelemaException;
 import giis.selema.manager.SeleniumDriverFactory;
 import giis.selema.portable.selenium.DriverUtil;
-import giis.selema.services.impl.SeleniumGridService;
-import giis.selema.services.impl.SelenoidService;
+import giis.selema.services.browser.DynamicGridBrowserService;
+import giis.selema.services.browser.SelenoidBrowserService;
 import test4giis.selema.portable.Asserts;
 
 /**
@@ -236,9 +236,9 @@ public class TestDriver {
 		// Browser server dependent capabilities can also be added, for some remote browsers they are
 		// placed in a group as in selenoid (selenoid:options)
 		if (new Config4test().useSelenoidRemoteWebDriver())
-			sm.add(new SelenoidService().setCapability("enableLog", true));
+			sm.add(new SelenoidBrowserService().setBrowserCapability("enableLog", true));
 		else if (new Config4test().useGridRemoteWebDriver())
-			sm.add(new SeleniumGridService().setCapability("se:screenResolution", "800x600"));
+			sm.add(new DynamicGridBrowserService().setBrowserCapability("se:screenResolution", "800x600"));
 		else
 			return; // do not test in other browser server
 		

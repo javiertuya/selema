@@ -1,12 +1,12 @@
-package giis.selema.services.impl;
+package giis.selema.services.browser;
 
 import giis.portable.util.JavaCs;
-import giis.selema.portable.selenium.CommandLine;
-import giis.selema.portable.selenium.VideoControllerException;
+import giis.selema.portable.CommandLine;
+import giis.selema.portable.VideoControllerException;
 
-public class ContainerUtil {
+public class Docker {
 
-	private ContainerUtil() {
+	private Docker() {
 		throw new IllegalStateException("Utility class");
 	}
 

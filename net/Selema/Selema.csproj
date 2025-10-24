@@ -67,4 +67,8 @@
     <PackageReference Include="Selenium.WebDriver" Version="4.37.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Translated\Giis.Selema.Services.Browser\" />
+  </ItemGroup>
+
 </Project>

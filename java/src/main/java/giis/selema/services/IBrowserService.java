@@ -20,8 +20,9 @@ public interface IBrowserService {
 
 	/** 
 	 * Adds a special capability other than the predefined video and vnc
+	 * that are specific to the remote browser server
 	 */ 
-	IBrowserService setCapability(String key, Object value);
+	IBrowserService setBrowserCapability(String key, Object value);
 
 	/**
 	 * Adds the browser service specific capabilities to 'allOptions' map.
@@ -30,13 +31,8 @@ public interface IBrowserService {
 			IMediaContext mediaVideoContext, String driverScope);
 	
 	/**
-	 * Gets a new instance of the video recorder service associated with this browser service
+	 * Gets a new instance of the video recorder service associated with this browser service to manage a selenium session
 	 */
-	IVideoService getVideoRecorder();
-
-	/**
-	 * Gets the capabilities that the WebDriver must configure to integrate with this service
-	 */
-	Map<String, Object> getSeleniumOptions(String sessionName);
+	IVideoService getNewVideoRecorder();
 
 }

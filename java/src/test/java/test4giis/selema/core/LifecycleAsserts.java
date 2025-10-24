@@ -7,7 +7,7 @@ import java.util.List;
 import giis.portable.util.FileUtil;
 import giis.portable.util.JavaCs;
 import giis.selema.manager.SeleManager;
-import giis.selema.portable.selenium.CommandLine;
+import giis.selema.portable.CommandLine;
 import test4giis.selema.portable.Asserts;
 
 public class LifecycleAsserts {

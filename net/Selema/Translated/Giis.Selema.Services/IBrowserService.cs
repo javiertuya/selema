@@ -24,19 +24,16 @@ namespace Giis.Selema.Services
         IBrowserService SetVnc();
         /// <summary>
         /// Adds a special capability other than the predefined video and vnc
+        /// that are specific to the remote browser server
         /// </summary>
-        IBrowserService SetCapability(string key, object value);
+        IBrowserService SetBrowserCapability(string key, object value);
         /// <summary>
         /// Adds the browser service specific capabilities to 'allOptions' map.
         /// </summary>
         void AddBrowserServiceOptions(Map<string, object> allOptions, IVideoService videoRecorder, IMediaContext mediaVideoContext, string driverScope);
         /// <summary>
-        /// Gets a new instance of the video recorder service associated with this browser service
+        /// Gets a new instance of the video recorder service associated with this browser service to manage a selenium session
         /// </summary>
-        IVideoService GetVideoRecorder();
-        /// <summary>
-        /// Gets the capabilities that the IWebDriver must configure to integrate with this service
-        /// </summary>
-        Map<string, object> GetSeleniumOptions(string sessionName);
+        IVideoService GetNewVideoRecorder();
     }
 }

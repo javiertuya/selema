@@ -1,9 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Net.Http;
-using System.Text;
 
-namespace Giis.Selema.Portable.Selenium
+namespace Giis.Selema.Portable
 {
     public static class RestClient
     {

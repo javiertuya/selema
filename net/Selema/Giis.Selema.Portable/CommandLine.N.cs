@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace Giis.Selema.Portable.Selenium
+namespace Giis.Selema.Portable
 {
     public static class CommandLine
     {

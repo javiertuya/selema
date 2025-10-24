@@ -1,4 +1,4 @@
-package giis.selema.portable.selenium;
+package giis.selema.portable;
 
 import java.io.FileOutputStream;
 import java.io.IOException;

@@ -1,6 +1,6 @@
 using NLog;
 using Giis.Portable.Util;
-using Giis.Selema.Portable.Selenium;
+using Giis.Selema.Portable;
 using Giis.Selema.Services;
 using System;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 /////// THIS FILE HAS BEEN AUTOMATICALLY CONVERTED FROM THE JAVA SOURCES. DO NOT EDIT ///////
 
-namespace Giis.Selema.Services.Impl
+namespace Giis.Selema.Services.Browser
 {
     /// <summary>
     /// Video controller to use when the recorder container and the tests run in different or the same VM and start/stop is

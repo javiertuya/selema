@@ -1,10 +1,10 @@
-package giis.selema.services.impl;
+package giis.selema.services.browser;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import giis.portable.util.FileUtil;
-import giis.selema.portable.selenium.RestClient;
+import giis.selema.portable.RestClient;
 import giis.selema.services.IVideoController;
 
 /**

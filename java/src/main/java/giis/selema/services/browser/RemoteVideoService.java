@@ -1,4 +1,4 @@
-package giis.selema.services.impl;
+package giis.selema.services.browser;
 
 import org.openqa.selenium.WebDriver;
 

@@ -4,7 +4,7 @@ using OpenQA.Selenium;
 using Giis.Portable.Util;
 using Giis.Selema.Manager;
 using Giis.Selema.Portable.Selenium;
-using Giis.Selema.Services.Impl;
+using Giis.Selema.Services.Browser;
 using Test4giis.Selema.Portable;
 using System;
 using System.Collections.Generic;
@@ -268,9 +268,9 @@ namespace Test4giis.Selema.Core
             // Browser server dependent capabilities can also be added, for some remote browsers they are
             // placed in a group as in selenoid (selenoid:options)
             if (new Config4test().UseSelenoidRemoteWebDriver())
-                sm.Add(new SelenoidService().SetCapability("enableLog", true));
+                sm.Add(new SelenoidBrowserService().SetBrowserCapability("enableLog", true));
             else if (new Config4test().UseGridRemoteWebDriver())
-                sm.Add(new SeleniumGridService().SetCapability("se:screenResolution", "800x600"));
+                sm.Add(new DynamicGridBrowserService().SetBrowserCapability("se:screenResolution", "800x600"));
             else
                 return; // do not test in other browser server
             sm.OnSetUp("TestDriver", "TestDriver.testRemoteWebDriverFromManager");

@@ -29,9 +29,11 @@ namespace Test4giis.Selema.Mstest2
         //public RepeatedTestRule repeatRule = new RepeatedTestRule(sm, new AfterEachCallback(lfas, log, sm));
         
           } [ClassCleanup(ClassCleanupBehavior.EndOfClass)]
+#pragma warning disable MSTEST0036 // Do not use shadowing
 		      public static new void TearDownClass() { 
             LifecycleMstest2.TearDownClass(); 
           }
+#pragma warning restore MSTEST0036 // Do not use shadowing
           public override void RunAfterCallback(string testName, bool success)
         
         {

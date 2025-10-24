@@ -1,11 +1,11 @@
-package giis.selema.services.impl;
+package giis.selema.services.browser;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import giis.portable.util.FileUtil;
-import giis.selema.portable.selenium.CommandLine;
-import giis.selema.portable.selenium.VideoControllerException;
+import giis.selema.portable.CommandLine;
+import giis.selema.portable.VideoControllerException;
 import giis.selema.services.IVideoController;
 
 /**
@@ -24,12 +24,12 @@ public class VideoControllerLocal implements IVideoController {
 	/**
 	 * Creates a new instance
 	 * 
-	 * @param videoContainer name of the video recorder container
+	 * @param label to uniquely identify the video recorder container
 	 * @param sourceFile name of the recorded video (with path)
 	 * @param targetFolder where the recorded videos will be stored after recording
 	 */
-	public VideoControllerLocal(String videoContainer, String sourceFile, String targetFolder) {
-		this.videoContainer = videoContainer;
+	public VideoControllerLocal(String label, String sourceFile, String targetFolder) {
+		this.videoContainer = label;
 		this.sourceFile = sourceFile;
 		this.targetFolder = targetFolder;
 	}
@@ -41,22 +41,22 @@ public class VideoControllerLocal implements IVideoController {
 		
 		// The recorder should be created and stopped in order to start and record video now.
 		// If not, stop now
-		if (!"exited".equals(ContainerUtil.getContainerStatus(videoContainer))) {
+		if (!"exited".equals(Docker.getContainerStatus(videoContainer))) {
 			log.debug("Video recorder " + videoContainer + " is not stopped, restarting");
-			ContainerUtil.runDocker("stop", videoContainer);
-			ContainerUtil.waitDocker(videoContainer, "Shutdown complete", "", 5);
+			Docker.runDocker("stop", videoContainer);
+			Docker.waitDocker(videoContainer, "Shutdown complete", "", 5);
 		}
 
 		log.debug("Starting video recorder: " + videoContainer);
-		ContainerUtil.runDocker("start", videoContainer);
-		ContainerUtil.waitDocker(videoContainer, "Display", "is open", 5);
+		Docker.runDocker("start", videoContainer);
+		Docker.waitDocker(videoContainer, "Display", "is open", 5);
 	}
 
 	@Override
 	public void stop(String videoName) {
 		log.debug("Stopping video recorder: " + videoContainer);
-		ContainerUtil.runDocker("stop", videoContainer);
-		ContainerUtil.waitDocker(videoContainer, "Shutdown complete", "", 5);
+		Docker.runDocker("stop", videoContainer);
+		Docker.waitDocker(videoContainer, "Shutdown complete", "", 5);
 
 		// copy the video file to its destination and then remove, this should not fail
 		if (!CommandLine.fileExists(sourceFile))

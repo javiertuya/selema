@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Giis.Selema.Portable.Selenium
+namespace Giis.Selema.Portable
 {
     public class VideoControllerException : Exception
     {

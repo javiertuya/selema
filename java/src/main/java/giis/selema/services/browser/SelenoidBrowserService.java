@@ -1,4 +1,4 @@
-package giis.selema.services.impl;
+package giis.selema.services.browser;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,7 +6,7 @@ import java.util.Map;
 import giis.selema.services.IMediaContext;
 import giis.selema.services.IVideoService;
 
-public class SelenoidService extends AbstractBrowserService {
+public class SelenoidBrowserService extends AbstractBrowserService {
 	
 	/**
 	 * Adds the browser service specific capabilities to 'allOptions' map.
@@ -26,10 +26,10 @@ public class SelenoidService extends AbstractBrowserService {
 	}
 
 	/**
-	 * Gets a new instance of the video recorder service associated with this browser service
+	 * Gets a new instance of the video recorder service associated with this browser service to manage a selenium session
 	 */
 	@Override
-	public IVideoService getVideoRecorder() {
+	public IVideoService getNewVideoRecorder() {
 		return recordVideo ? new SelenoidVideoService() : null;
 	}
 	
@@ -37,7 +37,7 @@ public class SelenoidService extends AbstractBrowserService {
 	 * Gets the capabilities that the WebDriver must configure to integrate with this service
 	 */
 	@Override
-	public Map<String, Object> getSeleniumOptions(String sessionName) {
+	protected Map<String, Object> getSeleniumOptions(String sessionName) {
 		Map<String, Object> opts = new HashMap<String, Object>(); // NOSONAR net compatibility
 		opts.put("name", sessionName);
 		opts.put("enableVNC", enableVnc);

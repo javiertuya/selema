@@ -1,5 +1,5 @@
 using Giis.Portable.Util;
-using Giis.Selema.Portable.Selenium;
+using Giis.Selema.Portable;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -7,11 +7,11 @@ using System.Linq;
 using System.Text;
 /////// THIS FILE HAS BEEN AUTOMATICALLY CONVERTED FROM THE JAVA SOURCES. DO NOT EDIT ///////
 
-namespace Giis.Selema.Services.Impl
+namespace Giis.Selema.Services.Browser
 {
-    public class ContainerUtil
+    public class Docker
     {
-        private ContainerUtil()
+        private Docker()
         {
             throw new InvalidOperationException("Utility class");
         }

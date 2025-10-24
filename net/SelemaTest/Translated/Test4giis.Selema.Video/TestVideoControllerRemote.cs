@@ -2,7 +2,7 @@ using NUnit.Framework;
 using NLog;
 using Giis.Portable.Util;
 using Giis.Selema.Services;
-using Giis.Selema.Services.Impl;
+using Giis.Selema.Services.Browser;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

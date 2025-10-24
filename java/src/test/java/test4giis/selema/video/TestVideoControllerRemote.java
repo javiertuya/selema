@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import giis.portable.util.FileUtil;
 import giis.selema.services.IVideoController;
-import giis.selema.services.impl.VideoControllerRemote;
+import giis.selema.services.browser.VideoControllerRemote;
 
 /**
  * Partially integrated test of a Video Controller (remote) that calls the video-controller server
