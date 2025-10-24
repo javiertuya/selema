@@ -28,6 +28,9 @@ namespace Giis.Selema.Manager
         private string[] currentArguments = null;
         private DriverOptions currentOptionsInstance = null;
         private string driverVersion = DriverVersion.DEFAULT; // string with strategy to use or a given version
+        // Control of retries during remote driver warm-up
+        long startTime = JavaCs.CurrentTimeMillis();
+        int warmUpPeriod = 0; // default 0: no retry
         //Currently managed driver
         private IWebDriver currentDriver = null;
         //Current context, only used for external calls from tests as watermark or getting driver in unmanaged mode
@@ -113,7 +116,7 @@ namespace Giis.Selema.Manager
         }
 
         /// <summary>
-        /// Sets the IWebDriver for the specified browser ("chrome","firefox","edge","safari","opera"), default is chrome
+        /// Configures the IWebDriver for the specified browser ("chrome","firefox","edge","safari","opera"), default is chrome
         /// </summary>
         public virtual SeleManager SetBrowser(string browser)
         {
@@ -123,7 +126,7 @@ namespace Giis.Selema.Manager
         }
 
         /// <summary>
-        /// Sets a RemoteWebDriver instead a local one (default); The driverUrl must point to the browser service
+        /// Configures a RemoteWebDriver instead of the default local one; The driverUrl must point to the browser service
         /// </summary>
         public virtual SeleManager SetDriverUrl(string driverUrl)
         {
@@ -133,7 +136,19 @@ namespace Giis.Selema.Manager
         }
 
         /// <summary>
-        /// Sets an object that can be used to provide additional configurations to the driver just after its creation
+        /// Configures a RemoteWebDriver instead of the default local one, with an optional warm-up period specified in seconds.
+        /// Setting this value to a positive number helps in scenarios where a test initializes the driver immediately after
+        /// the remote browser server starts, which may require a few seconds to become ready. During this warm-up period
+        /// (measured from the manager's instantiation) any failures in obtaining the driver will be retried.
+        /// </summary>
+        public virtual SeleManager SetDriverUrl(string driverUrl, int warmUpPeriod)
+        {
+            this.warmUpPeriod = warmUpPeriod;
+            return SetDriverUrl(driverUrl);
+        }
+
+        /// <summary>
+        /// Configures an object that can be used to provide additional configurations to the driver just after its creation
         /// </summary>
         public virtual SeleManager SetDriverDelegate(IDriverConfigDelegate driverConfig)
         {
@@ -148,7 +163,7 @@ namespace Giis.Selema.Manager
         }
 
         /// <summary>
-        /// Sets the driver version selection strategy or the value of the desired driver version to set
+        /// Configures the driver version selection strategy or the value of the desired driver version to set
         /// </summary>
         public virtual SeleManager SetDriverVersion(string driverVersion)
         {
@@ -621,6 +636,27 @@ namespace Giis.Selema.Manager
                 allOptions.PutAll(currentOptions);
             if (browserService != null)
                 browserService.AddBrowserServiceOptions(allOptions, videoRecorder, mediaVideoContext, driverScope);
+
+            // Retry during warm-up period (if set to a positive number of seconds).
+            // This helps to avoid unrecoverable exceptions if the browser server was started just before creating the
+            // driver and it is not already ready.
+            int retryCount = 0;
+            while (warmUpPeriod > 0 && JavaCs.CurrentTimeMillis() < startTime + warmUpPeriod * 1000)
+            {
+                try
+                {
+                    return new SeleniumDriverFactory().GetSeleniumDriver(currentBrowser, currentDriverUrl, driverVersion, allOptions, currentArguments, currentOptionsInstance);
+                }
+                catch (Exception e)
+                {
+                    string message = "Remote driver creation failure during warm-up period of " + warmUpPeriod + " seconds. Retry " + retryCount++;
+                    this.selemaLog.Warn(message);
+                    JavaCs.Sleep(1000);
+                }
+            }
+
+
+            // unconditional creation of driver (if warm-up period not set or fails after the time elapsed)
             return new SeleniumDriverFactory().GetSeleniumDriver(currentBrowser, currentDriverUrl, driverVersion, allOptions, currentArguments, currentOptionsInstance);
         }
     }
