@@ -1,6 +1,7 @@
 using Giis.Selema.Framework.Nunit3;
 using Giis.Selema.Manager;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Giis.Samples.Selema.Nunit
 {
@@ -19,7 +20,8 @@ namespace Giis.Samples.Selema.Nunit
         public void TestFailMethod()
         {
             sm.Driver.Url = "https://javiertuya.github.io/selema/samples/";
-            Assert.AreEqual("XXXX Selema samples", sm.Driver.Title);
+            // Using the new nunit 4 asserts
+            Assert.That(sm.Driver.Title, Is.EqualTo("XXXX Selema samples"));
         }
 
         //Repeated tests demo, uses a counter to simulate failures
@@ -34,7 +36,8 @@ namespace Giis.Samples.Selema.Nunit
             if (repetitions < 3) //fails except last repetition
                 expected = "XXX " + expected;
             sm.Driver.Url = "https://javiertuya.github.io/selema/samples/";
-            Assert.AreEqual(expected, sm.Driver.Title);
+            // now using the classic nunit 3 asserts
+            ClassicAssert.AreEqual(expected, sm.Driver.Title);
         }
 
     }
