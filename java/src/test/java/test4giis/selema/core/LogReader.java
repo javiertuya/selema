@@ -51,21 +51,22 @@ public class LogReader {
 		if (assertItems.size()>logLines.size())
 			throw new SelemaException("Log file has less lines than expected");
 		StringBuilder sb=new StringBuilder();
-		//compares all assertItems at the end of logLines
+		//compares all assertItems at the offset from the end of logLines
 		for (int i=0; i<assertItems.size(); i++) {
 			int offset=logLines.size()-assertItems.size() - offsetFromLast;
 			String actual=SelemaLogger.replaceTags(logLines.get(offset+i));
 			for (int j=0; j<assertItems.get(i).length; j++) { //each of the items that must be included in the current log line
 				String expected=assertItems.get(i)[j];
 				if (!actual.toLowerCase().contains(expected.toLowerCase()))
-					sb.append(getAssertMessage(offset+i, i, expected, actual));
+					sb.append(sb.length() > 0 ? "\n" : "")
+						.append(getAssertMessage(offsetFromLast, offset+i, j, expected, actual));
 			}
 		}
 		if (sb.length()>0)
 			throw new SelemaException("LogReader has differences:\n" + sb.toString());
 	}
-	private String getAssertMessage(int logLine, int assertItemLine, String expected, String actual) {
-		return "Log line " + logLine + " item " + assertItemLine
+	private String getAssertMessage(int offsetFromLast, int logLine, int assertItemLine, String expected, String actual) {
+		return "Log line " + logLine + " (row " + offsetFromLast + " before end), expected item " + assertItemLine
 				+ "\n  Expected '"+expected
 				+ "'\n  Not contained in: '"+actual+"'";
 	}
