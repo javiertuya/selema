@@ -40,6 +40,9 @@
     MSTest, NUnit and Selenium are declared as private assets (like java provided) to prevent propagation to the client.
     The client must declare the chosen packages and the versions for each framework.
     Private assets are kept to lower versions to avoid deprecation warnings/errors in the clients
+
+    NOTE: IF the private asset dependencies are updated, get them back to the versions in the latest release (4.0.0):
+    MSTest.TestFramework 4.0.0, NUnit 3.14.0, Selenium.WebDriver 4.37.0
     -->
     <PackageReference Include="MSTest.TestFramework" Version="4.0.0" >
       <PrivateAssets>all</PrivateAssets>
@@ -67,10 +70,6 @@
 
     <PackageReference Include="WebDriverManager" Version="2.17.6" />
 
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Translated\Giis.Selema.Services.Browser\" />
   </ItemGroup>
 
 </Project>

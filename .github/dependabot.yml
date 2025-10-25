@@ -12,32 +12,15 @@ updates:
 
   # Core .NET dependencies (MSTest, NUnit and Selenium) are declared as private assets to prevent propagation to the client
   # and must be kept to lower versions to prevent deprecation warnings/errors in the clients
+  # However, it is not possible to have these dependencies not updated by dependabot (even setting them as ignore in a directory), 
+  # because SelemaTest depends transitively on Selema. When dependabot updates SelemaTest, updates Selema too.
+  # NOTE: When publish a new release, set back the Selema core dependencies to the lower versions, in v4.0.0.0 they are:
+  # MSTest.TestFramework 4.0.0, NUnit 3.14.0, Selenium.WebDriver 4.37.0
   - package-ecosystem: nuget
     directories: 
-      - "/net/Selema"
-    ignore:
-      - dependency-name: "MSTest.TestFramework"
-        versions: [ ">4.0.0" ]
-      - dependency-name: "NUnit"
-        versions: [ ">3.14.0" ]
-      - dependency-name: "Selenium.WebDriver"
-        versions: [ ">4.7.0" ]
-    schedule:
-      interval: monthly
-    rebase-strategy: "disabled"
-    open-pull-requests-limit: 20
-
-  # The rest of projects (tests and samples) must group MSTest to prevent deprecation warnings/errors
-  - package-ecosystem: nuget
-    directories: 
-      - "/net/SelemaTest"
+      - "/net"
       - "/samples/samples-selema-mstest"
       - "/samples/samples-selema-nunit"
-    # Groups do not work with nuget (it is a known bug), if I define a group, any other dependency is ignored, waiting to be fixed
-    #groups:
-    #  MSTest:
-    #    patterns:
-    #      - "MSTest.*"
     schedule:
       interval: monthly
     rebase-strategy: "disabled"
