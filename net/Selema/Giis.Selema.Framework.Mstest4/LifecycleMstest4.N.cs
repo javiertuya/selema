@@ -2,7 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Giis.Selema.Manager;
 using NLog;
 
-namespace Giis.Selema.Framework.Mstest2
+namespace Giis.Selema.Framework.Mstest4
 {
     /// <summary>
     /// MSTest 2 base class extension to watch for the class and test lifecycle events, keep track of the test class and test name
@@ -11,7 +11,7 @@ namespace Giis.Selema.Framework.Mstest2
     /// SeleManager must be created with using the GetManager methods to be bound to this instance
     /// See https://github.com/javiertuya/selema#readme for instructions
     /// </summary>
-	public abstract class LifecycleMstest2
+	public abstract class LifecycleMstest4
 	{
         static readonly Logger log = LogManager.GetLogger("Giis.Selema.Framework.Mstest2.LifecycleMstest2");
         private static SeleManager sm = null;

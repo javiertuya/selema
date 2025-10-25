@@ -1,7 +1,7 @@
 using NLog;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium;
-using Giis.Selema.Framework.Mstest2;
+using Giis.Selema.Framework.Mstest4;
 using Giis.Selema.Manager;
 using Giis.Selema.Portable.Selenium;
 using Test4giis.Selema.Core;
@@ -12,9 +12,9 @@ using System.Linq;
 using System.Text;
 /////// THIS FILE HAS BEEN AUTOMATICALLY CONVERTED FROM THE JAVA SOURCES. DO NOT EDIT ///////
 
-namespace Test4giis.Selema.Mstest2
+namespace Test4giis.Selema.Mstest4
 {
-    [TestClass] public class TestLifecycle4Unmanaged : LifecycleMstest2
+    [TestClass] public class TestLifecycle4Unmanaged : LifecycleMstest4
     {
         //interfaces not needed by JUnit4, included to generate compatible NUnit3 translation
         static readonly Logger log = LogManager.GetCurrentClassLogger(); //TestLifecycle4Unmanaged));
@@ -28,14 +28,14 @@ namespace Test4giis.Selema.Mstest2
           protected internal static SeleManager sm;
 		      public TestLifecycle4Unmanaged() {
           
-         sm = LifecycleMstest2.GetManager(sm,Config4test.GetConfig()).SetManagerDelegate(new Config4test()).SetManageNone();
+         sm = LifecycleMstest4.GetManager(sm,Config4test.GetConfig()).SetManagerDelegate(new Config4test()).SetManageNone();
         //public static LifecycleJunit4Class cw = new LifecycleJunit4Class(sm);
         //public LifecycleJunit4Test tw = new LifecycleJunit4Test(sm, new AfterEachCallback(lfas, log, sm));
         
           } [ClassCleanup()]
 #pragma warning disable MSTEST0036 // Do not use shadowing
 		      public static new void TearDownClass() { 
-            LifecycleMstest2.TearDownClass(); 
+            LifecycleMstest4.TearDownClass(); 
           }
 #pragma warning restore MSTEST0036 // Do not use shadowing
           public override void RunAfterCallback(string testName, bool success)

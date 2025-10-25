@@ -33,7 +33,7 @@ useful debugging information, and integrates with CI platforms and remote browse
 - This release adds several browser services and moves them to their own namespace. The Selenoid browser service has been renamed/moved to `giis.selema.services.browser.SelenoidBrowserService`.
 - .NET core packages (MSTest, NUnit and Selenium) are declared as private assets (like java provided) to prevent propagation to the client. The client must declare the chosen packages and the versions for each framework.
 - Minimum supported MSTest version is 4.0.0 (the new MSTest version introduces breaking changes that make incompatible keeping V3 and V4 within this package). `ClassCleanupBehavior.EndOfClass` in `ClassCleanup` attribute is not available (the new MSTest version fixed the class cleanup behaviour).
-
+Packages and classes with `Mstest2` in their names have been renamed to use `Mstest4`.
 # Getting started
 
 On Java, include the `selema` dependency as shown on
@@ -122,20 +122,20 @@ and (2) a decorate the test class with the `[LifecycleNunit3]` annotation:
 
 </details>
 
-<details><summary><strong>MSTest 3</strong></summary>
+<details><summary><strong>MSTest 4</strong></summary>
 
 Declare (1) a static object `sm` of `SeleManager`, (2) instantiate `sm` in the class constructor
-and (3) inherit the test class from `LifecycleMstest2`. 
+and (3) inherit the test class from `LifecycleMstest4`. 
 See comments in the example for additional explanations:
 
 ```C#
     [TestClass]
-    public class TestFailedExample : LifecycleMstest2
+    public class TestFailedExample : LifecycleMstest4
     {
         protected static SeleManager sm;
         public TestFailedExample()
         {
-            sm = LifecycleMstest2.GetManager(sm).SetBrowser("edge");
+            sm = LifecycleMstest4.GetManager(sm).SetBrowser("edge");
         }
         //Note that due to the extensibility restrictions of MSTest, the test class must inherit the Lifecycle class.
         //Additionally the instantiation and configuration is made in the class constructor,
@@ -143,7 +143,7 @@ See comments in the example for additional explanations:
         //Instantiation can be done in ClassInitialize as shown in the full example
 
         [TestMethod]
-        public void TestFailMethod2()
+        public void TestFailMethod()
         {
             sm.Driver.Url = "https://en.wikipedia.org/";
             Assert.AreEqual("XXXX Wikipedia, the free encyclopedia", sm.Driver.Title);

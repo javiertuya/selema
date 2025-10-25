@@ -121,15 +121,15 @@
     </replace>
 
     <!--
-    MSTest2 tests are copied from the already converted NUnit3 tests, 
+    MStest4 tests are copied from the already converted NUnit3 tests, 
     but need to be adapted both to selema and mstest
     -->
-    <copy todir="SelemaTest/Translated/Test4giis.Selema.Mstest2">
+    <copy todir="SelemaTest/Translated/Test4giis.Selema.Mstest4">
       <fileset dir="SelemaTest/Translated/Test4giis.Selema.Nunit3">
         <include name="**/*" />
       </fileset>
     </copy>
-    <replace dir="SelemaTest/Translated/Test4giis.Selema.Mstest2">
+    <replace dir="SelemaTest/Translated/Test4giis.Selema.Mstest4">
       <include name="**/*" />
       <replacefilter token="public class Test" value="[TestClass] public class Test" />
       <replacefilter token="[Test]" value="[TestMethod]" />
@@ -143,16 +143,16 @@
       <replacefilter token=".SetUpClass()" value=".SetUpClass(TestContext)" />
       <replacefilter token="NUnit.Framework.Legacy.ClassicAssert" value="Microsoft.VisualStudio.TestTools.UnitTesting.Assert" />
       <replacefilter token="NUnit.Framework" value="Microsoft.VisualStudio.TestTools.UnitTesting" />
-      <replacefilter token="Nunit3" value="Mstest2" />
-      <replacefilter token="[LifecycleMstest2] " value="" />
-      <replacefilter token=": IAfterEachCallback" value=": LifecycleMstest2" />
+      <replacefilter token="Nunit3" value="Mstest4" />
+      <replacefilter token="[LifecycleMstest4] " value="" />
+      <replacefilter token=": IAfterEachCallback" value=": LifecycleMstest4" />
       <replacefilter>
         <replacetoken>public virtual void RunAfterCallback(string testName, bool success)</replacetoken>
         <replacevalue>
           <![CDATA[[ClassCleanup()]
 #pragma warning disable MSTEST0036 // Do not use shadowing
 		      public static new void TearDownClass() { 
-            LifecycleMstest2.TearDownClass(); 
+            LifecycleMstest4.TearDownClass(); 
           }
 #pragma warning restore MSTEST0036 // Do not use shadowing
           public override void RunAfterCallback(string testName, bool success)]]>
@@ -160,7 +160,7 @@
       </replacefilter>
     </replace>
 
-    <replace dir="SelemaTest/Translated/Test4giis.Selema.Mstest2">
+    <replace dir="SelemaTest/Translated/Test4giis.Selema.Mstest4">
       <exclude name="**/TestLifecycle4WithoutManager.cs" />
       <replacefilter>
         <replacetoken>protected internal SeleManager</replacetoken>
@@ -171,22 +171,22 @@
         </replacevalue>
       </replacefilter>
       <replacefilter token="[ClassCleanup(" value="} [ClassCleanup(" />
-      <replacefilter token="new SeleManager()" value="LifecycleMstest2.GetManager(sm)" />
-      <replacefilter token="new SeleManager(Config4test.GetConfig())" value="LifecycleMstest2.GetManager(sm,Config4test.GetConfig())" />
+      <replacefilter token="new SeleManager()" value="LifecycleMstest4.GetManager(sm)" />
+      <replacefilter token="new SeleManager(Config4test.GetConfig())" value="LifecycleMstest4.GetManager(sm,Config4test.GetConfig())" />
     </replace>
-    <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4.cs" token="CLASS_CONSTRUCTOR" value="TestLifecycle4" />
-    <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4ClassManaged.cs" token="CLASS_CONSTRUCTOR" value="TestLifecycle4ClassManaged" />
-    <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4Unmanaged.cs" token="CLASS_CONSTRUCTOR" value="TestLifecycle4Unmanaged" />
-    <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4Inherited.cs" token="CLASS_CONSTRUCTOR" value="TestLifecycle4Inherited" />
-    <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4Repeated.cs" token="CLASS_CONSTRUCTOR" value="TestLifecycle4Repeated" />
+    <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest4/TestLifecycle4.cs" token="CLASS_CONSTRUCTOR" value="TestLifecycle4" />
+    <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest4/TestLifecycle4ClassManaged.cs" token="CLASS_CONSTRUCTOR" value="TestLifecycle4ClassManaged" />
+    <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest4/TestLifecycle4Unmanaged.cs" token="CLASS_CONSTRUCTOR" value="TestLifecycle4Unmanaged" />
+    <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest4/TestLifecycle4Inherited.cs" token="CLASS_CONSTRUCTOR" value="TestLifecycle4Inherited" />
+    <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest4/TestLifecycle4Repeated.cs" token="CLASS_CONSTRUCTOR" value="TestLifecycle4Repeated" />
 
-    <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4Inherited.cs" token="[TestClass]" value="[Microsoft.VisualStudio.TestTools.UnitTesting.TestClass]" />
-    <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4Repeated.cs" token="Retry(" value="RetryTestMethod(" />
-    <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4Repeated.cs" token="[TestMethod]" value="" />
-    <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4Repeated.cs" token="DriverUtil.GetUrl(sm.Driver" value="base.SetUp(); DriverUtil.GetUrl(sm.Driver" />
-    <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4Repeated.cs" token="public virtual void SetUp()" value="public override void SetUp()" />
+    <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest4/TestLifecycle4Inherited.cs" token="[TestClass]" value="[Microsoft.VisualStudio.TestTools.UnitTesting.TestClass]" />
+    <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest4/TestLifecycle4Repeated.cs" token="Retry(" value="RetryTestMethod(" />
+    <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest4/TestLifecycle4Repeated.cs" token="[TestMethod]" value="" />
+    <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest4/TestLifecycle4Repeated.cs" token="DriverUtil.GetUrl(sm.Driver" value="base.SetUp(); DriverUtil.GetUrl(sm.Driver" />
+    <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest4/TestLifecycle4Repeated.cs" token="public virtual void SetUp()" value="public override void SetUp()" />
 
-    <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest2/TestLifecycle4WithoutManager.cs" token="SelemaException e" value="SelemaException" />
+    <replace file="SelemaTest/Translated/Test4giis.Selema.Mstest4/TestLifecycle4WithoutManager.cs" token="SelemaException e" value="SelemaException" />
     <replace file="SelemaTest/Translated/Test4giis.Selema.Nunit3/TestLifecycle4WithoutManager.cs" token="SelemaException e" value="SelemaException" />
   </target>
 

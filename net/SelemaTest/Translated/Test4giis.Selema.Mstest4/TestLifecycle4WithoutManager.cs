@@ -1,5 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Giis.Selema.Framework.Mstest2;
+using Giis.Selema.Framework.Mstest4;
 using Giis.Selema.Manager;
 using Test4giis.Selema.Core;
 using System;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 /////// THIS FILE HAS BEEN AUTOMATICALLY CONVERTED FROM THE JAVA SOURCES. DO NOT EDIT ///////
 
-namespace Test4giis.Selema.Mstest2
+namespace Test4giis.Selema.Mstest4
 {
     [TestClass] public class TestLifecycle4WithoutManager
     {

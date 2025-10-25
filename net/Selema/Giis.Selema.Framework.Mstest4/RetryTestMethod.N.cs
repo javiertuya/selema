@@ -3,7 +3,7 @@ using NLog;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-namespace Giis.Selema.Framework.Mstest2
+namespace Giis.Selema.Framework.Mstest4
 {
     ///<summary>
     ///Custom extension to allow repeated tests until test passes (MSTest v4 compatible)
