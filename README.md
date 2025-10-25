@@ -30,10 +30,12 @@ useful debugging information, and integrates with CI platforms and remote browse
 
 ## Breaking changes (v4.0.0)
 
-- This release adds several browser services and moves them to their own namespace. The Selenoid browser service has been renamed/moved to `giis.selema.services.browser.SelenoidBrowserService`.
-- .NET core packages (MSTest, NUnit and Selenium) are declared as private assets (like java provided) to prevent propagation to the client. The client must declare the chosen packages and the versions for each framework.
-- Minimum supported MSTest version is 4.0.0 (the new MSTest version introduces breaking changes that make incompatible keeping V3 and V4 within this package). `ClassCleanupBehavior.EndOfClass` in `ClassCleanup` attribute is not available (the new MSTest version fixed the class cleanup behaviour).
-Packages and classes with `Mstest2` in their names have been renamed to use `Mstest4`.
+This is a summary of breaking changes in v4.0.0. See the [Release notes](https://github.com/javiertuya/selema/releases/tag/v4.0.0) for details:
+- Selenoid browser service has been renamed and moved to another namespace.
+- .NET core packages (MSTest, NUnit and Selenium) are declared as private assets and are not propagated to the client. 
+- Minimum supported MSTest version is 4.0.0. `ClassCleanupBehavior.EndOfClass` has been removed.
+- Packages and classes with `Mstest2` in their names have been renamed to use `Mstest4`.
+
 # Getting started
 
 On Java, include the `selema` dependency as shown on
