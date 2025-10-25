@@ -7,6 +7,7 @@ updates:
       - "/samples/samples-selema-junit5"
     schedule:
       interval: monthly
+    rebase-strategy: "disabled"
     open-pull-requests-limit: 20
 
   # Core .NET dependencies (MSTest, NUnit and Selenium) are declared as private assets to prevent propagation to the client
@@ -23,6 +24,7 @@ updates:
         versions: [ ">4.7.0" ]
     schedule:
       interval: monthly
+    rebase-strategy: "disabled"
     open-pull-requests-limit: 20
 
   # The rest of projects (tests and samples) must group MSTest to prevent deprecation warnings/errors
@@ -38,10 +40,12 @@ updates:
     #      - "MSTest.*"
     schedule:
       interval: monthly
+    rebase-strategy: "disabled"
     open-pull-requests-limit: 20
 
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
       interval: monthly
+    rebase-strategy: "disabled"
     open-pull-requests-limit: 20
