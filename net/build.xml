@@ -149,7 +149,7 @@
       <replacefilter>
         <replacetoken>public virtual void RunAfterCallback(string testName, bool success)</replacetoken>
         <replacevalue>
-          <![CDATA[[ClassCleanup(ClassCleanupBehavior.EndOfClass)]
+          <![CDATA[[ClassCleanup()]
 #pragma warning disable MSTEST0036 // Do not use shadowing
 		      public static new void TearDownClass() { 
             LifecycleMstest2.TearDownClass(); 

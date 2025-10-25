@@ -95,10 +95,12 @@ namespace Giis.Selema.Framework.Mstest2
             RunAfterCallback(GetTestName(), true);
         }
 
-        //NOTE: ClassCleanupBehavior requires MSTest.TestFramework 2.2.8
-        //ClassCleanupBehavior.EndOfClass avoids all cleanups be executed after all testss:
-        //https://github.com/microsoft/testfx/issues/580
-        [ClassCleanup(ClassCleanupBehavior.EndOfClass)]
+        // NOTE: Before v4.0.0, class cleanup was wrongly done after the end of all classes in namespace.
+        // ClassCleanupBehavior.EndOfClass in ClassCleanup attribute was required to set the right behaviour.
+        //   https://github.com/microsoft/testfx/issues/580
+        // v4.0.0 fixes the default behaviour, ClassCleanupBehavior is not necessary (and not available)
+        //   https://learn.microsoft.com/es-es/dotnet/core/testing/unit-testing-mstest-migration-v3-v4
+        [ClassCleanup()]
         public static void TearDownClass()
         {
             log.Trace("Lifecycle class end");

@@ -16,7 +16,7 @@ updates:
       - "/net/Selema"
     ignore:
       - dependency-name: "MSTest.TestFramework"
-        versions: [ ">2.2.8" ]
+        versions: [ ">4.0.0" ]
       - dependency-name: "NUnit"
         versions: [ ">3.14.0" ]
       - dependency-name: "Selenium.WebDriver"

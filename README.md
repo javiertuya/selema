@@ -11,12 +11,12 @@ useful debugging information, and integrates with CI platforms and remote browse
 
 - Support:
   - Platforms: Java (>=11) and .NET (netstandard 2.0)
-  - Test frameworks: JUnit 4, JUnit 5, NUnit 3–4, MSTest 2–3
+  - Test frameworks: JUnit 4, JUnit 5, NUnit 3–4, MSTest 4
   - CI/CD environments: Jenkins, GitHub Actions
   - Browser services with video recording:
     - Selenoid
-    - Selenium Docker Dynamic Grid
-    - Selenium Docker Preloaded Containers
+    - Selenium Docker Dynamic Grid (since v4.0.0)
+    - Selenium Docker Preloaded Containers (since v4.0.0)
 - Features:
   - Transparent download, creation and disposal of Selenium WebDriver instances
   - Configurable driver lifetime (per test, per class)
@@ -32,6 +32,7 @@ useful debugging information, and integrates with CI platforms and remote browse
 
 - This release adds several browser services and moves them to their own namespace. The Selenoid browser service has been renamed/moved to `giis.selema.services.browser.SelenoidBrowserService`.
 - .NET core packages (MSTest, NUnit and Selenium) are declared as private assets (like java provided) to prevent propagation to the client. The client must declare the chosen packages and the versions for each framework.
+- Minimum supported MSTest version is 4.0.0 (the new MSTest version introduces breaking changes that make incompatible keeping V3 and V4 within this package). `ClassCleanupBehavior.EndOfClass` in `ClassCleanup` attribute is not available (the new MSTest version fixed the class cleanup behaviour).
 
 # Getting started
 
@@ -396,4 +397,4 @@ A common mitigation for flaky tests is to retry the test until it passes or a ma
 - **JUnit 5**: Add the rerunner-jupiter dependency and annotate tests with `@RepeatedIfExceptionsTest(repeats = <repetitions>)`. Do NOT also annotate with `@Test`.
 - **JUnit 4**: Use Selema's custom rule. After declaring the manager rules, declare a `RepeatedTestRule` instance and annotate tests with `@RepeatedIfExceptionsTest(repeats = <repetitions>)`. You MUST still use `@Test`.
 - **NUnit 3–4**: Use the built-in retry attribute: `[Retry(<repetitions>)]`.
-- **MSTest 2–3**: Use Selema's custom attribute: replace `[TestMethod]` with `[RetryTestMethod(<repetitions>)]` for tests that should be retried.
+- **MSTest 4**: The Selema's custom attribute `[RetryTestMethod(<repetitions>)]` for tests that should be retried is not necessary since V4, use the built-in `[Retry(<repetitions>)]`.
