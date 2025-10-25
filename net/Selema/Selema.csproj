@@ -41,7 +41,7 @@
     The client must declare the chosen packages and the versions for each framework.
     Private assets are kept to lower versions to avoid deprecation warnings/errors in the clients
     -->
-    <PackageReference Include="MSTest.TestFramework" Version="4.0.0" >
+    <PackageReference Include="MSTest.TestFramework" Version="4.0.1" >
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
 
