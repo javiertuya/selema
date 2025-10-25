@@ -44,7 +44,7 @@
     NOTE: IF the private asset dependencies are updated, get them back to the versions in the latest release (4.0.0):
     MSTest.TestFramework 4.0.0, NUnit 3.14.0, Selenium.WebDriver 4.37.0
     -->
-    <PackageReference Include="MSTest.TestFramework" Version="4.0.0" >
+    <PackageReference Include="MSTest.TestFramework" Version="4.0.1" >
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
 
