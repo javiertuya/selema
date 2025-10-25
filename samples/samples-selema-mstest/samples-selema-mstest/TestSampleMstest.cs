@@ -1,4 +1,4 @@
-using Giis.Selema.Framework.Mstest2;
+using Giis.Selema.Framework.Mstest4;
 using Giis.Selema.Manager;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -9,12 +9,12 @@ namespace Giis.Samples.Selema.Mstest
     /// see usage at https://github.com/javiertuya/selema#readme
     /// </summary>
     [TestClass]
-    public class TestSampleMstest : LifecycleMstest2
+    public class TestSampleMstest : LifecycleMstest4
     {
         protected static SeleManager sm;
         public TestSampleMstest()
         {
-            sm = LifecycleMstest2.GetManager(sm).SetBrowser("chrome");
+            sm = LifecycleMstest4.GetManager(sm).SetBrowser("chrome");
         }
         //Note that due to the extensibility restrictions of MSTest, the test class must inherit from the Lifecycle class.
         //Additionally, the instantiation and configuration is made in the class constructor.
@@ -24,8 +24,8 @@ namespace Giis.Samples.Selema.Mstest
         [ClassInitialize(InheritanceBehavior.BeforeEachDerivedClass)]
         public static new void SetUpClass(TestContext testContext)
         {
-            LifecycleMstest2.SetUpClass(testContext);
-            sm = LifecycleMstest2.GetManager(sm).SetBrowser("edge");
+            LifecycleMstest4.SetUpClass(testContext);
+            sm = LifecycleMstest4.GetManager(sm).SetBrowser("edge");
         }
         */
 
