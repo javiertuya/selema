@@ -21,8 +21,8 @@ namespace Giis.Selema.Services.Browser
         private static readonly string VIDEO_INDEX_NAME = "video-index.log";
         protected string seleniumSessionId = "";
         //los timestamps no se miden de forma precisa, pero se tomara como referencia el intervalo que se conoce
-        private long lastSessionStartingTimestamp = 0;
-        private long lastSessionStartedTimestamp = 0;
+        protected long lastSessionStartingTimestamp = 0;
+        protected long lastSessionStartedTimestamp = 0;
         /// <summary>
         /// Configures the logger of this service, called on attaching the service to a SeleManager
         /// </summary>

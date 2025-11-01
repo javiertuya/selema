@@ -25,7 +25,10 @@ public class RemoteVideoService extends AbstractVideoService {
 	@Override
 	public void afterCreateDriver(WebDriver driver) {
 		super.afterCreateDriver(driver);
+		// With remote preloaded containers, the recording start/stop does not is at the driver creation, but at the controller start
+		lastSessionStartingTimestamp = JavaCs.currentTimeMillis();
 		videoControllerStart();
+		lastSessionStartedTimestamp = JavaCs.currentTimeMillis();
 	}
 
 	@Override

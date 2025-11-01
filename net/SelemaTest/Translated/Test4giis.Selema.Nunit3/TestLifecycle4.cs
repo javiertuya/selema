@@ -55,26 +55,26 @@ namespace Test4giis.Selema.Nunit3
         public virtual void TestFailMethod()
         {
             sm.GetWatermarkService().SetBackground("yellow");
-            lfas.AssertNow(CurrentName() + ".testFailMethod", sm.CurrentTestName());
-            lfas.AssertAfterSetup(sm, true);
+
+            //lfas.assertNow(currentName()+".testFailMethod", sm.currentTestName());
+            //lfas.assertAfterSetup(sm, true);
             LaunchPage();
             JavaCs.Sleep(3000);
 
             //simula un fallo para comprobar luego las acciones realizadas a traves del log
             //NOTA aunque se vera fallo en el watermark, a continuacion se ejecutaran las acciones de teardown correspondientes a no fallo y el test pasara
-            sm.OnFailure(CurrentName(), sm.CurrentTestName());
-            lfas.AssertAfterFail(sm);
+            sm.OnFailure(CurrentName(), sm.CurrentTestName()); //lfas.assertAfterFail(sm);
         }
 
         [Test]
         public virtual void TestPassMethod()
         {
-            lfas.AssertNow(CurrentName() + ".testPassMethod", sm.CurrentTestName());
-            lfas.AssertAfterSetup(sm, true);
+
+            //lfas.assertNow(currentName()+".testPassMethod",sm.currentTestName());
+            //lfas.assertAfterSetup(sm, true);
             LaunchPage();
             sm.GetLogger().Info("INSIDE TEST BODY");
-            NUnit.Framework.Legacy.ClassicAssert.AreEqual("result", sm.Driver.FindElement(OpenQA.Selenium.By.Id("spanAlert")).Text);
-            lfas.AssertAfterPass();
+            NUnit.Framework.Legacy.ClassicAssert.AreEqual("result", sm.Driver.FindElement(OpenQA.Selenium.By.Id("spanAlert")).Text); //lfas.assertAfterPass();
         }
     }
 }

@@ -28,7 +28,11 @@ namespace Giis.Selema.Services.Browser
         public override void AfterCreateDriver(IWebDriver driver)
         {
             base.AfterCreateDriver(driver);
+
+            // With remote preloaded containers, the recording start/stop does not is at the driver creation, but at the controller start
+            lastSessionStartingTimestamp = JavaCs.CurrentTimeMillis();
             VideoControllerStart();
+            lastSessionStartedTimestamp = JavaCs.CurrentTimeMillis();
         }
 
         public override void BeforeQuitDriver(IMediaContext context, string testName)
