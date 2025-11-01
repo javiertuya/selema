@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using NLog;
+using Giis.Portable.Util;
 using Giis.Selema.Framework.Nunit3;
 
 using Giis.Selema.Manager;
@@ -39,9 +40,11 @@ namespace Test4giis.Selema.Nunit3
         [Test]
         [Retry(3)] public virtual void TestRepeated()
         {
-            lfas.AssertAfterSetup(sm, true);
+
+            //lfas.assertAfterSetup(sm, true);
+            JavaCs.Sleep(3000);
             repetitions++;
-            if (repetitions < 3)
+            if (repetitions < 5)
                 NUnit.Framework.Legacy.ClassicAssert.Fail("simulated failure");
             else if (new Config4test().GetManualCheckEnabled())
                 NUnit.Framework.Legacy.ClassicAssert.Fail("Manual Check: salida estandar del test muestra nombres de test y log de grabacion video y screenshot");

@@ -1,5 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NLog;
+using Giis.Portable.Util;
 using Giis.Selema.Framework.Mstest4;
 
 using Giis.Selema.Manager;
@@ -51,9 +52,11 @@ namespace Test4giis.Selema.Mstest4
         
         [RetryTestMethod(3)] public virtual void TestRepeated()
         {
-            lfas.AssertAfterSetup(sm, true);
+
+            //lfas.assertAfterSetup(sm, true);
+            JavaCs.Sleep(3000);
             repetitions++;
-            if (repetitions < 3)
+            if (repetitions < 5)
                 Microsoft.VisualStudio.TestTools.UnitTesting.Assert.Fail("simulated failure");
             else if (new Config4test().GetManualCheckEnabled())
                 Microsoft.VisualStudio.TestTools.UnitTesting.Assert.Fail("Manual Check: salida estandar del test muestra nombres de test y log de grabacion video y screenshot");

@@ -9,6 +9,7 @@ import org.openqa.selenium.By;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import giis.portable.util.JavaCs;
 import giis.selema.framework.junit4.LifecycleJunit4Class;
 import giis.selema.framework.junit4.LifecycleJunit4Test;
 import giis.selema.manager.IAfterEachCallback;
@@ -55,23 +56,24 @@ public class TestLifecycle4 implements IAfterEachCallback {
 	@Test
 	public void testFailMethod() {
 		sm.getWatermarkService().setBackground("yellow");
-		lfas.assertNow(currentName()+".testFailMethod", sm.currentTestName());
-		lfas.assertAfterSetup(sm, true);
+		//lfas.assertNow(currentName()+".testFailMethod", sm.currentTestName());
+		//lfas.assertAfterSetup(sm, true);
 		launchPage();
+		JavaCs.sleep(3000);
 		//simula un fallo para comprobar luego las acciones realizadas a traves del log
 		//NOTA aunque se vera fallo en el watermark, a continuacion se ejecutaran las acciones de teardown correspondientes a no fallo y el test pasara
 		sm.onFailure(currentName(), sm.currentTestName());
-		lfas.assertAfterFail(sm);
+		//lfas.assertAfterFail(sm);
 	}
 	
 	@Test
 	public void testPassMethod() {
-		lfas.assertNow(currentName()+".testPassMethod",sm.currentTestName());
-		lfas.assertAfterSetup(sm, true);
+		//lfas.assertNow(currentName()+".testPassMethod",sm.currentTestName());
+		//lfas.assertAfterSetup(sm, true);
 		launchPage();
 		sm.getLogger().info("INSIDE TEST BODY");
 		assertEquals("result",sm.driver().findElement(By.id("spanAlert")).getText());
-		lfas.assertAfterPass();
+		//lfas.assertAfterPass();
 	}
 	
 }

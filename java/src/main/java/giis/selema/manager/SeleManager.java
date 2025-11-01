@@ -324,7 +324,9 @@ public class SeleManager {
 			//El instante antes y despues de creacion del driver sera el margen de tolerancia de este instante
 			if (videoRecorder!=null)
 				videoRecorder.beforeCreateDriver();
+			long timestamp = JavaCs.currentTimeMillis();
 			WebDriver rdriver=getRemoteSeleniumDriver(driverScope);
+			selemaLog.warn("Time to create driver " + (JavaCs.currentTimeMillis() - timestamp) + "ms");
 			if (videoRecorder!=null)
 				videoRecorder.afterCreateDriver(rdriver);
 			selemaLog.info("Remote session " + currentBrowser + " started. Scope: " + driverScope);

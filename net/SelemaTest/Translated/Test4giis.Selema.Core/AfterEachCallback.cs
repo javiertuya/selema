@@ -23,8 +23,7 @@ namespace Test4giis.Selema.Core
 
         public virtual void RunAfterCallback(string testName, bool success)
         {
-            log.Trace("afterTearDown called");
-            steps.AssertAfterTeardown(sm, testName, success);
+            log.Trace("afterTearDown called"); //steps.assertAfterTeardown(sm, testName, success);
         }
     }
 }

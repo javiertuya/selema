@@ -1,4 +1,6 @@
 using OpenQA.Selenium;
+using NLog;
+using Giis.Portable.Util;
 using Giis.Selema.Services;
 using System;
 using System.Collections.Generic;
@@ -15,6 +17,7 @@ namespace Giis.Selema.Services.Browser
     /// </summary>
     public class RemoteVideoService : AbstractVideoService
     {
+        readonly Logger log = LogManager.GetCurrentClassLogger(); //general purpose logger
         // For preloaded services, an additional instance for controller the video recording is required
         private IVideoController videoController;
         public RemoteVideoService(IVideoController videoController)
@@ -39,7 +42,9 @@ namespace Giis.Selema.Services.Browser
         {
             try
             {
+                long timestamp = JavaCs.CurrentTimeMillis();
                 videoController.Start();
+                logSelema.Warn("Time to start recording " + (JavaCs.CurrentTimeMillis() - timestamp) + "ms");
             }
             catch (Exception e)
             {
@@ -53,7 +58,9 @@ namespace Giis.Selema.Services.Browser
         {
             try
             {
+                long timestamp = JavaCs.CurrentTimeMillis();
                 videoController.Stop(videoFileName);
+                logSelema.Warn("Time to stop recording " + (JavaCs.CurrentTimeMillis() - timestamp) + "ms");
             }
             catch (Exception e)
             {

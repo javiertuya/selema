@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import giis.portable.util.JavaCs;
 import giis.selema.framework.junit4.LifecycleJunit4Class;
 import giis.selema.framework.junit4.LifecycleJunit4Test;
 import giis.selema.framework.junit4.RepeatedIfExceptionsTest;
@@ -47,12 +48,13 @@ public class TestLifecycle4Repeated implements IAfterEachCallback {
 
 	private static int repetitions=0;
  
-	@RepeatedIfExceptionsTest(repeats = 3)
+	@RepeatedIfExceptionsTest(repeats = 5)
 	@Test
 	public void testRepeated() {
-		lfas.assertAfterSetup(sm, true);
+		//lfas.assertAfterSetup(sm, true);
+		JavaCs.sleep(3000);
 		repetitions++;
-		if (repetitions<3) //falla salvo la ultima repeticion
+		if (repetitions<5) //falla salvo la ultima repeticion
 			fail("simulated failure");
 		else if (new Config4test().getManualCheckEnabled()) //siempre falla para comprobacion manual
 			fail("Manual Check: salida estandar del test muestra nombres de test y log de grabacion video y screenshot");

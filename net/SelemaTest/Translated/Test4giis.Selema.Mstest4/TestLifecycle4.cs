@@ -1,5 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NLog;
+using Giis.Portable.Util;
 using Giis.Selema.Framework.Mstest4;
 using Giis.Selema.Manager;
 using Giis.Selema.Portable.Selenium;
@@ -69,6 +70,7 @@ namespace Test4giis.Selema.Mstest4
             lfas.AssertNow(CurrentName() + ".testFailMethod", sm.CurrentTestName());
             lfas.AssertAfterSetup(sm, true);
             LaunchPage();
+            JavaCs.Sleep(3000);
 
             //simula un fallo para comprobar luego las acciones realizadas a traves del log
             //NOTA aunque se vera fallo en el watermark, a continuacion se ejecutaran las acciones de teardown correspondientes a no fallo y el test pasara
