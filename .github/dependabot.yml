@@ -12,6 +12,7 @@ updates:
 
   # Core .NET dependencies (MSTest, NUnit and Selenium) are declared as private assets to prevent propagation to the client
   # and must be kept to lower versions to prevent deprecation warnings/errors in the clients
+  # Issue #959
   # However, it is not possible to have these dependencies not updated by dependabot (even setting them as ignore in a directory), 
   # because SelemaTest depends transitively on Selema. When dependabot updates SelemaTest, updates Selema too.
   # NOTE: When publish a new release, set back the Selema core dependencies to the lower versions, in v4.0.0.0 they are:
@@ -19,6 +20,14 @@ updates:
   - package-ecosystem: nuget
     directories: 
       - "/net"
+    schedule:
+      interval: monthly
+    rebase-strategy: "disabled"
+    open-pull-requests-limit: 20
+
+  # Workaround issue #959 Separte sampels from net
+  - package-ecosystem: nuget
+    directories: 
       - "/samples/samples-selema-mstest"
       - "/samples/samples-selema-nunit"
     schedule:
