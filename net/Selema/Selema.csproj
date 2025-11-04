@@ -2,8 +2,8 @@
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <InformationalVersion>4.0.1</InformationalVersion>
-    <Version>4.0.1</Version>
+    <InformationalVersion>4.0.2-SNAPSHOT</InformationalVersion>
+    <Version>4.0.2-SNAPSHOT</Version>
  
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>CS1591</NoWarn>
@@ -43,7 +43,6 @@
 
     NOTE: IF the private asset dependencies are updated, get them back to the versions in the latest release (4.0.0):
     MSTest.TestFramework 4.0.0, NUnit 3.14.0, Selenium.WebDriver 4.37.0
-    -->
     <PackageReference Include="MSTest.TestFramework" Version="4.0.0" >
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -53,8 +52,8 @@
     <PackageReference Include="Selenium.WebDriver" Version="4.37.0" >
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    -->
 
-    <!--
     <PackageReference Include="MSTest.TestFramework" Version="4.0.1" >
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -64,7 +63,6 @@
     <PackageReference Include="Selenium.WebDriver" Version="4.38.0" >
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    -->
 
     <PackageReference Include="DotNetSeleniumExtras.WaitHelpers" Version="3.11.0" />
 
