@@ -374,10 +374,11 @@ namespace Giis.Selema.Manager
                 //El instante antes y despues de creacion del driver sera el margen de tolerancia de este instante
                 if (videoRecorder != null)
                     videoRecorder.BeforeCreateDriver();
+                long timestamp = JavaCs.CurrentTimeMillis();
                 IWebDriver rdriver = GetRemoteSeleniumDriver(driverScope);
+                selemaLog.Info("Remote session " + currentBrowser + " started. Scope: " + driverScope + ". Time: " + (JavaCs.CurrentTimeMillis() - timestamp) + "ms");
                 if (videoRecorder != null)
                     videoRecorder.AfterCreateDriver(rdriver);
-                selemaLog.Info("Remote session " + currentBrowser + " started. Scope: " + driverScope);
                 currentDriver = rdriver;
             }
             else

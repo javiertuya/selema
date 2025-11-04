@@ -26,7 +26,11 @@ public class RemoteVideoService extends AbstractVideoService {
 	public void afterCreateDriver(WebDriver driver) {
 		super.afterCreateDriver(driver);
 		long timestamp = JavaCs.currentTimeMillis();
+		
+		// As recording starts here, the times to determine the failure window must be overwritten
+		lastSessionStartingTimestamp = JavaCs.currentTimeMillis();
 		videoControllerStart();
+		lastSessionStartedTimestamp = JavaCs.currentTimeMillis();
 		log.trace("Time to start recorder: " + (JavaCs.currentTimeMillis() - timestamp) + "ms");
 	}
 

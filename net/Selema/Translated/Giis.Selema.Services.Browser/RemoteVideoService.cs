@@ -1,4 +1,6 @@
 using OpenQA.Selenium;
+using NLog;
+using Giis.Portable.Util;
 using Giis.Selema.Services;
 using System;
 using System.Collections.Generic;
@@ -15,6 +17,7 @@ namespace Giis.Selema.Services.Browser
     /// </summary>
     public class RemoteVideoService : AbstractVideoService
     {
+        readonly Logger log = LogManager.GetCurrentClassLogger(); //general purpose logger
         // For preloaded services, an additional instance for controller the video recording is required
         private IVideoController videoController;
         public RemoteVideoService(IVideoController videoController)
@@ -25,13 +28,21 @@ namespace Giis.Selema.Services.Browser
         public override void AfterCreateDriver(IWebDriver driver)
         {
             base.AfterCreateDriver(driver);
+            long timestamp = JavaCs.CurrentTimeMillis();
+
+            // As recording starts here, the times to determine the failure window must be overwritten
+            lastSessionStartingTimestamp = JavaCs.CurrentTimeMillis();
             VideoControllerStart();
+            lastSessionStartedTimestamp = JavaCs.CurrentTimeMillis();
+            log.Trace("Time to start recorder: " + (JavaCs.CurrentTimeMillis() - timestamp) + "ms");
         }
 
         public override void BeforeQuitDriver(IMediaContext context, string testName)
         {
             string videoFileName = GetVideoFileNameWithRelativePath(context, testName);
+            long timestamp = JavaCs.CurrentTimeMillis();
             VideoControllerStop(videoFileName);
+            log.Trace("Time to stop recorder: " + (JavaCs.CurrentTimeMillis() - timestamp) + "ms");
             base.BeforeQuitDriver(context, testName);
         }
 
