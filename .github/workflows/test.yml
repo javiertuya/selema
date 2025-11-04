@@ -20,7 +20,16 @@ jobs:
     strategy:
       matrix:
         platform: [java, net]
+        version: [base] #baseline test versions
         mode: [headless, selenoid, grid, preload-local, vcmock-local, preload-remote, vcmock-remote]
+        # Include testing some modes for compatibility: jdk11 with junit5
+        include:
+          - platform: java
+            version: jdk11
+            mode: headless
+          - platform: java
+            version: jdk11
+            mode: preload-remote
         #When dynamic grid address is localhost or 127.0.0.1, Net+Grid work on local, but fail with timeout when creating remote web driver in GHA.
         #If set the address to ${hostname -i), then the driver is successfully created, but a different failure is raised:
         #The HTTP request to the remote WebDriver server for URL http://10.1.0.124:4444/session timed out after 60 seconds
@@ -39,7 +48,13 @@ jobs:
     #if: ${{ false }}  # disable for now
     steps:
       - uses: actions/checkout@v5
-      - if: ${{ matrix.platform=='java' }}
+      - if: ${{ matrix.platform=='java' && matrix.version=='base' }}
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+      - if: ${{ matrix.platform=='java' && matrix.version=='jdk11' }}
         uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
@@ -194,7 +209,7 @@ jobs:
         if: always()
         uses: mikepenz/action-junit-report@v6.0.1
         with:
-          check_name: "test-result-${{ matrix.platform }}-${{ matrix.mode }}"
+          check_name: "test-result-${{ matrix.platform }}-${{ matrix.version }}-${{ matrix.mode }}"
           report_paths: "**/${{ env.REPORT_FOLDER }}/surefire-reports/TEST-*.xml"
           fail_on_failure: 'true'
 
@@ -202,7 +217,7 @@ jobs:
         name: Publish test report files
         uses: actions/upload-artifact@v5.0.0
         with:
-          name: "test-report-${{ matrix.platform }}-${{ matrix.mode }}-files"
+          name: "test-report-${{ matrix.platform }}-${{ matrix.version }}-${{ matrix.mode }}-files"
           path: |
             java/target/site
             java/target/selema/**/*
@@ -212,7 +227,7 @@ jobs:
         if: ${{ always() && matrix.platform=='java' }}
         uses: actions/upload-artifact@v5.0.0
         with:
-          name: "sonar-${{ matrix.platform }}-${{ matrix.mode }}"
+          name: "sonar-${{ matrix.platform }}-${{ matrix.version }}-${{ matrix.mode }}"
           path: |
             java/target/surefire-reports
             java/target/site/jacoco/jacoco.xml
@@ -245,20 +260,21 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           sonar-token: ${{ secrets.SONAR_TOKEN }}
           working-directory: java
-          restore-artifact-name1: "sonar-java-headless"
+          restore-artifact-name1: "sonar-java-base-headless"
           restore-artifact-path1: "target-headless"
-          restore-artifact-name2: "sonar-java-selenoid"
+          restore-artifact-name2: "sonar-java-base-selenoid"
           restore-artifact-path2: "target-selenoid"
-          restore-artifact-name3: "sonar-java-grid"
+          restore-artifact-name3: "sonar-java-base-grid"
           restore-artifact-path3: "target-grid"
-          restore-artifact-name4: "sonar-java-preload-local"
+          restore-artifact-name4: "sonar-java-base-preload-local"
           restore-artifact-path4: "target-preload-local"
-          restore-artifact-name5: "sonar-java-vcmock-local"
+          restore-artifact-name5: "sonar-java-base-vcmock-local"
           restore-artifact-path5: "target-vcmock-local"
-          restore-artifact-name6: "sonar-java-preload-remote"
+          restore-artifact-name6: "sonar-java-base-preload-remote"
           restore-artifact-path6: "target-preload-remote"
-          restore-artifact-name7: "sonar-java-vcmock-remote"
+          restore-artifact-name7: "sonar-java-base-vcmock-remote"
           restore-artifact-path7: "target-vcmock-remote"
+          #don't restore java reports using versions different from 'base'
 
   publish-java-snapshot:
     #avoid publishing PRs and dependabot branches
@@ -272,7 +288,7 @@ jobs:
         with: 
           token: ${{ secrets.GITHUB_TOKEN }}
           working-directory: java
-          java-version: '11'
+          java-version: '11' #artifactes are built with java 11 for compatibility
           mvn-deploy-args: '-P publish-github -DskipTests=true -Dmaven.test.failure.ignore=false -U --no-transfer-progress'
           delete-old-snapshots: true
           min-snapshots-to-keep: 4

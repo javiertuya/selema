@@ -11,7 +11,7 @@ useful debugging information, and integrates with CI platforms and remote browse
 
 - Support:
   - Platforms: Java (>=11) and .NET (netstandard 2.0)
-  - Test frameworks: JUnit 4, JUnit 5, NUnit 3–4, MSTest 4
+  - Test frameworks: JUnit 4, JUnit 5-6, NUnit 3–4, MSTest 4
   - CI/CD environments: Jenkins, GitHub Actions
   - Browser services with video recording:
     - Selenoid
@@ -59,7 +59,7 @@ and is accessible to tests using the `driver()` method (Java) or the `Driver` pr
 Expand/collapse the items below for instructions and examples for each supported platform.
 [Full source of examples can be found here](samples):
 
-<details open><summary><strong>JUnit 5</strong></summary>
+<details open><summary><strong>JUnit 5-6</strong></summary>
 
 (1) Extend the test class with `@ExtendWith(LifecycleJunit5.class)` and (2) declare a static `SeleManager` instance:
 
@@ -74,6 +74,8 @@ public class TestSampleJunit5 {
 	}
 }
 ```
+
+NOTE: Using JUnit 6 requires JDK 17+.
 
 </details>
 
@@ -103,7 +105,7 @@ an additional rule must be declared just after SeleManager instantiation:
 
 </details>
 
-<details><summary><strong>NUnit 3</strong></summary>
+<details><summary><strong>NUnit 3-4</strong></summary>
 
 Declare (1) an instance `sm` of `SeleManager`
 and (2) a decorate the test class with the `[LifecycleNunit3]` annotation:
@@ -121,6 +123,8 @@ and (2) a decorate the test class with the `[LifecycleNunit3]` annotation:
         }
     }
 ```
+
+NOTE: Using NUnit 4 requires change the assert classes (`ClassicAssert`) or using `AssertThat`
 
 </details>
 
@@ -396,7 +400,7 @@ Notes:
 
 A common mitigation for flaky tests is to retry the test until it passes or a maximum number of retries is reached. Selema provides helpers for retries; examples are in the samples folder.
 
-- **JUnit 5**: Add the rerunner-jupiter dependency and annotate tests with `@RepeatedIfExceptionsTest(repeats = <repetitions>)`. Do NOT also annotate with `@Test`.
+- **JUnit 5-6**: Add the rerunner-jupiter dependency and annotate tests with `@RepeatedIfExceptionsTest(repeats = <repetitions>)`. Do NOT also annotate with `@Test`.
 - **JUnit 4**: Use Selema's custom rule. After declaring the manager rules, declare a `RepeatedTestRule` instance and annotate tests with `@RepeatedIfExceptionsTest(repeats = <repetitions>)`. You MUST still use `@Test`.
 - **NUnit 3–4**: Use the built-in retry attribute: `[Retry(<repetitions>)]`.
 - **MSTest 4**: The Selema's custom attribute `[RetryTestMethod(<repetitions>)]` for tests that should be retried is not necessary since V4, use the built-in `[Retry(<repetitions>)]`.
