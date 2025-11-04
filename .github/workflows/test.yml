@@ -6,6 +6,8 @@ on:
       - 'gh-pages' #github pages do not trigger all tests
     tags-ignore:
       - 'v*' #avoids rerun existing commit on release
+    paths-ignore:
+      - 'samples/**' #samples have a dedicated workflow
   pull_request:
     branches:
       - 'main'
@@ -227,18 +229,6 @@ jobs:
           dotnet tool list --global
           ant convert
           dotnet build
-
-      # Samples: only check if no compilation errors
-      - name: JAVA - compile samples
-        if: ${{ matrix.platform=='java' && matrix.mode=='headless' }}
-        run: |
-          cd ../samples/samples-selema-junit4 && mvn test-compile -U --no-transfer-progress
-          cd ../samples-selema-junit5 && mvn test-compile -U --no-transfer-progress
-      - name: NET - compile samples
-        if: ${{ matrix.platform=='net' && matrix.mode=='headless' }}
-        run: |
-          cd ../samples/samples-selema-mstest && dotnet build
-          cd ../samples-selema-nunit && dotnet build
 
   # Example using a custom action, see https://github.com/javiertuya/sonarqube-action
   sonarqube:
