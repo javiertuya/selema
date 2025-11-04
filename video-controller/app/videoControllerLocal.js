@@ -14,10 +14,8 @@ h
    * @returns {Promise<void>}
    */
   async start(videoContainer, sourceFile) {
-    // Clean up previous video file to avoid concatenation
-    await CommandLine.fileDelete(sourceFile, false);
-
     // Ensure container is stopped before starting
+    const timestamp1 = Date.now();
     const status = await ContainerUtil.getContainerStatus(videoContainer);
     if (status !== 'exited') {
       Log.debug(`Video recorder ${videoContainer} is not stopped, restarting`);
@@ -25,9 +23,15 @@ h
       await ContainerUtil.waitDocker(videoContainer, 'Shutdown complete', '', 5);
     }
 
+    // Clean up previous video file to avoid concatenation
+    await CommandLine.fileDelete(sourceFile, false);
+    Log.trace("Time to ensure stopped: " + (Date.now() - timestamp1) + "ms");
+
     Log.debug(`Starting video recorder: ${videoContainer}`);
+    const timestamp2 = Date.now();
     await ContainerUtil.runDocker('start', videoContainer);
     await ContainerUtil.waitDocker(videoContainer, 'Display', 'is open', 5);
+    Log.trace("Time to ensure started: " + (Date.now() - timestamp2) + "ms");
   }
 
   /**
@@ -36,7 +40,9 @@ h
    */
   async stop(videoContainer) {
     Log.debug(`Stopping video recorder: ${videoContainer}`);
+    const timestamp1 = Date.now();
     await ContainerUtil.runDocker('stop', videoContainer);
     await ContainerUtil.waitDocker(videoContainer, 'Shutdown complete', '', 5);
+    Log.trace("Time to stop: " + (Date.now() - timestamp1) + "ms");
   }
 }

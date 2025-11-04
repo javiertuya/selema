@@ -1,7 +1,10 @@
 package giis.selema.services.browser;
 
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import giis.portable.util.JavaCs;
 import giis.selema.services.IMediaContext;
 import giis.selema.services.IVideoController;
 
@@ -10,6 +13,7 @@ import giis.selema.services.IVideoController;
  * created/closed).
  */
 public class RemoteVideoService extends AbstractVideoService {
+	final Logger log=LoggerFactory.getLogger(this.getClass()); //general purpose logger
 
 	// For preloaded services, an additional instance for controller the video recording is required
 	private IVideoController videoController;
@@ -21,13 +25,17 @@ public class RemoteVideoService extends AbstractVideoService {
 	@Override
 	public void afterCreateDriver(WebDriver driver) {
 		super.afterCreateDriver(driver);
+		long timestamp = JavaCs.currentTimeMillis();
 		videoControllerStart();
+		log.trace("Time to start recorder: " + (JavaCs.currentTimeMillis() - timestamp) + "ms");
 	}
 
 	@Override
 	public void beforeQuitDriver(IMediaContext context, String testName) {
 		String videoFileName = getVideoFileNameWithRelativePath(context, testName);
+		long timestamp = JavaCs.currentTimeMillis();
 		videoControllerStop(videoFileName);
+		log.trace("Time to stop recorder: " + (JavaCs.currentTimeMillis() - timestamp) + "ms");
 		super.beforeQuitDriver(context, testName);
 	}
 
