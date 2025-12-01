@@ -54,7 +54,7 @@
     </PackageReference>
     -->
 
-    <PackageReference Include="MSTest.TestFramework" Version="4.0.1" >
+    <PackageReference Include="MSTest.TestFramework" Version="4.0.2" >
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="NUnit" Version="3.14.0" >
