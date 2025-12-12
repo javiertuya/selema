@@ -1,0 +1,46 @@
+Instructions to create a chrome custom image to show the javascript console.
+This will allow to see the javascript logs and errors in the recorded videos for debugging purposes
+Experimental: Opening the console can cause flaky tests if they access the pages before they are ready
+
+Once created the custom image, the compose file can be called using this image
+and build automatically by adding:
+    build:
+      context: ./console-profile
+      dockerfile: Dockerfile
+
+DETAILED INSTRUCTIONS
+
+# Set this folder as current folder
+
+# Create a temporary chrome container (image should match with Dockerfile)
+docker run -d --name console-profile -p 4444:4444 -p 7900:7900 --shm-size="2g" selenium/standalone-chrome:139.0-20251025
+
+# From inside the container run chrome
+docker exec -i console-profile bash
+/usr/bin/google-chrome-stable --user-data-dir=/home/seluser/console-profile
+
+# Open a browser at the VNC adress: http://localhost:7900 (default password is secret)
+# Uncheck and skip all crome configs
+# Set data:, as startup page, press F12, select console and close chrome
+# Open chrome again, now with 
+/usr/bin/google-chrome-stable --user-data-dir=/home/seluser/console-profile --profile-directory=Default --auto-open-devtools-for-tabs
+# Answer by selecting google as default (search ana browser), close chrome
+
+# Still from inside the container create a zip including the custom profile that has been created
+sudo apt-get update && sudo apt-get install zip
+cd /home/seluser && zip -r console-profile.zip console-profile
+
+# Exit container, from outside, copy the zip file to current folder and remove the temporary container
+docker cp console-profile:/home/seluser/console-profile.zip ./
+docker stop console-profile && docker rm console-profile
+
+# Build the customized image and run the new container with that image
+docker build -t selenium-chrome-console-profile .
+docker run -d --name console-profile -p 4444:4444 -p 7900:7900 --shm-size="2g" selenium-chrome-console-profile
+
+# Test: from inside the container run chrome and check that chrome tools are open in console
+docker exec -i console-profile bash
+/usr/bin/google-chrome-stable --user-data-dir=/home/seluser/console-profile --profile-directory=Default --auto-open-devtools-for-tabs
+
+# Remove the temporary container
+docker stop console-profile && docker rm console-profile

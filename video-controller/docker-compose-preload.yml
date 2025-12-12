@@ -18,6 +18,8 @@ services:
       - ${NETWORK:?}
     ports:
       - ${PORTS:-127.0.0.1::4444}
+      # VNC from browser port (select set/unset password when run the container)
+      # - 7900:7900
     environment:
       SE_NODE_MAX_SESSIONS: 8
     shm_size: '2g'
