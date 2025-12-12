@@ -9,6 +9,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import giis.portable.util.JavaCs;
 import giis.selema.portable.selenium.SeleniumObjects;
 
 /**
@@ -42,7 +43,7 @@ public class SeleniumDriverFactory {
 			
 			//Creates either local or remote web driver
 			objectToInstantiate="WebDriver";
-			log.debug("Setting up WebDriver, browser: "+browser+", url: "+remoteUrl);
+			log.debug("Setting up WebDriver, browser: "  + browser + ", url: " + maskUrl(remoteUrl));
 			lastOptionString=reflect.getOptionsObjAsString(opt);
 			log.trace("Option string: "+lastOptionString.replace("\n", "").replace("\r", ""));
 			if (remoteUrl==null || "".equals(remoteUrl.trim())) {
@@ -55,7 +56,7 @@ public class SeleniumDriverFactory {
 			}
 		} catch (Exception e) { //NOSONAR
 			String message = "Can't instantiate " + objectToInstantiate
-					+ " for browser: " + browser + ("".equals(url)?"":" at url: "+url);
+					+ " for browser: " + browser + ("".equals(url) ? "" : " at url: " + maskUrl(url));
 			if (e instanceof InvocationTargetException) // captures detailed info if caused by selenium execution
 				message += ". Message: " + ((InvocationTargetException)e).getTargetException().getMessage();
 			message += ". Exception: " + e.getClass().getCanonicalName(); //add exception class name for better debugging
@@ -76,6 +77,27 @@ public class SeleniumDriverFactory {
 		browser = browser.toLowerCase();
 		version = version==null || "".equals(version.trim()) ? DriverVersion.DEFAULT : version.toLowerCase();
 		new SeleniumObjects().downloadDriverExecutable(browser, version);
+	}
+	
+	/**
+	 * Mask the password in a webdriver url that contains username and password for grid authentication
+	 */
+	public static String maskUrl(String url) {
+		if (url == null)
+			return url;
+		int start = url.indexOf("://");
+		int end = url.indexOf("@");
+		if (start<0 || end <0 || start >= end)
+			return url;
+		start += 3;
+		String userInfoStr = JavaCs.substring(url, start, end);
+		String[] userInfo = JavaCs.splitByChar(userInfoStr, ':');
+		if (userInfo.length > 1 || userInfoStr.endsWith(":")) // java split does not return two components if ends with :
+			return JavaCs.substring(url, 0, start)
+					+ userInfo[0] + ":" + "******"
+					+ JavaCs.substring(url, end, url.length());
+		else 
+			return url;
 	}
 	
 }

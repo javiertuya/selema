@@ -3,6 +3,7 @@ using Java.Util;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 using NLog;
+using Giis.Portable.Util;
 using Giis.Selema.Portable.Selenium;
 using System;
 using System.Collections.Generic;
@@ -47,7 +48,7 @@ namespace Giis.Selema.Manager
 
                 //Creates either local or remote web driver
                 objectToInstantiate = "WebDriver";
-                log.Debug("Setting up WebDriver, browser: " + browser + ", url: " + remoteUrl);
+                log.Debug("Setting up WebDriver, browser: " + browser + ", url: " + MaskUrl(remoteUrl));
                 lastOptionString = reflect.GetOptionsObjAsString(opt);
                 log.Trace("Option string: " + lastOptionString.Replace("\n", "").Replace("\r", ""));
                 if (remoteUrl == null || "".Equals(remoteUrl.Trim()))
@@ -66,7 +67,7 @@ namespace Giis.Selema.Manager
             {
 
                 //NOSONAR
-                string message = "Can't instantiate " + objectToInstantiate + " for browser: " + browser + ("".Equals(url) ? "" : " at url: " + url);
+                string message = "Can't instantiate " + objectToInstantiate + " for browser: " + browser + ("".Equals(url) ? "" : " at url: " + MaskUrl(url));
                 if (e is TargetInvocationException)
                     message += ". Message: " + ((TargetInvocationException)e).InnerException.Message;
                 message += ". Exception: " + e.GetType().FullName; //add exception class name for better debugging
@@ -92,6 +93,26 @@ namespace Giis.Selema.Manager
             browser = browser.ToLower();
             version = version == null || "".Equals(version.Trim()) ? DriverVersion.DEFAULT : version.ToLower();
             new SeleniumObjects().DownloadDriverExecutable(browser, version);
+        }
+
+        /// <summary>
+        /// Mask the password in a webdriver url that contains username and password for grid authentication
+        /// </summary>
+        public static string MaskUrl(string url)
+        {
+            if (url == null)
+                return url;
+            int start = url.IndexOf("://");
+            int end = url.IndexOf("@");
+            if (start < 0 || end < 0 || start >= end)
+                return url;
+            start += 3;
+            string userInfoStr = JavaCs.Substring(url, start, end);
+            string[] userInfo = JavaCs.SplitByChar(userInfoStr, ':');
+            if (userInfo.Length > 1 || userInfoStr.EndsWith(":"))
+                return JavaCs.Substring(url, 0, start) + userInfo[0] + ":" + "******" + JavaCs.Substring(url, end, url.Length);
+            else
+                return url;
         }
     }
 }

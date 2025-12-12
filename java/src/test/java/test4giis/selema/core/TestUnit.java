@@ -1,10 +1,12 @@
 package test4giis.selema.core;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
 import giis.selema.manager.SelemaConfig;
+import giis.selema.manager.SeleniumDriverFactory;
 import giis.selema.services.IMediaContext;
 import giis.selema.services.impl.MediaContext;
 import test4giis.selema.portable.Asserts;
@@ -54,4 +56,18 @@ public class TestUnit {
 		assertEquals("diff-xxx-06-07-03-Class-Method.html", ctx.getDiffFileName("Class.Method"));
 	}
 	
+	@Test
+	public void testMaskPasswordInUrl() {
+		assertEquals("http://host.domain:0000", SeleniumDriverFactory.maskUrl("http://host.domain:0000"));
+		assertEquals("https://host.domain:0000", SeleniumDriverFactory.maskUrl("https://host.domain:0000"));
+		assertEquals("http://user:******@host.domain:0000", SeleniumDriverFactory.maskUrl("http://user:pass@host.domain:0000"));
+		assertEquals("https://user:******@host.domain:0000", SeleniumDriverFactory.maskUrl("https://user:pass@host.domain:0000"));
+
+		assertEquals("http://user@host.domain:0000", SeleniumDriverFactory.maskUrl("http://user@host.domain:0000"));
+		assertEquals("http://user:******@host.domain:0000", SeleniumDriverFactory.maskUrl("http://user:@host.domain:0000"));
+		assertEquals("http://user:******@host.domain:0000", SeleniumDriverFactory.maskUrl("http://user:pass:other@host.domain:0000"));
+		
+		assertEquals("", SeleniumDriverFactory.maskUrl(""));
+		assertNull(SeleniumDriverFactory.maskUrl(null));
+	}
 }

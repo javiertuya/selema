@@ -65,5 +65,19 @@ namespace Test4giis.Selema.Core
             NUnit.Framework.Legacy.ClassicAssert.AreEqual("diff-xxx-06-07-02-Class-Method.html", ctx.GetDiffFileName("Class.Method"));
             NUnit.Framework.Legacy.ClassicAssert.AreEqual("diff-xxx-06-07-03-Class-Method.html", ctx.GetDiffFileName("Class.Method"));
         }
+
+        [Test]
+        public virtual void TestMaskPasswordInUrl()
+        {
+            NUnit.Framework.Legacy.ClassicAssert.AreEqual("http://host.domain:0000", SeleniumDriverFactory.MaskUrl("http://host.domain:0000"));
+            NUnit.Framework.Legacy.ClassicAssert.AreEqual("https://host.domain:0000", SeleniumDriverFactory.MaskUrl("https://host.domain:0000"));
+            NUnit.Framework.Legacy.ClassicAssert.AreEqual("http://user:******@host.domain:0000", SeleniumDriverFactory.MaskUrl("http://user:pass@host.domain:0000"));
+            NUnit.Framework.Legacy.ClassicAssert.AreEqual("https://user:******@host.domain:0000", SeleniumDriverFactory.MaskUrl("https://user:pass@host.domain:0000"));
+            NUnit.Framework.Legacy.ClassicAssert.AreEqual("http://user@host.domain:0000", SeleniumDriverFactory.MaskUrl("http://user@host.domain:0000"));
+            NUnit.Framework.Legacy.ClassicAssert.AreEqual("http://user:******@host.domain:0000", SeleniumDriverFactory.MaskUrl("http://user:@host.domain:0000"));
+            NUnit.Framework.Legacy.ClassicAssert.AreEqual("http://user:******@host.domain:0000", SeleniumDriverFactory.MaskUrl("http://user:pass:other@host.domain:0000"));
+            NUnit.Framework.Legacy.ClassicAssert.AreEqual("", SeleniumDriverFactory.MaskUrl(""));
+            NUnit.Framework.Legacy.ClassicAssert.IsNull(SeleniumDriverFactory.MaskUrl(null));
+        }
     }
 }

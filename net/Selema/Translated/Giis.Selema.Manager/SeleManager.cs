@@ -130,7 +130,7 @@ namespace Giis.Selema.Manager
         /// </summary>
         public virtual SeleManager SetDriverUrl(string driverUrl)
         {
-            log.Debug("Set driver url: " + driverUrl);
+            log.Debug("Set driver url: " + SeleniumDriverFactory.MaskUrl(driverUrl));
             this.currentDriverUrl = driverUrl;
             return this;
         }
@@ -365,7 +365,8 @@ namespace Giis.Selema.Manager
             if (this.UsesRemoteDriver())
             {
                 lastSessionRemote = true;
-                selemaLog.Info("Remote session " + currentBrowser + " starting on " + currentDriverUrl + " ...");
+                string maskedUrl = SeleniumDriverFactory.MaskUrl(currentDriverUrl);
+                selemaLog.Info("Remote session " + currentBrowser + " starting on " + maskedUrl + " ...");
 
                 //Colecciona los datos para identificacion de nombre de sesion para visualizacion en selenoid-ui y nombrado de videos
                 string driverScope = GetDriverScope(className, testName);

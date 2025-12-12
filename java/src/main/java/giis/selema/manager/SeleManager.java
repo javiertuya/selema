@@ -132,7 +132,7 @@ public class SeleManager {
 	 * Configures a RemoteWebDriver instead of the default local one; The driverUrl must point to the browser service
 	 */
 	public SeleManager setDriverUrl(String driverUrl) {
-		log.debug("Set driver url: "+driverUrl);
+		log.debug("Set driver url: " + SeleniumDriverFactory.maskUrl(driverUrl));
 		this.currentDriverUrl=driverUrl;
 		return this;
 	}
@@ -317,7 +317,8 @@ public class SeleManager {
 		mediaDiffContext=new MediaContext(conf.getReportDir(), conf.getQualifier(), instanceCount, sessionCount);
 		if (this.usesRemoteDriver()) {
 			lastSessionRemote=true;
-			selemaLog.info("Remote session " + currentBrowser + " starting on " + currentDriverUrl + " ...");
+			String maskedUrl = SeleniumDriverFactory.maskUrl(currentDriverUrl);
+			selemaLog.info("Remote session " + currentBrowser + " starting on " + maskedUrl + " ...");
 			//Colecciona los datos para identificacion de nombre de sesion para visualizacion en selenoid-ui y nombrado de videos
 			String driverScope=getDriverScope(className, testName);
 			//Colecciona la informacion para localizar posteriormente el instante del fallo en los videos y obtiene el driver
