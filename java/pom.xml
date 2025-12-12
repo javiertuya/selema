@@ -3,7 +3,7 @@
 
 	<groupId>io.github.javiertuya</groupId>
 	<artifactId>selema</artifactId>
-	<version>4.0.2-SNAPSHOT</version>
+	<version>4.0.2</version>
 	<packaging>jar</packaging>
 	<organization>
 		<name>Software Engineering Research Group - University of Oviedo, ES</name>
