@@ -125,11 +125,12 @@ jobs:
           docker logs selenoid
 
       #spin up a docker-selenium standalone based selenium dynamic grid with chrome (config in src/test/resources)
+      #note that the .toml file defines username and password, the url also includes them
       - name: launch services - selenium dynamic grid
         if: ${{ matrix.mode=='grid' }}
         run: |
           set -x
-          sed -i "s|selema.test.remote.webdriver=none|selema.test.remote.webdriver=http://localhost:4444|g" selema.properties
+          sed -i "s|selema.test.remote.webdriver=none|selema.test.remote.webdriver=http://testuser:test@localhost:4444|g" selema.properties
           mkdir -p ${{ env.REPORT_FOLDER }}/selema/assets
           sudo chown 1200:1201 ${{ env.REPORT_FOLDER }}/selema/assets
           docker run -d --name selenium --shm-size="2g" -p 4444:4444 \

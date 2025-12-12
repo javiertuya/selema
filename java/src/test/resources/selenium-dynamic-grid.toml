@@ -1,3 +1,8 @@
+[router]
+# To protect the grid with username and password (credentials must be aded when creating sessions, eg. in the url: http://username:password@host:port)
+username = "testuser"
+password = "test"
+
 [docker]
 # Configs have a mapping between the Docker image to use and the capabilities that need to be matched to
 # start a container with the given image.
