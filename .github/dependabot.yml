@@ -20,20 +20,22 @@ updates:
   - package-ecosystem: nuget
     directories: 
       - "/net"
-    schedule:
-      interval: monthly
-    rebase-strategy: "disabled"
-    open-pull-requests-limit: 20
-
-  # Workaround issue #959 Separte sampels from net
-  - package-ecosystem: nuget
-    directories: 
       - "/samples/samples-selema-mstest"
       - "/samples/samples-selema-nunit"
     schedule:
       interval: monthly
     rebase-strategy: "disabled"
     open-pull-requests-limit: 20
+
+  # Workaround issue #959 Separte sampels from net
+  #- package-ecosystem: nuget
+  #  directories: 
+  #    - "/samples/samples-selema-mstest"
+  #    - "/samples/samples-selema-nunit"
+  #  schedule:
+  #    interval: monthly
+  #  rebase-strategy: "disabled"
+  #  open-pull-requests-limit: 20
 
   - package-ecosystem: github-actions
     directory: "/"
