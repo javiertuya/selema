@@ -61,7 +61,7 @@ jobs:
           java-version: '11'
           cache: 'maven'
       - if: ${{ matrix.platform=='net' }}
-        uses: actions/setup-dotnet@v5.0.1
+        uses: actions/setup-dotnet@v5.1.0
         with:
             dotnet-version: '8.0.x'
 
@@ -208,7 +208,7 @@ jobs:
       
       - name: Generate report checks
         if: always()
-        uses: mikepenz/action-junit-report@v6.1.0
+        uses: mikepenz/action-junit-report@v6.2.0
         with:
           check_name: "test-result-${{ matrix.platform }}-${{ matrix.version }}-${{ matrix.mode }}"
           report_paths: "**/${{ env.REPORT_FOLDER }}/surefire-reports/TEST-*.xml"
