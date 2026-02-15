@@ -137,7 +137,7 @@ jobs:
             -v $GITHUB_WORKSPACE/java/src/test/resources/selenium-dynamic-grid.toml:/opt/selenium/docker.toml \
             -v $GITHUB_WORKSPACE/${{ matrix.platform}}/${{ env.REPORT_FOLDER }}/selema/assets:/opt/selenium/assets \
             -v /var/run/docker.sock:/var/run/docker.sock \
-            selenium/standalone-docker:4.35.0-20250909
+            selenium/standalone-docker:latest
           sleep 10
           docker logs selenium
 
