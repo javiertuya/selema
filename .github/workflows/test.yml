@@ -222,6 +222,7 @@ jobs:
         with:
           name: "test-report-${{ matrix.platform }}-${{ matrix.version }}-${{ matrix.mode }}-files"
           path: |
+            java/target/surefire-reports
             java/target/site
             java/target/selema/**/*
             net/reports
