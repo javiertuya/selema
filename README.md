@@ -14,7 +14,7 @@ useful debugging information, and integrates with CI platforms and remote browse
   - Test frameworks: JUnit 4, JUnit 5-6, NUnit 3–4, MSTest 4
   - CI/CD environments: Jenkins, GitHub Actions
   - Browser services with video recording:
-    - Selenoid
+    - Selenoid (Deprecated, not compatible with Docker v29 and higher)
     - Selenium Docker Dynamic Grid (since v4.0.0)
     - Selenium Docker Preloaded Containers (since v4.0.0)
 - Features:
@@ -255,7 +255,7 @@ The `./video-controller` folder contains the video controller source (`app` fold
 
 ### Browser severs and services examples
 
-<details><summary><strong>Selenoid</strong></summary>
+<details><summary><strong>Selenoid (Deprecated)</strong></summary>
 
 ```bash
 # Creates the required browser configuration file and required folders that will be mapped in the containers

@@ -21,7 +21,9 @@ jobs:
       matrix:
         platform: [java, net]
         version: [base] #baseline test versions
-        mode: [headless, selenoid, grid, preload-local, vcmock-local, preload-remote, vcmock-remote]
+        # Feb 2026: Selenoid is removed from the workflow because it is not compatible with the latest docker v29 
+        # (Minimum supported API version is 1.44), while Selenoid requires api v1.24 
+        mode: [headless, grid, preload-local, vcmock-local, preload-remote, vcmock-remote]
         # Include testing some modes for compatibility: jdk11 with junit5
         include:
           - platform: java
@@ -105,8 +107,8 @@ jobs:
       - name: launch services - web server
         run: nohup python3 -m http.server --directory $GITHUB_WORKSPACE/java/src/test/resources/static 8888 &
 
-      #chrome takes long time to pull, a solution could be that of lucianposton at https://github.community/t/cache-pulled-docker-images-already-built-and-published/17753
-      #but still takes long time to restore the jar image from chache
+      # Although Selenoid is not supported with the latest docker and excluded from the matrix, 
+      # we keep this configuration in the workflow for reference and testing with older docker versions.
       - name: launch services - selenoid
         if: ${{ matrix.mode=='selenoid' }}
         run: |
@@ -263,8 +265,8 @@ jobs:
           working-directory: java
           restore-artifact-name1: "sonar-java-base-headless"
           restore-artifact-path1: "target-headless"
-          restore-artifact-name2: "sonar-java-base-selenoid"
-          restore-artifact-path2: "target-selenoid"
+          #restore-artifact-name2: "sonar-java-base-selenoid"
+          #restore-artifact-path2: "target-selenoid"
           restore-artifact-name3: "sonar-java-base-grid"
           restore-artifact-path3: "target-grid"
           restore-artifact-name4: "sonar-java-base-preload-local"
