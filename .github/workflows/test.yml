@@ -179,7 +179,7 @@ jobs:
 
       # spin up the video controller, do not use containres because of it needs access to the docker socket
       - name: launch services - remote video controller
-        if: ${{ matrix.mode=='vcmock-remote' }} || ${{ matrix.mode=='preload-remote' }}
+        if: ${{ matrix.mode=='vcmock-remote' || matrix.mode=='preload-remote' }}
         run: |
           set -x
           cd $GITHUB_WORKSPACE/video-controller/app
