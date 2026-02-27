@@ -17,25 +17,39 @@ updates:
   # because SelemaTest depends transitively on Selema. When dependabot updates SelemaTest, updates Selema too.
   # NOTE: When publish a new release, set back the Selema core dependencies to the lower versions, in v4.0.0.0 they are:
   # MSTest.TestFramework 4.0.0, NUnit 3.14.0, Selenium.WebDriver 4.37.0
+  # The version of NUnit is set the latest major version (v3) that is compatible with netstandard2.0, 
   - package-ecosystem: nuget
     directories: 
       - "/net"
       - "/samples/samples-selema-mstest"
       - "/samples/samples-selema-nunit"
+    # The nuget updater creates several PRs with the same title for the core dependencies in different folders.
+    # This causes that a PR that updates a dependency in folder A is closed by other PR that updates the same dependency 
+    # in folder B, because they have the same title. 
+    # To avoid this, we group the PRs and use group-by (new since Feb 2026), so that only one PR 
+    # is created for each dependency, including the updates in multiple folders.
+    # NOTE: this seems to work, except for NUnit (SelemaTest does not include the updated version)
+    groups:
+      net-test-sdk:
+        patterns:
+          - "Microsoft.NET.Test.Sdk"
+        group-by: dependency-name
+      mstest:
+        patterns:
+          - "MSTest.*"
+        group-by: dependency-name
+      nunit:
+        patterns:
+          - "NUnit*"
+        group-by: dependency-name
+      selenium:
+        patterns:
+          - "Selenium.*"
+        group-by: dependency-name
     schedule:
       interval: monthly
     rebase-strategy: "disabled"
     open-pull-requests-limit: 20
-
-  # Workaround issue #959 Separte sampels from net
-  #- package-ecosystem: nuget
-  #  directories: 
-  #    - "/samples/samples-selema-mstest"
-  #    - "/samples/samples-selema-nunit"
-  #  schedule:
-  #    interval: monthly
-  #  rebase-strategy: "disabled"
-  #  open-pull-requests-limit: 20
 
   - package-ecosystem: github-actions
     directory: "/"
