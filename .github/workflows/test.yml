@@ -210,7 +210,7 @@ jobs:
       
       - name: Generate report checks
         if: always()
-        uses: mikepenz/action-junit-report@v6.2.0
+        uses: mikepenz/action-junit-report@v6.3.0
         with:
           check_name: "test-result-${{ matrix.platform }}-${{ matrix.version }}-${{ matrix.mode }}"
           report_paths: "**/${{ env.REPORT_FOLDER }}/surefire-reports/TEST-*.xml"
@@ -218,7 +218,7 @@ jobs:
 
       - if: always()
         name: Publish test report files
-        uses: actions/upload-artifact@v6.0.0
+        uses: actions/upload-artifact@v7.0.0
         with:
           name: "test-report-${{ matrix.platform }}-${{ matrix.version }}-${{ matrix.mode }}-files"
           path: |
@@ -229,7 +229,7 @@ jobs:
             java/reports/selema/**/*
       - name: JAVA - Reports for Sonar
         if: ${{ always() && matrix.platform=='java' }}
-        uses: actions/upload-artifact@v6.0.0
+        uses: actions/upload-artifact@v7.0.0
         with:
           name: "sonar-${{ matrix.platform }}-${{ matrix.version }}-${{ matrix.mode }}"
           path: |
@@ -288,7 +288,7 @@ jobs:
       run:
         working-directory: java
     steps:
-      - uses: javiertuya/branch-snapshots-action@v1.2.3
+      - uses: javiertuya/branch-snapshots-action@v2.0.0
         with: 
           token: ${{ secrets.GITHUB_TOKEN }}
           working-directory: java
