@@ -155,8 +155,28 @@ jobs:
           docker network create grid
           mkdir -p $GITHUB_WORKSPACE/preload-local
           LABEL=chrome NETWORK=grid FOLDER=$GITHUB_WORKSPACE/preload-local PORTS=4444:4444 USER=$UID \
+          VIDEO_IMAGE="selenium/video:ffmpeg-8.1-20260303" \
             docker compose -f ../video-controller/docker-compose-preload.yml up -d 
 
+          # Debug video controller logs
+          sleep 5
+          echo "stopping video container to check logs immediatlely"
+          docker stop selenium-video-chrome
+          docker logs --tail 10 selenium-video-chrome
+          sleep 1
+          echo "check logs after 1 seconds stopped"
+          docker logs --tail 10 selenium-video-chrome
+          sleep 2
+          echo "check logs after 2 seconds stopped"
+          docker logs --tail 10 selenium-video-chrome
+          sleep 3
+          echo "check logs after 3 seconds stopped"
+          docker logs --tail 10 selenium-video-chrome
+          sleep 10
+          echo "check logs after 13 seconds stopped"
+          docker logs --tail 10 selenium-video-chrome
+
+          docker start selenium-video-chrome
 #          chmod ug+rx ../video-controller/preload-start.sh         
 #          ../video-controller/preload-start.sh chrome grid $GITHUB_WORKSPACE/preload-local "4444:4444" $UID
 
@@ -172,8 +192,28 @@ jobs:
           docker network create grid
           mkdir -p $GITHUB_WORKSPACE/video-controller/app/videos
           LABEL=chrome NETWORK=grid FOLDER=$GITHUB_WORKSPACE/video-controller/app/videos PORTS=4444:4444 USER=$UID \
+          VIDEO_IMAGE="selenium/video:ffmpeg-8.1-20260303" \
             docker compose -f ../video-controller/docker-compose-preload.yml up -d 
 
+          # Debug video controller logs
+          sleep 5
+          echo "stopping video container to check logs immediatlely"
+          docker stop selenium-video-chrome
+          docker logs --tail 10 selenium-video-chrome
+          sleep 1
+          echo "check logs after 1 seconds stopped"
+          docker logs --tail 10 selenium-video-chrome
+          sleep 2
+          echo "check logs after 2 seconds stopped"
+          docker logs --tail 10 selenium-video-chrome
+          sleep 3
+          echo "check logs after 3 seconds stopped"
+          docker logs --tail 10 selenium-video-chrome
+          sleep 10
+          echo "check logs after 13 seconds stopped"
+          docker logs --tail 10 selenium-video-chrome
+
+          docker start selenium-video-chrome
 #          chmod ug+rx ../video-controller/preload-start.sh         
 #          ../video-controller/preload-start.sh chrome grid $GITHUB_WORKSPACE/video-controller/app/videos "4444:4444" $UID
 
