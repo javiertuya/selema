@@ -155,7 +155,7 @@ jobs:
           docker network create grid
           mkdir -p $GITHUB_WORKSPACE/preload-local
           LABEL=chrome NETWORK=grid FOLDER=$GITHUB_WORKSPACE/preload-local PORTS=4444:4444 USER=$UID \
-          VIDEO_IMAGE="selenium/video:ffmpeg-8.1-20260303" \
+          VIDEO_IMAGE="selenium/video:ffmpeg-8.0-20260222" \
             docker compose -f ../video-controller/docker-compose-preload.yml up -d 
 
           # Debug video controller logs
@@ -192,7 +192,7 @@ jobs:
           docker network create grid
           mkdir -p $GITHUB_WORKSPACE/video-controller/app/videos
           LABEL=chrome NETWORK=grid FOLDER=$GITHUB_WORKSPACE/video-controller/app/videos PORTS=4444:4444 USER=$UID \
-          VIDEO_IMAGE="selenium/video:ffmpeg-8.1-20260303" \
+          VIDEO_IMAGE="selenium/video:ffmpeg-8.0-20260222" \
             docker compose -f ../video-controller/docker-compose-preload.yml up -d 
 
           # Debug video controller logs
