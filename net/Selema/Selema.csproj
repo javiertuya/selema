@@ -54,13 +54,13 @@
     </PackageReference>
     -->
 
-    <PackageReference Include="MSTest.TestFramework" Version="4.1.0" >
+    <PackageReference Include="MSTest.TestFramework" Version="4.2.2" >
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="NUnit" Version="3.14.0" >
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Selenium.WebDriver" Version="4.41.0" >
+    <PackageReference Include="Selenium.WebDriver" Version="4.43.0" >
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
 
