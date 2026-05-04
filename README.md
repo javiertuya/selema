@@ -293,7 +293,7 @@ docker run -d --name selenium --shm-size="2g" -p 4444:4444 \
   -v /grid.toml:/opt/selenium/docker.toml \
   -v /assets:/opt/selenium/assets \
   -v /var/run/docker.sock:/var/run/docker.sock \
-  selenium/standalone-docker:4.35.0-20250909
+  selenium/standalone-docker:4.40.0-20260202
 ```
 
 Instanciate the Selema manager as follows:

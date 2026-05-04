@@ -1,4 +1,4 @@
-FROM selenium/standalone-chrome:139.0-20251025
+FROM selenium/standalone-chrome:144.0-20260202
 
 #WORKDIR /home/seluser
 COPY ./console-profile.zip /home/seluser/

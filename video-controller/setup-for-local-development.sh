@@ -9,7 +9,7 @@
 # up:
 docker network create grid
 mkdir -p $PWD/java/target/preload-local
-NODE_IMAGE="selenium/standalone-chrome:4.35.0-20250909" VIDEO_IMAGE="selenium/video:ffmpeg-8.0-20250909" \
+NODE_IMAGE="selenium/standalone-chrome:144.0-20260202" VIDEO_IMAGE="selenium/video:ffmpeg-8.0-20260202" \
 LABEL=chrome NETWORK=grid FOLDER=/$PWD/java/target/preload-local PORTS=4444:4444 \
   docker compose -f ./video-controller/docker-compose-preload.yml up -d 
 # down:
@@ -21,7 +21,7 @@ LABEL=chrome NETWORK=grid FOLDER=/$PWD/java/target/preload-local PORTS=4444:4444
 # up:
 docker network create grid
 mkdir -p $PWD/video-controller/app/videos
-NODE_IMAGE="selenium/standalone-chrome:4.35.0-20250909" VIDEO_IMAGE="selenium/video:ffmpeg-8.0-20250909" \
+NODE_IMAGE="selenium/standalone-chrome:144.0-20260202" VIDEO_IMAGE="selenium/video:ffmpeg-8.0-20260202" \
 LABEL=chrome NETWORK=grid FOLDER=/$PWD/video-controller/app/videos PORTS=4444:4444 \
   docker compose -f ./video-controller/docker-compose-preload.yml up -d 
 # down:
@@ -49,4 +49,4 @@ docker run -d --name selenium-dynamic-grid -p 4444:4444 --shm-size="2g" `
     -v ${PWD}/java/src/test/resources/selenium-dynamic-grid.toml:/opt/selenium/docker.toml `
     -v ${PWD}/java/target/grid-assets:/opt/selenium/assets `
     -v /var/run/docker.sock:/var/run/docker.sock `
-    selenium/standalone-docker:4.35.0-20250909
+    selenium/standalone-docker:4.40.0-20260202

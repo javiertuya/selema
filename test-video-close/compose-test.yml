@@ -1,0 +1,33 @@
+name: selenium-stack-test
+services:
+  node:
+    image: ${NODE_IMAGE:-selenium/standalone-chrome:latest}
+    container_name: selenium-node-test
+    networks:
+      - grid
+    ports:
+      - ${PORTS:-127.0.0.1::4444}
+    environment:
+      SE_NODE_MAX_SESSIONS: 8
+    shm_size: '2g'
+
+  video:
+    image: ${VIDEO_IMAGE:-selenium/video:latest}
+    container_name: selenium-video-test
+    networks:
+      - grid
+    user: ${USER:-root}
+    environment:
+      SE_VIDEO_FILE_NAME: ${FILE:-video}.mp4
+      DISPLAY_CONTAINER_NAME: selenium-node-test
+      SE_VIDEO_RECORD_STANDALONE: true
+      SE_VIDEO_INTERNAL_UPLOAD: false
+      SE_VIDEO_EVENT_DRIVEN: false
+    volumes:
+      - ${FOLDER}:/videos
+
+networks:
+  # In addition to the environment variable, this key must be set to the network name
+  grid:
+    external: true
+    name: grid
