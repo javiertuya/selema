@@ -1,7 +1,16 @@
-name: docker-selenium-issue-3129
+name: test-all
+#name: docker-selenium-issue-3129
 # Time to stop the video container across different versions
 on:
   workflow_dispatch:
+  push:
+    branches-ignore:
+      - 'dependabot/**' #avoid duplicates: only run the PR, not the commit
+      - 'gh-pages' #github pages do not trigger all tests
+    tags-ignore:
+      - 'v*' #avoids rerun existing commit on release
+    paths-ignore:
+      - 'samples/**' #samples have a dedicated workflow
 jobs:
   test:
     defaults:
