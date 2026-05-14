@@ -39,18 +39,17 @@ namespace Giis.Selema.Services.Browser
         public virtual void Start()
         {
 
-            // First clean the video file (if exists) to prevent the recorder concatenating videos
-            CommandLine.FileDelete(sourceFile, false);
-
             // The recorder should be created and stopped in order to start and record video now.
             // If not, stop now
             if (!"exited".Equals(Docker.GetContainerStatus(videoContainer)))
             {
                 log.Debug("Video recorder " + videoContainer + " is not stopped, restarting");
-                Docker.RunDocker("stop", videoContainer);
-                Docker.WaitDocker(videoContainer, "Shutdown complete", "", 5);
+                Docker.RunDocker("stop", videoContainer); //NOSONAR Docker.waitDocker(videoContainer, "Shutdown complete", "", 5);
             }
 
+
+            // Clean the video file (if exists) to prevent the recorder concatenating videos
+            CommandLine.FileDelete(sourceFile, false);
             log.Debug("Starting video recorder: " + videoContainer);
             Docker.RunDocker("start", videoContainer);
             Docker.WaitDocker(videoContainer, "Display", "is open", 5);
@@ -60,8 +59,8 @@ namespace Giis.Selema.Services.Browser
         {
             log.Debug("Stopping video recorder: " + videoContainer);
             Docker.RunDocker("stop", videoContainer);
-            Docker.WaitDocker(videoContainer, "Shutdown complete", "", 5);
 
+            //NOSONAR Docker.waitDocker(videoContainer, "Shutdown complete", "", 5);
             // copy the video file to its destination and then remove, this should not fail
             if (!CommandLine.FileExists(sourceFile))
                 throw new VideoControllerException("Video file not found after recording: " + sourceFile);

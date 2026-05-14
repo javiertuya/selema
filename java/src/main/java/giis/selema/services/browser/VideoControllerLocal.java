@@ -36,17 +36,16 @@ public class VideoControllerLocal implements IVideoController {
 
 	@Override
 	public void start() {
-		// First clean the video file (if exists) to prevent the recorder concatenating videos
-		CommandLine.fileDelete(sourceFile, false);
-		
 		// The recorder should be created and stopped in order to start and record video now.
 		// If not, stop now
 		if (!"exited".equals(Docker.getContainerStatus(videoContainer))) {
 			log.debug("Video recorder " + videoContainer + " is not stopped, restarting");
 			Docker.runDocker("stop", videoContainer);
-			Docker.waitDocker(videoContainer, "Shutdown complete", "", 5);
+			//NOSONAR Docker.waitDocker(videoContainer, "Shutdown complete", "", 5);
 		}
-
+		// Clean the video file (if exists) to prevent the recorder concatenating videos
+		CommandLine.fileDelete(sourceFile, false);
+		
 		log.debug("Starting video recorder: " + videoContainer);
 		Docker.runDocker("start", videoContainer);
 		Docker.waitDocker(videoContainer, "Display", "is open", 5);
@@ -56,7 +55,7 @@ public class VideoControllerLocal implements IVideoController {
 	public void stop(String videoName) {
 		log.debug("Stopping video recorder: " + videoContainer);
 		Docker.runDocker("stop", videoContainer);
-		Docker.waitDocker(videoContainer, "Shutdown complete", "", 5);
+		//NOSONAR Docker.waitDocker(videoContainer, "Shutdown complete", "", 5);
 
 		// copy the video file to its destination and then remove, this should not fail
 		if (!CommandLine.fileExists(sourceFile))

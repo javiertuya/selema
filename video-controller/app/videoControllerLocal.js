@@ -8,7 +8,7 @@ import { Log } from './log.js';
  * Any unexpected behavior throws an error to be handled by the caller.
  */
 export class VideoControllerLocal {
-h
+
   /**
    * Starts the video recording process by ensuring the container is clean and ready.
    * @returns {Promise<void>}
@@ -20,7 +20,7 @@ h
     if (status !== 'exited') {
       Log.debug(`Video recorder ${videoContainer} is not stopped, restarting`);
       await ContainerUtil.runDocker('stop', videoContainer);
-      await ContainerUtil.waitDocker(videoContainer, 'Shutdown complete', '', 5);
+      //await ContainerUtil.waitDocker(videoContainer, 'Shutdown complete', '', 5);
     }
 
     // Clean up previous video file to avoid concatenation
@@ -42,7 +42,7 @@ h
     Log.debug(`Stopping video recorder: ${videoContainer}`);
     const timestamp1 = Date.now();
     await ContainerUtil.runDocker('stop', videoContainer);
-    await ContainerUtil.waitDocker(videoContainer, 'Shutdown complete', '', 5);
+    //await ContainerUtil.waitDocker(videoContainer, 'Shutdown complete', '', 5);
     Log.trace("Time to stop: " + (Date.now() - timestamp1) + "ms");
   }
 }
