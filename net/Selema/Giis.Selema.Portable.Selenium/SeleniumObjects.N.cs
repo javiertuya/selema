@@ -88,7 +88,7 @@ namespace Giis.Selema.Portable.Selenium
 		{
 			browser = browser.ToLower();
 			string pkg = "OpenQA.Selenium." + Capitalize(browser);
-			string assembly = "WebDriver";
+			string assembly = "Selenium.WebDriver";
 			//Handle exceptions to the class name to be obtained
 			string cls = "remote".Equals(browser) ? "RemoteWeb" : Capitalize(browser);
 			//removed support for edge with selenium 3
