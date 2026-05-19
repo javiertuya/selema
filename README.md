@@ -28,6 +28,12 @@ useful debugging information, and integrates with CI platforms and remote browse
   - Visual diffs for comparing large strings (Visual Assert)
   - Flaky test handling (retry failed tests) across supported test frameworks
 
+## Breaking changes (v4.1.0), .NET only
+
+To address the Selenium 4.44.0 breaking changes in the .NET package:
+- Selema now requires a minimum Selenium version of 4.44.0.
+- The NuGet package `DotNetSeleniumExtras.WaitHelpers` is included directly in the Selema source code and is no longer referenced as an external dependency. Clients should remove any external references to this package.
+
 ## Breaking changes (v4.0.0)
 
 This is a summary of breaking changes in v4.0.0. See the [Release notes](https://github.com/javiertuya/selema/releases/tag/v4.0.0) for details:
