@@ -1,0 +1,8 @@
+{
+  "java.server.launchMode": "Standard",
+  "java.project.sourcePaths": [
+    "java",
+    "samples-selema-junit4",
+    "samples-selema-junit5"
+  ]
+}

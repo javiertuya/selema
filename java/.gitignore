@@ -5,3 +5,6 @@ dat/tmp
 #sqlite databases
 *.db 
 
+.settings
+.classpath
+.project
