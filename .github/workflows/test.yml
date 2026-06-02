@@ -224,7 +224,7 @@ jobs:
       
       - name: Generate report checks
         if: always()
-        uses: mikepenz/action-junit-report@v6.4.0
+        uses: mikepenz/action-junit-report@v6.4.1
         with:
           check_name: "test-result-${{ matrix.platform }}-${{ matrix.version }}-${{ matrix.mode }}"
           report_paths: "**/${{ env.REPORT_FOLDER }}/surefire-reports/TEST-*.xml"
