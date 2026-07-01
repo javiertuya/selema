@@ -89,7 +89,7 @@ jobs:
       - name: Test scope (override for grid), only single test because performance
         if: ${{ matrix.mode == 'grid' }}
         run: |
-          echo "JAVA_TEST_SCOPE=-Dtest=TestLifecycle4#testFailMethod" >> $GITHUB_ENV
+          echo "JAVA_TEST_SCOPE=-Dtest=TestLifecycle4" >> $GITHUB_ENV
           echo "NET_TEST_SCOPE=--filter FullyQualifiedName=Test4giis.Selema.Mstest2.TestLifecycle4.testFailMethod" >> $GITHUB_ENV
       - name: Test scope (override for vcmock-local), only local video controller mock tests
         if: ${{ matrix.mode == 'vcmock-local' }}
@@ -152,8 +152,10 @@ jobs:
             -v $GITHUB_WORKSPACE/${{ matrix.platform}}/${{ env.REPORT_FOLDER }}/selema/assets:/opt/selenium/assets \
             -v /var/run/docker.sock:/var/run/docker.sock \
             ${{ env.GRID_IMAGE }}
-          sleep 10
-          docker logs selenium
+          # ensure that the selenium container is ready before running tests
+          chmod ug+rx ../video-controller/wait-container-ready.sh
+          ../video-controller/wait-container-ready.sh selenium "Started Selenium Standalone"
+
 
       # spin up a docker-selenium standalone selenium browser with a sidecar video recorder
       - name: launch services - preloaded selenium standalone with video recorder sidecar
