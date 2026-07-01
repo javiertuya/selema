@@ -29,6 +29,9 @@ public class TestDriver {
 	//As of Chrome Driver V 111, we need to include remote-allow-origins argument, 
 	//if not connection with driver fails
 	public static String[] chromeHeadlesArgument=new String[] {"--headless", "--remote-allow-origins=*"};
+	//July 1st 2026: Edge on Linux CI crashes at launch ("Chrome instance exited") unless the sandbox is disabled,
+	//because its sandbox helper is not SUID-configured for the runner user (unlike Chrome)
+	public static String[] edgeHeadlesArgument=new String[] {"--headless", "--remote-allow-origins=*", "--no-sandbox"};
 	public static String[] firefoxHeadlesArgument=new String[] {"-headless"};
 	
 	//Not all tests can be executed in all test modes,
@@ -103,8 +106,8 @@ public class TestDriver {
 	public void testHeadlessWebDriverEdge() {
 		if (!useHeadless()) return;
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
-		driver=factory.getSeleniumDriver("edge", "", "", null, chromeHeadlesArgument, null);
-		assertOptions(factory, "{browserName:MicrosoftEdge,ms:edgeOptions:{args:[--headless,--remote-allow-origins=*]}}");
+		driver=factory.getSeleniumDriver("edge", "", "", null, edgeHeadlesArgument, null);
+		assertOptions(factory, "{browserName:MicrosoftEdge,ms:edgeOptions:{args:[--headless,--remote-allow-origins=*,--no-sandbox]}}");
 	}
 	
 	@Test

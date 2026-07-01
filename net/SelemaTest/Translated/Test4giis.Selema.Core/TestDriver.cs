@@ -28,6 +28,14 @@ namespace Test4giis.Selema.Core
             "--headless",
             "--remote-allow-origins=*"
         };
+        //July 1st 2026: Edge on Linux CI crashes at launch ("Chrome instance exited") unless the sandbox is disabled,
+        //because its sandbox helper is not SUID-configured for the runner user (unlike Chrome)
+        public static string[] edgeHeadlesArgument = new string[]
+        {
+            "--headless",
+            "--remote-allow-origins=*",
+            "--no-sandbox"
+        };
         public static string[] firefoxHeadlesArgument = new string[]
         {
             "-headless"
@@ -123,8 +131,8 @@ namespace Test4giis.Selema.Core
             if (!UseHeadless())
                 return;
             SeleniumDriverFactory factory = new SeleniumDriverFactory();
-            driver = factory.GetSeleniumDriver("edge", "", "", null, chromeHeadlesArgument, null);
-            AssertOptions(factory, "{browserName:MicrosoftEdge,ms:edgeOptions:{args:[--headless,--remote-allow-origins=*]}}");
+            driver = factory.GetSeleniumDriver("edge", "", "", null, edgeHeadlesArgument, null);
+            AssertOptions(factory, "{browserName:MicrosoftEdge,ms:edgeOptions:{args:[--headless,--remote-allow-origins=*,--no-sandbox]}}");
         }
 
         [Test]
