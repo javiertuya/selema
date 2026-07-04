@@ -22,7 +22,7 @@
 		<maven.compiler.target>17</maven.compiler.target>
 
 		<!-- by default uses junit6 on jdk17, to check junit5 uses a profile activated when running jdk11 -->
-		<junit-jupiter.version>6.1.0</junit-jupiter.version>
+		<junit-jupiter.version>6.1.1</junit-jupiter.version>
 
 		<junit.version>4.13.2</junit.version>
 		
@@ -65,7 +65,7 @@
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
-			<version>4.44.0</version>
+			<version>4.45.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -137,7 +137,7 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.14</version>
+				<version>0.8.15</version>
 				<executions>
 					<execution>
 						<id>pre-unit-test</id>
@@ -290,7 +290,7 @@
 					<plugin>
 						<groupId>org.sonatype.central</groupId>
 						<artifactId>central-publishing-maven-plugin</artifactId>
-						<version>0.10.0</version>
+						<version>0.11.0</version>
 						<extensions>true</extensions>
 						<configuration>
 							<publishingServerId>central</publishingServerId>
