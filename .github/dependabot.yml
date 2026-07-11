@@ -6,7 +6,8 @@ updates:
       - "/samples/samples-selema-junit4"
       - "/samples/samples-selema-junit5"
     schedule:
-      interval: monthly
+      interval: weekly
+      day: "friday"
     rebase-strategy: "disabled"
     open-pull-requests-limit: 20
 
@@ -47,13 +48,15 @@ updates:
           - "Selenium.*"
         group-by: dependency-name
     schedule:
-      interval: monthly
+      interval: weekly
+      day: "friday"
     rebase-strategy: "disabled"
     open-pull-requests-limit: 20
 
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
-      interval: monthly
+      interval: weekly
+      day: "friday"
     rebase-strategy: "disabled"
     open-pull-requests-limit: 20
