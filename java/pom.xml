@@ -22,7 +22,7 @@
 		<maven.compiler.target>17</maven.compiler.target>
 
 		<!-- by default uses junit6 on jdk17, to check junit5 uses a profile activated when running jdk11 -->
-		<junit-jupiter.version>6.1.1</junit-jupiter.version>
+		<junit-jupiter.version>6.1.2</junit-jupiter.version>
 
 		<junit.version>4.13.2</junit.version>
 		
