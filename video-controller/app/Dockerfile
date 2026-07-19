@@ -1,5 +1,5 @@
-FROM node:22-alpine
-#FROM node:22.20-slim
+FROM node:24-alpine
+#FROM node:24-slim
 
 # Install docker-cli (Alpine)
 RUN apk add --no-cache docker-cli
