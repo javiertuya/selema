@@ -30,8 +30,12 @@ public class TestDriver {
 	//if not connection with driver fails
 	public static String[] chromeHeadlesArgument=new String[] {"--headless", "--remote-allow-origins=*"};
 	//July 1st 2026: Edge on Linux CI crashes at launch ("Chrome instance exited") unless the sandbox is disabled,
-	//because its sandbox helper is not SUID-configured for the runner user (unlike Chrome)
-	public static String[] edgeHeadlesArgument=new String[] {"--headless", "--remote-allow-origins=*", "--no-sandbox"};
+	//because its sandbox helper is not SUID-configured for the runner user (unlike Chrome).
+	//--disable-dev-shm-usage and --disable-gpu are the recommended arguments to stabilize Edge headless on CI:
+	//the runner has a small /dev/shm and Edge occasionally hangs on the new session request until the 60s timeout.
+	//If this flakiness still persists, add a retry to the flaky test using Selema's flaky test handling
+	//(NUnit [Retry(n)] / JUnit @RepeatedIfExceptionsTest, see the "Handling flaky tests" section in the README).
+	public static String[] edgeHeadlesArgument=new String[] {"--headless", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu"};
 	public static String[] firefoxHeadlesArgument=new String[] {"-headless"};
 	
 	//Not all tests can be executed in all test modes,
@@ -107,7 +111,7 @@ public class TestDriver {
 		if (!useHeadless()) return;
 		SeleniumDriverFactory factory=new SeleniumDriverFactory();
 		driver=factory.getSeleniumDriver("edge", "", "", null, edgeHeadlesArgument, null);
-		assertOptions(factory, "{browserName:MicrosoftEdge,ms:edgeOptions:{args:[--headless,--remote-allow-origins=*,--no-sandbox]}}");
+		assertOptions(factory, "{browserName:MicrosoftEdge,ms:edgeOptions:{args:[--headless,--remote-allow-origins=*,--no-sandbox,--disable-dev-shm-usage,--disable-gpu]}}");
 	}
 	
 	@Test
