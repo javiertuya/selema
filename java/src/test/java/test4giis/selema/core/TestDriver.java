@@ -31,10 +31,11 @@ public class TestDriver {
 	public static String[] chromeHeadlesArgument=new String[] {"--headless", "--remote-allow-origins=*"};
 	//July 1st 2026: Edge on Linux CI crashes at launch ("Chrome instance exited") unless the sandbox is disabled,
 	//because its sandbox helper is not SUID-configured for the runner user (unlike Chrome).
-	//--disable-dev-shm-usage and --disable-gpu are the recommended arguments to stabilize Edge headless on CI:
-	//the runner has a small /dev/shm and Edge occasionally hangs on the new session request until the 60s timeout.
-	//If this flakiness still persists, add a retry to the flaky test using Selema's flaky test handling
-	//(NUnit [Retry(n)] / JUnit @RepeatedIfExceptionsTest, see the "Handling flaky tests" section in the README).
+	//--disable-dev-shm-usage and --disable-gpu are the recommended arguments to stabilize Edge headless on CI.
+	//These help but do not fully remove the flakiness: Edge headless still occasionally hangs on the new session
+	//request until the 60s timeout on Linux CI runners. testHeadlessWebDriverEdge is therefore retried on the .NET
+	//side (NUnit [Retry], injected in net/build.xml) using Selema's flaky test handling; see the "Handling flaky
+	//tests" section in the README. Increase the retry count there if the failures still get through.
 	public static String[] edgeHeadlesArgument=new String[] {"--headless", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu"};
 	public static String[] firefoxHeadlesArgument=new String[] {"-headless"};
 	
