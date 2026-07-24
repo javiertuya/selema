@@ -115,6 +115,8 @@
       <replacefilter token="public class TestActions" value="[LifecycleNunit3] public class TestActions" />
       <replacefilter token="public class TestExceptions" value="[LifecycleNunit3] public class TestExceptions" />
       <replacefilter token="public virtual void TestRepeated()" value="[Retry(3)] public virtual void TestRepeated()" />
+      <!-- Edge headless intermittently hangs on the new session request on Linux CI (60s timeout); retry the test (see TestDriver comment) -->
+      <replacefilter token="public virtual void TestHeadlessIWebDriverEdge()" value="[Retry(3)] public virtual void TestHeadlessIWebDriverEdge()" />
       <replacefilter token="namespace Test4giis.Selema.Junit4" value="namespace Test4giis.Selema.Nunit3" />
       <replacefilter token="using Giis.Selema.Framework.Junit4;" value="" />
       <replacefilter token="[LifecycleNunit3] public class TestLifecycle4Inherited" value="public class TestLifecycle4Inherited" />

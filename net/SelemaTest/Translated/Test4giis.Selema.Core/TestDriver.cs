@@ -29,12 +29,19 @@ namespace Test4giis.Selema.Core
             "--remote-allow-origins=*"
         };
         //July 1st 2026: Edge on Linux CI crashes at launch ("Chrome instance exited") unless the sandbox is disabled,
-        //because its sandbox helper is not SUID-configured for the runner user (unlike Chrome)
+        //because its sandbox helper is not SUID-configured for the runner user (unlike Chrome).
+        //--disable-dev-shm-usage and --disable-gpu are the recommended arguments to stabilize Edge headless on CI.
+        //These help but do not fully remove the flakiness: Edge headless still occasionally hangs on the new session
+        //request until the 60s timeout on Linux CI runners. testHeadlessIWebDriverEdge is therefore retried on the .NET
+        //side (NUnit [Retry], injected in net/build.xml) using Selema's flaky test handling; see the "Handling flaky
+        //tests" section in the README. Increase the retry count there if the failures still get through.
         public static string[] edgeHeadlesArgument = new string[]
         {
             "--headless",
             "--remote-allow-origins=*",
-            "--no-sandbox"
+            "--no-sandbox",
+            "--disable-dev-shm-usage",
+            "--disable-gpu"
         };
         public static string[] firefoxHeadlesArgument = new string[]
         {
@@ -126,13 +133,13 @@ namespace Test4giis.Selema.Core
         }
 
         [Test]
-        public virtual void TestHeadlessIWebDriverEdge()
+        [Retry(3)] public virtual void TestHeadlessIWebDriverEdge()
         {
             if (!UseHeadless())
                 return;
             SeleniumDriverFactory factory = new SeleniumDriverFactory();
             driver = factory.GetSeleniumDriver("edge", "", "", null, edgeHeadlesArgument, null);
-            AssertOptions(factory, "{browserName:MicrosoftEdge,ms:edgeOptions:{args:[--headless,--remote-allow-origins=*,--no-sandbox]}}");
+            AssertOptions(factory, "{browserName:MicrosoftEdge,ms:edgeOptions:{args:[--headless,--remote-allow-origins=*,--no-sandbox,--disable-dev-shm-usage,--disable-gpu]}}");
         }
 
         [Test]
