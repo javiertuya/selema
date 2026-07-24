@@ -217,7 +217,7 @@ jobs:
 
       - name: NET - Generate junit html reports
         if: ${{ always() && matrix.platform=='net' }}
-        uses: javiertuya/junit-report-action@v1.3.0
+        uses: javiertuya/junit-report-action@v1.4.0
         with:
           net-trx-report: "net/reports/test-result.trx"
           net-surefire-folder: "net/reports/surefire-reports"
