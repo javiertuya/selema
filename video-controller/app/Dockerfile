@@ -14,11 +14,18 @@ RUN apk add --no-cache docker-cli
 
 WORKDIR /app
 
-COPY ./package*.json ./
+# Copy the lockfile explicitly: if it is missing the build fails instead of silently resolving a different tree
+COPY package.json package-lock.json ./
 COPY ./*.js ./
-RUN mkdir data && npm install
+RUN mkdir data && npm ci --omit=dev
 
-# To run under the standard node user
+# The user is not set here: it is set at run time from docker-compose-controller.yml
+# (USER variable, root by default), because this service needs access to the mounted docker socket.
+# To run under the standard node user, uncomment the two lines below and add to the compose service
+# the gid of the host docker group, so that the non root user can still use the socket:
+#   user: ${USER:-node}
+#   group_add:
+#     - ${DOCKER_GID:?}
 #RUN chown -R node:node ./
 #USER node
 
