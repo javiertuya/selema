@@ -53,6 +53,16 @@ updates:
     rebase-strategy: "disabled"
     open-pull-requests-limit: 20
 
+  - package-ecosystem: npm
+    directory: "/video-controller/app"
+    schedule:
+      interval: weekly
+      day: "friday"
+    rebase-strategy: "disabled"
+    open-pull-requests-limit: 20
+    # Do not rely on the auto heuristic: always bump the requirement in package.json, not only the lock
+    versioning-strategy: increase
+
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
