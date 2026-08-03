@@ -5,6 +5,8 @@
 
 # Selema - Selenium Test Lifecycle Manager
 
+test fork
+
 A cross-platform, multi-framework Selenium Test Lifecycle Manager for Java and .NET.
 It automates WebDriver instantiation and configuration, provides a unified HTML test log,
 useful debugging information, and integrates with CI platforms and remote browser services.
