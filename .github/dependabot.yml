@@ -18,7 +18,11 @@ updates:
   # because SelemaTest depends transitively on Selema. When dependabot updates SelemaTest, updates Selema too.
   # NOTE: When publish a new release, set back the Selema core dependencies to the lower versions, in v4.0.0.0 they are:
   # MSTest.TestFramework 4.0.0, NUnit 3.14.0, Selenium.WebDriver 4.37.0
-  # The version of NUnit is set the latest major version (v3) that is compatible with netstandard2.0, 
+  # The version of NUnit is set the latest major version (v3) that is compatible with netstandard2.0.
+  # Because of this, NUnit major updates (v4, v5...) are never proposed for SelemaTest (net10.0) and must be done manually:
+  # the nuget updater checks compatibility against the union of the target frameworks of all projects in the directory
+  # that use the package, including Selema (netstandard2.0), that is also discovered through the SelemaTest ProjectReference.
+  # https://github.com/dependabot/dependabot-core/issues/12274 (related)
   - package-ecosystem: nuget
     directories: 
       - "/net"
@@ -29,7 +33,9 @@ updates:
     # in folder B, because they have the same title. 
     # To avoid this, we group the PRs and use group-by (new since Feb 2026), so that only one PR 
     # is created for each dependency, including the updates in multiple folders.
-    # NOTE: this seems to work, except for NUnit (SelemaTest does not include the updated version)
+    # NOTE: the PRs of a group-by subgroup can not be refreshed: the "Rebase update" jobs fail with
+    # "Dependency group <group>/<dependency> not found". Merge or close the PRs before the next scheduled run.
+    # https://github.com/dependabot/dependabot-core/issues/14780
     groups:
       net-test-sdk:
         patterns:
