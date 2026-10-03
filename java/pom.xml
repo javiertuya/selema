@@ -28,7 +28,7 @@
 		
 		<surefire.version>3.6.0</surefire.version>
 		
-		<slf4j.version>2.0.19</slf4j.version>
+		<slf4j.version>2.0.20</slf4j.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -65,13 +65,13 @@
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
-			<version>4.48.0</version>
+			<version>4.49.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.github.bonigarcia</groupId>
 			<artifactId>webdrivermanager</artifactId>
-			<version>6.3.4</version>
+			<version>6.4.0</version>
 		</dependency>
 
 		<dependency>
