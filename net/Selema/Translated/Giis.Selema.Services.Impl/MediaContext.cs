@@ -14,10 +14,10 @@ namespace Giis.Selema.Services.Impl
     /// </summary>
     public class MediaContext : IMediaContext
     {
-        private string reportFolder;
-        private string qualifier;
-        private int instanceCount; //uniquely dentifies each SeleManager instance
-        private int sessionCount; //uniquely identifies each new driver session created by this instance
+        private readonly string reportFolder;
+        private readonly string qualifier;
+        private readonly int instanceCount; //uniquely dentifies each SeleManager instance
+        private readonly int sessionCount; //uniquely identifies each new driver session created by this instance
         private int inSessionCount; //given a session, gets unique identifiers, if needed
         public MediaContext(string reportFolder, string qualifier, int instanceCount, int sessionCount)
         {

@@ -7,10 +7,10 @@ import giis.selema.services.IMediaContext;
  * Manages the filenames of media files produced durint testing (screenshots, videos, diff files)
  */
 public class MediaContext implements IMediaContext {
-	private String reportFolder;
-	private String qualifier;
-	private int instanceCount; //uniquely dentifies each SeleManager instance
-	private int sessionCount; //uniquely identifies each new driver session created by this instance
+	private final String reportFolder;
+	private final String qualifier;
+	private final int instanceCount; //uniquely dentifies each SeleManager instance
+	private final int sessionCount; //uniquely identifies each new driver session created by this instance
 	private int inSessionCount; //given a session, gets unique identifiers, if needed
 
 	public MediaContext(String reportFolder, String qualifier, int instanceCount, int sessionCount) {

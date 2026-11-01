@@ -17,9 +17,9 @@ public class SelemaLogger implements ISelemaLogger {
 	private static final String SPAN_RED_BOLD = "<span style=\"color:red;font-weight:bold;\">";
 	private static final String SPAN_END = "</span>";
 	private final Logger log;
-	private String loggerName;
-	private String reportDir;
-	private String logFile;
+	private final String loggerName;
+	private final String reportDir;
+	private final String logFile;
 	public SelemaLogger(String loggerName, String reportDir, String logFileName) {
 		this.log=LoggerFactory.getLogger(loggerName);
 		this.loggerName=loggerName;

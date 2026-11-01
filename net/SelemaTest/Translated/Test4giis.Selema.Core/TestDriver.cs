@@ -23,7 +23,7 @@ namespace Test4giis.Selema.Core
     {
         //As of Chrome Driver V 111, we need to include remote-allow-origins argument, 
         //if not connection with driver fails
-        public static string[] chromeHeadlesArgument = new string[]
+        public static string[] chromeHeadlesArgument = new[]
         {
             "--headless",
             "--remote-allow-origins=*"
@@ -35,7 +35,7 @@ namespace Test4giis.Selema.Core
         //request until the 60s timeout on Linux CI runners. testHeadlessIWebDriverEdge is therefore retried on the .NET
         //side (NUnit [Retry], injected in net/build.xml) using Selema's flaky test handling; see the "Handling flaky
         //tests" section in the README. Increase the retry count there if the failures still get through.
-        public static string[] edgeHeadlesArgument = new string[]
+        public static string[] edgeHeadlesArgument = new[]
         {
             "--headless",
             "--remote-allow-origins=*",
@@ -43,7 +43,7 @@ namespace Test4giis.Selema.Core
             "--disable-dev-shm-usage",
             "--disable-gpu"
         };
-        public static string[] firefoxHeadlesArgument = new string[]
+        public static string[] firefoxHeadlesArgument = new[]
         {
             "-headless"
         };

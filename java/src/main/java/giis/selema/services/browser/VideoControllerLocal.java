@@ -17,9 +17,9 @@ import giis.selema.services.IVideoController;
 public class VideoControllerLocal implements IVideoController {
 	final Logger log = LoggerFactory.getLogger(this.getClass());
 
-	private String videoContainer;
-	private String sourceFile;
-	private String targetFolder;
+	private final String videoContainer;
+	private final String sourceFile;
+	private final String targetFolder;
 
 	/**
 	 * Creates a new instance

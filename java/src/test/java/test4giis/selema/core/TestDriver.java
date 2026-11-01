@@ -28,7 +28,7 @@ import test4giis.selema.portable.Asserts;
 public class TestDriver {
 	//As of Chrome Driver V 111, we need to include remote-allow-origins argument, 
 	//if not connection with driver fails
-	public static String[] chromeHeadlesArgument=new String[] {"--headless", "--remote-allow-origins=*"};
+	public static String[] chromeHeadlesArgument={"--headless", "--remote-allow-origins=*"};
 	//July 1st 2026: Edge on Linux CI crashes at launch ("Chrome instance exited") unless the sandbox is disabled,
 	//because its sandbox helper is not SUID-configured for the runner user (unlike Chrome).
 	//--disable-dev-shm-usage and --disable-gpu are the recommended arguments to stabilize Edge headless on CI.
@@ -36,8 +36,8 @@ public class TestDriver {
 	//request until the 60s timeout on Linux CI runners. testHeadlessWebDriverEdge is therefore retried on the .NET
 	//side (NUnit [Retry], injected in net/build.xml) using Selema's flaky test handling; see the "Handling flaky
 	//tests" section in the README. Increase the retry count there if the failures still get through.
-	public static String[] edgeHeadlesArgument=new String[] {"--headless", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu"};
-	public static String[] firefoxHeadlesArgument=new String[] {"-headless"};
+	public static String[] edgeHeadlesArgument={"--headless", "--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu"};
+	public static String[] firefoxHeadlesArgument={"-headless"};
 	
 	//Not all tests can be executed in all test modes,
 	//all in local plus remote driver in CI, headless in local

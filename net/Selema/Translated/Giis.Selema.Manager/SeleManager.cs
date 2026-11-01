@@ -21,7 +21,7 @@ namespace Giis.Selema.Manager
     public class SeleManager
     {
         readonly Logger log = LogManager.GetCurrentClassLogger(); //general purpose logger
-        private ISelemaLogger selemaLog; //SeleManager html log
+        private readonly ISelemaLogger selemaLog; //SeleManager html log
         private string currentBrowser = "chrome";
         private string currentDriverUrl = ""; //empty is local
         private Map<string, object> currentOptions = null;

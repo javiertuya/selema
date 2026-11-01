@@ -16,7 +16,7 @@ public class RemoteVideoService extends AbstractVideoService {
 	final Logger log=LoggerFactory.getLogger(this.getClass()); //general purpose logger
 
 	// For preloaded services, an additional instance for controller the video recording is required
-	private IVideoController videoController;
+	private final IVideoController videoController;
 
 	public RemoteVideoService(IVideoController videoController) {
 		this.videoController = videoController;

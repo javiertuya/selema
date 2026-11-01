@@ -15,7 +15,7 @@ namespace Giis.Selema.Services.Impl
     /// </summary>
     public class SoftAssertService : ISoftAssertService
     {
-        private SoftVisualAssert sva;
+        private readonly SoftVisualAssert sva;
         private ISelemaLogger logger;
         public SoftAssertService()
         {

@@ -21,9 +21,9 @@ namespace Giis.Selema.Services.Impl
         private static readonly string SPAN_RED_BOLD = "<span style=\"color:red;font-weight:bold;\">";
         private static readonly string SPAN_END = "</span>";
         private readonly Logger log;
-        private string loggerName;
-        private string reportDir;
-        private string logFile;
+        private readonly string loggerName;
+        private readonly string reportDir;
+        private readonly string logFile;
         public SelemaLogger(string loggerName, string reportDir, string logFileName)
         {
             this.log = LogManager.GetLogger(loggerName);

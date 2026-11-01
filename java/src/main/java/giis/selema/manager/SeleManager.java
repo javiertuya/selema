@@ -32,7 +32,7 @@ import giis.selema.services.impl.VisualAssertService;
  */
 public class SeleManager {
 	final Logger log=LoggerFactory.getLogger(this.getClass()); //general purpose logger
-	private ISelemaLogger selemaLog; //SeleManager html log
+	private final ISelemaLogger selemaLog; //SeleManager html log
 	
 	private String currentBrowser="chrome";
 	private String currentDriverUrl=""; //empty is local

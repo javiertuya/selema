@@ -11,8 +11,8 @@ import giis.selema.manager.SeleManager;
  * JUnit 4 rule to handle repeated tests
  */
 public class RepeatedTestRule implements TestRule {
-	private SeleManager sm;
-	private IAfterEachCallback afterCallback;
+	private final SeleManager sm;
+	private final IAfterEachCallback afterCallback;
 	
 	public RepeatedTestRule(SeleManager manager) {
 		this(manager, null);

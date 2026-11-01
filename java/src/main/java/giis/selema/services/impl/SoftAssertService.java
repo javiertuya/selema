@@ -10,7 +10,7 @@ import giis.visualassert.SoftVisualAssert;
  * Management of SoftVisualAssert comparisons between long strings, managing the html diff files and links from the log
  */
 public class SoftAssertService implements ISoftAssertService {
-	private SoftVisualAssert sva;
+	private final SoftVisualAssert sva;
 	private ISelemaLogger logger;
 	
 	public SoftAssertService() {

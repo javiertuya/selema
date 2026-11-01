@@ -19,7 +19,7 @@ namespace Giis.Selema.Services.Browser
     {
         readonly Logger log = LogManager.GetCurrentClassLogger(); //general purpose logger
         // For preloaded services, an additional instance for controller the video recording is required
-        private IVideoController videoController;
+        private readonly IVideoController videoController;
         public RemoteVideoService(IVideoController videoController)
         {
             this.videoController = videoController;

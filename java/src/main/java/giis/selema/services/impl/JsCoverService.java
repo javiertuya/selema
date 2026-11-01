@@ -25,7 +25,7 @@ public class JsCoverService implements IJsCoverageService {
 	//js script to restore coverage from file
 	private static final String RESTORE_COVERAGE_SCRIPT="restoreLocalStorage()";
 
-	private String appRoot;
+	private final String appRoot;
 	private String reportDir;
 	private String savedCoverageFile;
 	private boolean resetDone=false;

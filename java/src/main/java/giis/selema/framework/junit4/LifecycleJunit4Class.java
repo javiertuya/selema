@@ -16,7 +16,7 @@ import giis.selema.manager.SeleManager;
  */
 public class LifecycleJunit4Class extends ExternalResource {
 	static final Logger log=LoggerFactory.getLogger(LifecycleJunit4Class.class);
-	private SeleManager sm;
+	private final SeleManager sm;
 	private String className="undefined";
 
 	public LifecycleJunit4Class(SeleManager smgr) {
