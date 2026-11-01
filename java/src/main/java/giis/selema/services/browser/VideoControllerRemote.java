@@ -18,8 +18,8 @@ public class VideoControllerRemote implements IVideoController {
 	final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	private static final String PATH = "/recording";
-	private String endpoint;
-	private String targetFolder;
+	private final String endpoint;
+	private final String targetFolder;
 
 	/**
 	 * Creates a new instance

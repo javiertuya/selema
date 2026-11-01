@@ -20,9 +20,9 @@ namespace Giis.Selema.Services.Browser
     public class VideoControllerLocal : IVideoController
     {
         readonly Logger log = LogManager.GetCurrentClassLogger();
-        private string videoContainer;
-        private string sourceFile;
-        private string targetFolder;
+        private readonly string videoContainer;
+        private readonly string sourceFile;
+        private readonly string targetFolder;
         /// <summary>
         /// Creates a new instance
         /// </summary>

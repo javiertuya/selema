@@ -10,7 +10,7 @@ import giis.visualassert.VisualAssert;
  * Management of VisualAssert comparisons between long strings, managing the html diff files and links from the log
  */
 public class VisualAssertService implements IVisualAssertService {
-	private VisualAssert va;
+	private final VisualAssert va;
 	private ISelemaLogger logger;
 	
 	public VisualAssertService() {

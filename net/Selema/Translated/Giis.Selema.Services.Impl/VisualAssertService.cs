@@ -15,7 +15,7 @@ namespace Giis.Selema.Services.Impl
     /// </summary>
     public class VisualAssertService : IVisualAssertService
     {
-        private VisualAssert va;
+        private readonly VisualAssert va;
         private ISelemaLogger logger;
         public VisualAssertService()
         {

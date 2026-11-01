@@ -27,7 +27,7 @@ namespace Giis.Selema.Services.Impl
         private static readonly string SAVE_COVERAGE_SCRIPT = "return jscoverage_serializeCoverageToJSON();";
         //js script to restore coverage from file
         private static readonly string RESTORE_COVERAGE_SCRIPT = "restoreLocalStorage()";
-        private string appRoot;
+        private readonly string appRoot;
         private string reportDir;
         private string savedCoverageFile;
         private bool resetDone = false;

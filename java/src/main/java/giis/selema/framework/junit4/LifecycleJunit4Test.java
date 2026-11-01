@@ -16,10 +16,10 @@ import giis.selema.manager.SeleManager;
  */
 public class LifecycleJunit4Test extends TestWatcher {
 	static final Logger log=LoggerFactory.getLogger(LifecycleJunit4Test.class);
-	private SeleManager sm;
+	private final SeleManager sm;
 	private String className="undefined";
 	private String methodName="undefined";
-	private IAfterEachCallback afterCallback;
+	private final IAfterEachCallback afterCallback;
 
 	public LifecycleJunit4Test(SeleManager smgr, IAfterEachCallback callback) {
 		this.afterCallback=callback;

@@ -15,7 +15,7 @@ import giis.selema.manager.SeleManager;
 public class RepeatedTestStatement extends Statement {
 	static final Logger log=LoggerFactory.getLogger(RepeatedTestStatement.class);
 	private final SeleManager sm;
-	private IAfterEachCallback afterCallback;
+	private final IAfterEachCallback afterCallback;
 	private final int retryCount;
 	private final Statement statement;
  

@@ -22,8 +22,8 @@ namespace Giis.Selema.Services.Browser
     {
         readonly Logger log = LogManager.GetCurrentClassLogger();
         private static readonly string PATH = "/recording";
-        private string endpoint;
-        private string targetFolder;
+        private readonly string endpoint;
+        private readonly string targetFolder;
         /// <summary>
         /// Creates a new instance
         /// </summary>
