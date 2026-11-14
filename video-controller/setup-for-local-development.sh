@@ -47,6 +47,6 @@ docker rm selenium-dynamic-grid
 docker run -d --name selenium-dynamic-grid -p 4444:4444 --shm-size="2g" `
     -e SE_VNC_VIEW_ONLY=true -e SE_VNC_NO_PASSWORD=true -e SE_NODE_MAX_SESSIONS=8 `
     -v ${PWD}/java/src/test/resources/selenium-dynamic-grid.toml:/opt/selenium/docker.toml `
-    -v ${PWD}/java/target/grid-assets:/opt/selenium/assets `
+    -v ${PWD}/java/target/selema:/opt/selenium/assets `
     -v /var/run/docker.sock:/var/run/docker.sock `
     selenium/standalone-docker:4.40.0-20260202

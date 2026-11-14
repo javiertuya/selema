@@ -16,19 +16,21 @@ namespace Giis.Selema.Services.Browser
         {
             string videoFileName = base.GetVideoFileNameWithRelativePath(context, testName);
 
-            // I don't know why, but the recorded video names have a suffix mp4 before the .mp4 file name extension
-            videoFileName = JavaCs.Substring(videoFileName, 0, videoFileName.Length - 4) + "mp4.mp4";
-
-            // Grid places each video under a different folder
+            // Grid places each video under a folder named as the session id, inside the folder mounted at /opt/selenium/assets.
+            // To make the link resolve from the selema log, this folder must be mounted at the selema report folder
             return "".Equals(seleniumSessionId) ? seleniumSessionId : seleniumSessionId + "/" + videoFileName;
         }
 
         public override Map<string, object> GetSeleniumOptions(IMediaContext context, string testName)
         {
+
+            // Grid names the video as the se:name capability plus the .mp4 extension, after removing the characters
+            // other than letters, digits, hyphens and underscores (the dot of the extension would be removed)
             string videoFileName = context.GetVideoFileName(testName);
+            string videoName = JavaCs.Substring(videoFileName, 0, videoFileName.Length - ".mp4".Length);
             Map<string, object> opts = new HashMap<string, object>(); // NOSONAR net compatibility
             opts.Put("se:recordVideo", true);
-            opts.Put("se:name", videoFileName);
+            opts.Put("se:name", videoName);
             return opts;
         }
     }

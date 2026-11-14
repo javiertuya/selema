@@ -95,7 +95,8 @@ public class LifecycleAsserts {
 			// And the video file must be a valid video (exists, not empty, mp4 signature), excluding:
 			// - selenoid (the server writes to a temp file that is later renamed, so that, at this
 			//   moment the final video file is not ready)
-			// - grid: the files must be created under a different user, not accesible when runnint tests
+			// - grid: the video is written by the grid after the session ends, so that, at this moment it may be
+			//   not ready (in CI, all grid videos are checked after the tests by check-video-index.sh)
 			// Note that the browser server must be configured to place the videos at the selema reports folder
 			Config4test cfg = new Config4test();
 			if (cfg.useSelenoidRemoteWebDriver() || cfg.useGridRemoteWebDriver())
