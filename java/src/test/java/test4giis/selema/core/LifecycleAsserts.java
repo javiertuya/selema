@@ -7,7 +7,6 @@ import java.util.List;
 import giis.portable.util.FileUtil;
 import giis.portable.util.JavaCs;
 import giis.selema.manager.SeleManager;
-import giis.selema.portable.CommandLine;
 import test4giis.selema.portable.Asserts;
 
 public class LifecycleAsserts {
@@ -93,7 +92,7 @@ public class LifecycleAsserts {
 			Asserts.assertIsTrue(lastVideoName.contains(videoPartialName),
 					"Can't find a video named " + videoPartialName + " at the end of video-index.log");
 
-			// And the video file must exist, excluding:
+			// And the video file must be a valid video (exists, not empty, mp4 signature), excluding:
 			// - selenoid (the server writes to a temp file that is later renamed, so that, at this
 			//   moment the final video file is not ready)
 			// - grid: the files must be created under a different user, not accesible when runnint tests
@@ -101,8 +100,7 @@ public class LifecycleAsserts {
 			Config4test cfg = new Config4test();
 			if (cfg.useSelenoidRemoteWebDriver() || cfg.useGridRemoteWebDriver())
 				return;
-			Asserts.assertIsTrue(CommandLine.fileExists(FileUtil.getPath(reportDir, lastVideoName)),
-					"File " + lastVideoName + " should exist in the selema log folder");
+			Asserts.assertVideoFile(FileUtil.getPath(reportDir, lastVideoName));
 		}
 	}
 	

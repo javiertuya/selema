@@ -215,6 +215,16 @@ jobs:
         if: always()
         run: sudo ls -laR ${{ env.REPORT_FOLDER }}/selema
 
+      # Checks all recorded videos, including those of drivers managed at the class level, that can't be checked from the tests
+      - name: Check recorded videos
+        if: ${{ always() && (matrix.mode=='preload-local' || matrix.mode=='preload-remote') }}
+        run: bash ../video-controller/check-video-index.sh ${{ env.REPORT_FOLDER }}/selema
+      # Dynamic grid stores the videos under the assets folder, but the links in the selema log do not include it:
+      # only warn until the video folder used by the grid can be configured
+      - name: Check recorded videos (grid)
+        if: ${{ always() && matrix.mode=='grid' }}
+        run: bash ../video-controller/check-video-index.sh ${{ env.REPORT_FOLDER }}/selema assets --warn-only
+
       - name: NET - Generate junit html reports
         if: ${{ always() && matrix.platform=='net' }}
         uses: javiertuya/junit-report-action@v1.5.0

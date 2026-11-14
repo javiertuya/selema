@@ -360,11 +360,15 @@ public class SeleManager {
 	public WebDriver quitDriver(WebDriver driver, String className, String testName) { //NOSONAR Methods returns should not be invariant: here the goal is to reset the driver variable
 		if (driver==null)
 			return null;
-		if (coverageRecorder!=null)
-			coverageRecorder.beforeQuitDriver(driver);
-		if (videoRecorder!=null && lastSessionRemote) {
-			videoRecorder.beforeQuitDriver(mediaVideoContext, getDriverScope(className, testName));
-			selemaLog.info("Remote session ending");
+		// If the session already ended (quit called more than once), media services must not run again:
+		// a second video recorder stop would overwrite the video saved by the first one
+		if (currentDriver!=null) {
+			if (coverageRecorder!=null)
+				coverageRecorder.beforeQuitDriver(driver);
+			if (videoRecorder!=null && lastSessionRemote) {
+				videoRecorder.beforeQuitDriver(mediaVideoContext, getDriverScope(className, testName));
+				selemaLog.info("Remote session ending");
+			}
 		}
 		driver.quit();
 		currentDriver=null;

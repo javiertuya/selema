@@ -1,7 +1,6 @@
 package giis.selema.portable;
 
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
@@ -35,11 +34,7 @@ public class RestClient {
      * @param the path of the file where the response body is stored
      */
 	public static void restDownload(String url, String targetFile) {
-		try (FileOutputStream out = new FileOutputStream(targetFile)) {
-			RestClient.restCall("GET", url, out);
-		} catch (IOException e) {
-			throw new VideoControllerException("Can't get video file: " + e.getMessage(), e);
-		}
+		RestClient.restCall("GET", url, targetFile);
 	}
 	
     /**
@@ -47,9 +42,10 @@ public class RestClient {
      * 
      * @param method HTTP method: "POST", "GET", "DELETE"
      * @param url Full URL including path parameters
-     * @param outputStream  Optional: if GET and binary response, writes to this stream
+     * @param targetFile Optional: if GET, writes the binary response body to this file.
+     *        The file is only created if the response is successful, to avoid overwriting a previous file with empty content
      */
-	public static String restCall(String method, String url, OutputStream outputStream) {
+	public static String restCall(String method, String url, String targetFile) {
 		try (CloseableHttpClient client = HttpClients.createDefault()) {
 			HttpUriRequestBase request = getRequest(method, url);
 
@@ -57,8 +53,10 @@ public class RestClient {
 				int status = response.getCode();
 
 				if (status >= 200 && status < 300) {
-					if ("GET".equalsIgnoreCase(method) && outputStream != null) { // to download binary
-						response.getEntity().writeTo(outputStream);
+					if ("GET".equalsIgnoreCase(method) && targetFile != null) { // to download binary
+						try (OutputStream out = new FileOutputStream(targetFile)) {
+							response.getEntity().writeTo(out);
+						}
 						return "downloaded";
 					} else {
 						return EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
