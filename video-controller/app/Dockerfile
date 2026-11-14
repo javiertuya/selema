@@ -13,10 +13,10 @@ COPY ./*.js ./
 RUN mkdir data && npm ci --omit=dev
 
 # The user is not set here: it is set at run time from docker-compose-controller.yml
-# (USER variable, root by default, that must be set explicitly), because this service needs access to the mounted docker socket.
+# (CONTAINER_USER variable, root by default), because this service needs access to the mounted docker socket.
 # To run under the standard node user, uncomment the two lines below and add to the compose service
 # the gid of the host docker group, so that the non root user can still use the socket:
-#   user: ${USER:-node}
+#   user: ${CONTAINER_USER:-node}
 #   group_add:
 #     - ${DOCKER_GID:?}
 #RUN chown -R node:node ./
