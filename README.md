@@ -289,15 +289,18 @@ SeleManager sm = new SeleManager().setDriverUrl("http://localhost:4444/wd/hub")
 
 <details><summary><strong>Selenium Dynamic Grid</strong></summary>
 
-Assume recordings are placed in `/assets` and the required grid configuration file is `/grid.toml` (see [docker-selenium](https://github.com/SeleniumHQ/docker-selenium) for examples):
+Assume the selema report folder is `/selema` (e.g. `target/selema` on Java) and the required grid configuration file is `/grid.toml` (see [docker-selenium](https://github.com/SeleniumHQ/docker-selenium) for examples).
 
+The grid stores each recording in a folder named after the Selenium session id, under the folder mounted at `/opt/selenium/assets`. Mount the selema report folder there, so that the video links in the selema log resolve. This folder must be writable by both the tests and the grid container user (uid 1200).
+If the grid runs on a different machine than the tests, copy the session folders to the selema report folder.
+Note that the grid writes each video after the session ends, so the video may not be ready right after the driver is closed.
 
 ```bash
-mkdir -p /assets
-sudo chown 1200:1201 /assets
+mkdir -p /selema
+chmod 777 /selema
 docker run -d --name selenium --shm-size="2g" -p 4444:4444 \
   -v /grid.toml:/opt/selenium/docker.toml \
-  -v /assets:/opt/selenium/assets \
+  -v /selema:/opt/selenium/assets \
   -v /var/run/docker.sock:/var/run/docker.sock \
   selenium/standalone-docker:4.40.0-20260202
 ```

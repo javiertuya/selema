@@ -86,10 +86,10 @@ jobs:
         run: |
           echo "JAVA_TEST_SCOPE=-Dtest=!**/selema/video/Test*" >> $GITHUB_ENV
           echo "NET_TEST_SCOPE=--filter FullyQualifiedName!~Test4giis.Selema.Video" >> $GITHUB_ENV
-      - name: Test scope (override for grid), only single test because performance
+      - name: Test scope (override for grid), only lifecycle tests because performance
         if: ${{ matrix.mode == 'grid' }}
         run: |
-          echo "JAVA_TEST_SCOPE=-Dtest=TestLifecycle4" >> $GITHUB_ENV
+          echo "JAVA_TEST_SCOPE=-Dtest=TestLifecycle4,TestLifecycle4ClassManaged,TestLifecycle4Unmanaged,TestLifecycle4Repeated" >> $GITHUB_ENV
           echo "NET_TEST_SCOPE=--filter FullyQualifiedName=Test4giis.Selema.Mstest2.TestLifecycle4.testFailMethod" >> $GITHUB_ENV
       - name: Test scope (override for vcmock-local), only local video controller mock tests
         if: ${{ matrix.mode == 'vcmock-local' }}
@@ -145,11 +145,13 @@ jobs:
           sed -i 's|selenium/standalone-chrome:latest|${{ env.NODE_IMAGE }}|g' $GITHUB_WORKSPACE/java/src/test/resources/selenium-dynamic-grid.toml
           sed -i 's|selenium/video:latest|${{ env.VIDEO_IMAGE }}|g' $GITHUB_WORKSPACE/java/src/test/resources/selenium-dynamic-grid.toml
 
-          mkdir -p ${{ env.REPORT_FOLDER }}/selema/assets
-          sudo chown 1200:1201 ${{ env.REPORT_FOLDER }}/selema/assets
+          # Videos are stored at the selema report folder (that must be writable by the grid user 1200 and the tests),
+          # under a folder per session, so that the links in the selema log can resolve
+          mkdir -p ${{ env.REPORT_FOLDER }}/selema
+          chmod 777 ${{ env.REPORT_FOLDER }}/selema
           docker run -d --name selenium --shm-size="2g" -p 4444:4444 \
             -v $GITHUB_WORKSPACE/java/src/test/resources/selenium-dynamic-grid.toml:/opt/selenium/docker.toml \
-            -v $GITHUB_WORKSPACE/${{ matrix.platform}}/${{ env.REPORT_FOLDER }}/selema/assets:/opt/selenium/assets \
+            -v $GITHUB_WORKSPACE/${{ matrix.platform}}/${{ env.REPORT_FOLDER }}/selema:/opt/selenium/assets \
             -v /var/run/docker.sock:/var/run/docker.sock \
             ${{ env.GRID_IMAGE }}
           # ensure that the selenium container is ready before running tests
@@ -216,14 +218,10 @@ jobs:
         run: sudo ls -laR ${{ env.REPORT_FOLDER }}/selema
 
       # Checks all recorded videos, including those of drivers managed at the class level, that can't be checked from the tests
+      # Dynamic grid writes the videos after the session ends: wait for them
       - name: Check recorded videos
-        if: ${{ always() && (matrix.mode=='preload-local' || matrix.mode=='preload-remote') }}
-        run: bash ../video-controller/check-video-index.sh ${{ env.REPORT_FOLDER }}/selema
-      # Dynamic grid stores the videos under the assets folder, but the links in the selema log do not include it:
-      # only warn until the video folder used by the grid can be configured
-      - name: Check recorded videos (grid)
-        if: ${{ always() && matrix.mode=='grid' }}
-        run: bash ../video-controller/check-video-index.sh ${{ env.REPORT_FOLDER }}/selema assets --warn-only
+        if: ${{ always() && (matrix.mode=='preload-local' || matrix.mode=='preload-remote' || matrix.mode=='grid') }}
+        run: bash ../video-controller/check-video-index.sh ${{ env.REPORT_FOLDER }}/selema ${{ matrix.mode=='grid' && '30' || '0' }}
 
       - name: NET - Generate junit html reports
         if: ${{ always() && matrix.platform=='net' }}
