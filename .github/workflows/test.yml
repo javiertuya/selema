@@ -40,13 +40,6 @@ jobs:
           - platform: java
             version: jdk11
             mode: preload-remote
-        #When dynamic grid address is localhost or 127.0.0.1, Net+Grid work on local, but fail with timeout when creating remote web driver in GHA.
-        #If set the address to ${hostname -i), then the driver is successfully created, but a different failure is raised:
-        #The HTTP request to the remote WebDriver server for URL http://10.1.0.124:4444/session timed out after 60 seconds
-        #Workaround: skip this combination
-        exclude:
-          - platform: net
-            mode: grid
       fail-fast: false
     defaults:
       run:
@@ -90,7 +83,7 @@ jobs:
         if: ${{ matrix.mode == 'grid' }}
         run: |
           echo "JAVA_TEST_SCOPE=-Dtest=TestLifecycle4,TestLifecycle4ClassManaged,TestLifecycle4Unmanaged,TestLifecycle4Repeated" >> $GITHUB_ENV
-          echo "NET_TEST_SCOPE=--filter FullyQualifiedName=Test4giis.Selema.Mstest2.TestLifecycle4.testFailMethod" >> $GITHUB_ENV
+          echo 'NET_TEST_SCOPE=--filter "FullyQualifiedName~Test4giis.Selema.Nunit3.TestLifecycle4.|FullyQualifiedName~Test4giis.Selema.Nunit3.TestLifecycle4ClassManaged.|FullyQualifiedName~Test4giis.Selema.Nunit3.TestLifecycle4Unmanaged.|FullyQualifiedName~Test4giis.Selema.Nunit3.TestLifecycle4Repeated."' >> $GITHUB_ENV
       - name: Test scope (override for vcmock-local), only local video controller mock tests
         if: ${{ matrix.mode == 'vcmock-local' }}
         run: |
@@ -222,6 +215,9 @@ jobs:
       - name: Check recorded videos
         if: ${{ always() && (matrix.mode=='preload-local' || matrix.mode=='preload-remote' || matrix.mode=='grid') }}
         run: bash ../video-controller/check-video-index.sh ${{ env.REPORT_FOLDER }}/selema ${{ matrix.mode=='grid' && '30' || '0' }}
+      - name: Save grid log
+        if: ${{ always() && matrix.mode=='grid' }}
+        run: docker logs selenium > ${{ env.REPORT_FOLDER }}/selema/grid.log 2>&1 || true
 
       - name: NET - Generate junit html reports
         if: ${{ always() && matrix.platform=='net' }}
