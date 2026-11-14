@@ -3,8 +3,10 @@
 # Environment variables:
 # - NETWORK: the name of the docker network to connect the container to
 # - FOLDER: the folder to save the recorded videos to
-# - PORTS: port mappings for the video controller container (optional, default is 4449:4449, format: [ip:]hostPort:containerPort)"
-# - USER: the user to run the video controller container as (optional, default is root, format: uid[:gid])" 
+# - PORTS: port mappings for the video controller container (optional, default is 4449:4449, format: [ip:]hostPort:containerPort)
+# - USER: the user to run the video controller container as (default is root, format: uid[:gid]).
+#   Set it explicitly (e.g. USER=root): Linux and Mac shells define USER as the name of the current user,
+#   that does not exist in the image
 
 name: selema-stack-controller
 services:
