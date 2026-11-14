@@ -6,8 +6,11 @@
 # - LABEL: identifier for the selenium node and video recorder containers, the name of the containers will be <prefix>-<label>
 # - NETWORK: the name of the docker network to connect the container to
 # - FOLDER: the folder to save the recorded videos to
-# - PORTS: port mappings for the video controller container (optional, default a localhost ephemeral port, format: [ip:]hostPort:containerPort)"
-# - USER: the user to run the video controller container as (optional, default is root, format: uid[:gid])" 
+# - PORTS: port mappings for the selenium node container (optional, default a localhost ephemeral port, format: [ip:]hostPort:containerPort)
+# - USER: the user to run the video recorder container as (default is root, format: uid[:gid]).
+#   Set it explicitly (e.g. USER=$UID): Linux and Mac shells define USER as the name of the current user,
+#   that does not exist in the image
+# - NODE_IMAGE, VIDEO_IMAGE: the images of the selenium node and video recorder (optional, default are the latest)
 
 name: selenium-stack-${LABEL:?}
 services:

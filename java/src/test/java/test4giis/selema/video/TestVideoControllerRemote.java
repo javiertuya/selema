@@ -15,7 +15,7 @@ import giis.selema.services.browser.VideoControllerRemote;
  * is where the mock recorded video is stored (under a folder in the video-controller server).
  * 
  * This requires a previous setting to launch the server (with or without a container).
- * See commands at video-controller/setup-controller-local-dev.sh
+ * See commands at video-controller/setup-for-local-development.sh
  */
 public class TestVideoControllerRemote extends TestVideoControllerLocal {
 	static final Logger log = LoggerFactory.getLogger(TestVideoControllerRemote.class);

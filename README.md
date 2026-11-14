@@ -320,10 +320,10 @@ Assuming the repository root is the current folder, a Docker network `grid` exis
 
 ```bash
 mkdir -p /tmp/videos
-LABEL=chrome NETWORK=grid FOLDER=/tmp/videos docker compose -f ./video-controller/docker-compose-preload.yml up -d 
+LABEL=chrome NETWORK=grid FOLDER=/tmp/videos USER=$UID docker compose -f ./video-controller/docker-compose-preload.yml up -d 
 ```
 
-Container names use the label with prefixes `selenium-node-` and `selenium-video-`. AIf they share a network with the tests, access them by container name and internal port. Additional environment variables can configure exported ports (e.g., `PORTS=4444:4444`) or the user that runs the containers (e.g., `USER=$UID`).
+Container names use the label with prefixes `selenium-node-` and `selenium-video-`. If they share a network with the tests, access them by container name and internal port. Additional environment variables can configure exported ports (e.g., `PORTS=4444:4444`). The `USER` variable sets the user that runs the video recorder (root if empty); always set it explicitly, because Linux and Mac shells define `USER` as the name of the current user, that does not exist in the container.
 
 Instanciate the Selema manager as follows:
 ```java
@@ -342,7 +342,7 @@ Assuming the repository root is the current folder, a Docker network `grid` exis
 
 ```bash
 mkdir -p /tmp/videos
-NETWORK=grid FOLDER=/tmp/videos PORTS=4449:4449 docker compose -f ./video-controller/docker-compose-controller.yml up -d --build
+NETWORK=grid FOLDER=/tmp/videos PORTS=4449:4449 USER=root docker compose -f ./video-controller/docker-compose-controller.yml up -d --build
 # Alternative for debugging: start video recorder server (same port) without a container
 # cd video-controller/app
 # npm install && npm start
@@ -350,10 +350,10 @@ NETWORK=grid FOLDER=/tmp/videos PORTS=4449:4449 docker compose -f ./video-contro
 
 To start a pair of browser and recorder labeled `chrome`:
 ```bash
-LABEL=chrome NETWORK=grid FOLDER=/tmp/videos docker compose -f ./video-controller/docker-compose-preload.yml up -d 
+LABEL=chrome NETWORK=grid FOLDER=/tmp/videos USER=$UID docker compose -f ./video-controller/docker-compose-preload.yml up -d 
 ```
 
-Container names use the label with prefixes `selenium-node-` and `selenium-video-`. If they share a network with the tests, access them by container name and internal port. Additional environment variables can configure exported ports (e.g., `PORTS=4444:4444`) or the user that runs the containers (e.g., `USER=$UID`).
+Container names use the label with prefixes `selenium-node-` and `selenium-video-`. If they share a network with the tests, access them by container name and internal port. Additional environment variables can configure exported ports (e.g., `PORTS=4444:4444`). As in the local variant, always set `USER` explicitly, both for the preloaded containers and for the video controller (that runs as root to access the docker socket).
 
 Instanciate the Selema manager as follows:
 ```java

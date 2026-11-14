@@ -1,16 +1,9 @@
 FROM node:24-alpine@sha256:116b800c3754b440ee0aa3ed2f20f5bf3d99a554bfd9adeea09ea8017f6e85f5
-#FROM node:24-slim
 
-# Install docker-cli (Alpine)
-RUN apk add --no-cache docker-cli
-
-# Install docker-cli (Debian)
-#RUN apt-get update && apt-get install -y ca-certificates curl gnupg lsb-release && rm -rf /var/lib/apt/lists/*
-#RUN curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker.gpg
-#RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker.gpg] \
-#    https://download.docker.com/linux/debian $(lsb_release -cs) stable" \
-#    > /etc/apt/sources.list.d/docker.list
-#RUN apt-get update && apt-get install -y docker-ce-cli && rm -rf /var/lib/apt/lists/*
+# Docker client to manage the recorder containers through the mounted docker socket.
+# The static binary is copied from the official image, so that it does not depend on the packages of the base image
+# (e.g. the docker.io package of Debian bookworm is too old for current docker daemons).
+COPY --from=docker:29-cli@sha256:5a7af0dcb0e46c803efe9b45371dd21cb500e5b4453250394ac6f06d49b6e6f1 /usr/local/bin/docker /usr/local/bin/docker
 
 WORKDIR /app
 
@@ -20,7 +13,7 @@ COPY ./*.js ./
 RUN mkdir data && npm ci --omit=dev
 
 # The user is not set here: it is set at run time from docker-compose-controller.yml
-# (USER variable, root by default), because this service needs access to the mounted docker socket.
+# (USER variable, root by default, that must be set explicitly), because this service needs access to the mounted docker socket.
 # To run under the standard node user, uncomment the two lines below and add to the compose service
 # the gid of the host docker group, so that the non root user can still use the socket:
 #   user: ${USER:-node}
