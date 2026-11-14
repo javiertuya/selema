@@ -1,6 +1,5 @@
 using Giis.Portable.Util;
 using Giis.Selema.Manager;
-using Giis.Selema.Portable;
 using Test4giis.Selema.Portable;
 using System;
 using System.Collections.Generic;
@@ -109,7 +108,7 @@ namespace Test4giis.Selema.Core
                 string videoPartialName = normalizedTestName.Replace(".", "-");
                 Asserts.AssertIsTrue(lastVideoName.Contains(videoPartialName), "Can't find a video named " + videoPartialName + " at the end of video-index.log");
 
-                // And the video file must exist, excluding:
+                // And the video file must be a valid video (exists, not empty, mp4 signature), excluding:
                 // - selenoid (the server writes to a temp file that is later renamed, so that, at this
                 //   moment the final video file is not ready)
                 // - grid: the files must be created under a different user, not accesible when runnint tests
@@ -117,7 +116,7 @@ namespace Test4giis.Selema.Core
                 Config4test cfg = new Config4test();
                 if (cfg.UseSelenoidRemoteWebDriver() || cfg.UseGridRemoteWebDriver())
                     return;
-                Asserts.AssertIsTrue(CommandLine.FileExists(FileUtil.GetPath(reportDir, lastVideoName)), "File " + lastVideoName + " should exist in the selema log folder");
+                Asserts.AssertVideoFile(FileUtil.GetPath(reportDir, lastVideoName));
             }
         }
 

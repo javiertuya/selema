@@ -416,12 +416,18 @@ namespace Giis.Selema.Manager
             //NOSONAR Methods returns should not be invariant: here the goal is to reset the driver variable
             if (driver == null)
                 return null;
-            if (coverageRecorder != null)
-                coverageRecorder.BeforeQuitDriver(driver);
-            if (videoRecorder != null && lastSessionRemote)
+
+            // If the session already ended (quit called more than once), media services must not run again:
+            // a second video recorder stop would overwrite the video saved by the first one
+            if (currentDriver != null)
             {
-                videoRecorder.BeforeQuitDriver(mediaVideoContext, GetDriverScope(className, testName));
-                selemaLog.Info("Remote session ending");
+                if (coverageRecorder != null)
+                    coverageRecorder.BeforeQuitDriver(driver);
+                if (videoRecorder != null && lastSessionRemote)
+                {
+                    videoRecorder.BeforeQuitDriver(mediaVideoContext, GetDriverScope(className, testName));
+                    selemaLog.Info("Remote session ending");
+                }
             }
 
             driver.Quit();

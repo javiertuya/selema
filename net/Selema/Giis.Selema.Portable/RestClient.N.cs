@@ -15,20 +15,14 @@ namespace Giis.Selema.Portable
 
         public static void RestDownload(string url, string targetFile)
         {
-            try
-            {
-                using (var outStream = new FileStream(targetFile, FileMode.Create, FileAccess.Write))
-                {
-                    RestCall("GET", url, outStream);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new VideoControllerException("Can't get video file: " + ex.Message, ex);
-            }
+            RestCall("GET", url, targetFile);
         }
 
-        public static string RestCall(string method, string url, Stream outputStream)
+        /// <summary>
+        /// Performs a REST operation; if GET and targetFile is not null, writes the binary response body to this file.
+        /// The file is only created if the response is successful, to avoid overwriting a previous file with empty content
+        /// </summary>
+        public static string RestCall(string method, string url, string targetFile)
         {
             try
             {
@@ -37,10 +31,13 @@ namespace Giis.Selema.Portable
 
                 if (response.IsSuccessStatusCode)
                 {
-                    if (method.ToUpper() == "GET" && outputStream != null)
+                    if (method.ToUpper() == "GET" && targetFile != null)
                     {
                         var responseStream = response.Content.ReadAsStreamAsync().GetAwaiter().GetResult();
-                        responseStream.CopyTo(outputStream);
+                        using (var outStream = new FileStream(targetFile, FileMode.Create, FileAccess.Write))
+                        {
+                            responseStream.CopyTo(outStream);
+                        }
                         return "downloaded";
                     }
                     else
