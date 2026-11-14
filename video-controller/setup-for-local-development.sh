@@ -3,8 +3,6 @@
 # Scripts to run tests in local development environment for different values of selema.test.mode in selema.properties
 
 # RUN FROM THE ROOT OF THE CLONED REPOSITORY
-# USER is set explicitly in the compose commands because Linux and Mac shells define it as the current user name,
-# that does not exist in the images (on Windows git bash it is not defined)
 
 ###### preload-local (browser node) ###### 
 
@@ -12,7 +10,7 @@
 docker network create grid
 mkdir -p $PWD/java/target/preload-local
 NODE_IMAGE="selenium/standalone-chrome:144.0-20260202" VIDEO_IMAGE="selenium/video:ffmpeg-8.0-20260202" \
-LABEL=chrome NETWORK=grid FOLDER=/$PWD/java/target/preload-local PORTS=4444:4444 USER=root \
+LABEL=chrome NETWORK=grid FOLDER=/$PWD/java/target/preload-local PORTS=4444:4444 \
   docker compose -f ./video-controller/docker-compose-preload.yml up -d
 # down:
 LABEL=chrome NETWORK=grid FOLDER=/$PWD/java/target/preload-local PORTS=4444:4444 \
@@ -24,7 +22,7 @@ LABEL=chrome NETWORK=grid FOLDER=/$PWD/java/target/preload-local PORTS=4444:4444
 docker network create grid
 mkdir -p $PWD/video-controller/app/videos
 NODE_IMAGE="selenium/standalone-chrome:144.0-20260202" VIDEO_IMAGE="selenium/video:ffmpeg-8.0-20260202" \
-LABEL=chrome NETWORK=grid FOLDER=/$PWD/video-controller/app/videos PORTS=4444:4444 USER=root \
+LABEL=chrome NETWORK=grid FOLDER=/$PWD/video-controller/app/videos PORTS=4444:4444 \
   docker compose -f ./video-controller/docker-compose-preload.yml up -d
 # down:
 LABEL=chrome NETWORK=grid FOLDER=/$PWD/video-controller/app/videos PORTS=4444:4444 \
@@ -34,7 +32,7 @@ LABEL=chrome NETWORK=grid FOLDER=/$PWD/video-controller/app/videos PORTS=4444:44
 
 docker network create grid
 mkdir -p $PWD/video-controller/app/videos
-NETWORK=grid FOLDER=/$PWD/video-controller/app/videos PORTS=4449:4449 USER=root \
+NETWORK=grid FOLDER=/$PWD/video-controller/app/videos PORTS=4449:4449 \
   docker compose -f ./video-controller/docker-compose-controller.yml up -d --build
 
 # Alternative for debugging: start video recorder server (same port) without a container
