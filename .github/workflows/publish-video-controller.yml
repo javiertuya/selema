@@ -1,0 +1,36 @@
+name: publish-video-controller
+
+# Builds and smoke tests the video controller container image, and publishes it to GHCR
+# (see javiertuya/docker-workflows for the tags and packages published on each branch and event).
+# - Production: every push to main that changes the image or this workflow (or a manual dispatch
+#   on main) publishes the tags main and main-<timestamp> (UTC).
+# - Development: a manual dispatch on another branch publishes selema-video-controller-dev:dev.
+#   Refused on the automated update branches (dependabot, digestabot and combined updates).
+# - Pushes to other branches (with the same paths) only build and smoke test the image
+#   (e.g. digestabot updates of the base image and dependabot updates of the npm packages).
+
+on:
+  push:
+    paths:
+      - 'video-controller/app/**'
+      - 'video-controller/smoke-test.sh'
+      - '.github/workflows/publish-video-controller.yml'
+  # On main: republish without changes (e.g. when the push run is too old to be re-run).
+  # On other branches: publish the development image (fails on the automated update branches)
+  workflow_dispatch:
+
+jobs:
+  publish:
+    # Do not run in forks
+    if: github.repository == 'javiertuya/selema'
+    permissions:
+      contents: read
+      packages: write
+    uses: javiertuya/docker-workflows/.github/workflows/publish-image.yml@v1.0.0
+    with:
+      image-name: selema-video-controller
+      context: video-controller/app
+      smoke-test-script: video-controller/smoke-test.sh
+      # dashgit/combined/* are the combined updates
+      dev-excluded-branches: 'dependabot/* digestabot/* dashgit/combined/*'
+      image-description: 'Selema video controller: starts and stops the sidecar video recorders of the browser containers and serves the recorded videos'

@@ -35,6 +35,12 @@ mkdir -p $PWD/video-controller/app/videos
 NETWORK=grid FOLDER=/$PWD/video-controller/app/videos PORTS=4449:4449 \
   docker compose -f ./video-controller/docker-compose-controller.yml up -d --build
 
+# Alternative to test an image published in GHCR instead of building it from the source.
+# Temporarily change the node service as explained in docker-compose-controller.yml (do not commit these changes)
+NETWORK=grid FOLDER=/$PWD/video-controller/app/videos PORTS=4449:4449 \
+  docker compose -f ./video-controller/docker-compose-controller.yml up -d --pull always
+# To go back to the image built from the source, restore the compose file and run the up command above (with --build)
+
 # Alternative for debugging: start video recorder server (same port) without a container
 cd video-controller/app
 npm install && npm start

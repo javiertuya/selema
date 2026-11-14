@@ -255,11 +255,11 @@ A compromise between ease of configuration and performance is to use preloaded c
 To use preloaded browser containers, instantiate `RemoteBrowserService()` and configure the video management with `setVideo(IVideoController)` by providing a video controller implementation. Two variants are supported:
 
 - **Local**: If tests and browsers share Docker and file access, use `VideoControllerLocal(String label, String sourceFile, String targetFolder)`. Arguments: a label to identify containers when running in parallel, the temporary video filename recorded, and the folder where each video will be copied when the session ends.
-- **Remote**: If tests do not have access to Docker or run on a different VM, use `VideoControllerRemote(String label, String controllerUrl, String targetFolder)`. The video controller is a tiny REST server that runs in the browsers' VM and is accesible at the `controllerUrl` endpoint. Multiple tests can share the same controller.
+- **Remote**: If tests do not have access to Docker or run on a different VM, use `VideoControllerRemote(String label, String controllerUrl, String targetFolder)`. The video controller is a tiny REST server that runs in the browsers' VM and is accessible at the `controllerUrl` endpoint. Multiple tests can share the same controller.
 
 The `./video-controller` folder contains the video controller source (`app` folder) and parameterized Docker Compose files to start/stop preloaded browser containers and the video controller server. Params such as port or paths can be configured via environment variables (see `server.js`). Examples follow.
 
-### Browser severs and services examples
+### Browser servers and services examples
 
 <details><summary><strong>Selenoid (Deprecated)</strong></summary>
 
@@ -269,7 +269,7 @@ mkdir -p target/browsers
 echo '{"chrome": {"default": "latest", "versions": {"latest": {"image":"selenoid/chrome:latest","port":"4444","tmpfs": {"/tmp":"size=512m"} } } } }' > target/browsers/browsers.json
 mkdir -p target/video
 
-# Downloads images and lauch selenoid container (project root is $GITHUB_WORKSPACE)
+# Downloads images and launch selenoid container (project root is $GITHUB_WORKSPACE)
 docker pull selenoid/chrome:latest
 docker pull selenoid/video-recorder:latest-release
 docker run -d --name selenoid -p 4444:4444 \
@@ -278,7 +278,7 @@ docker run -d --name selenoid -p 4444:4444 \
   aerokube/selenoid:latest-release
 ```
 
-Instanciate the Selema manager as follows:
+Instantiate the Selema manager as follows:
 ```java
 SeleManager sm = new SeleManager().setDriverUrl("http://localhost:4444/wd/hub")
 		.add(new SelenoidBrowserService().setVideo());
@@ -305,7 +305,7 @@ docker run -d --name selenium --shm-size="2g" -p 4444:4444 \
   selenium/standalone-docker:4.40.0-20260202
 ```
 
-Instanciate the Selema manager as follows:
+Instantiate the Selema manager as follows:
 ```java
 SeleManager sm = new SeleManager().setDriverUrl("http://localhost:4444")
 		.add(new DynamicGridBrowserService().setVideo());
@@ -325,7 +325,7 @@ LABEL=chrome NETWORK=grid FOLDER=/tmp/videos docker compose -f ./video-controlle
 
 Container names use the label with prefixes `selenium-node-` and `selenium-video-`. If they share a network with the tests, access them by container name and internal port. Additional environment variables can configure exported ports (e.g., `PORTS=4444:4444`) or the user that runs the video recorder (e.g., `CONTAINER_USER=$UID`, root by default).
 
-Instanciate the Selema manager as follows:
+Instantiate the Selema manager as follows:
 ```java
 SeleManager sm = new SeleManager().setDriverUrl("http://selenium-node-chrome:4444")
 		.add(new RemoteBrowserService()
@@ -343,7 +343,7 @@ Assuming the repository root is the current folder, a Docker network `grid` exis
 ```bash
 mkdir -p /tmp/videos
 NETWORK=grid FOLDER=/tmp/videos PORTS=4449:4449 docker compose -f ./video-controller/docker-compose-controller.yml up -d --build
-# Alternative for debugging: start video recorder server (same port) without a container
+# Alternative for debugging: start the video controller server (same port) without a container
 # cd video-controller/app
 # npm install && npm start
 ```
@@ -355,7 +355,7 @@ LABEL=chrome NETWORK=grid FOLDER=/tmp/videos docker compose -f ./video-controlle
 
 Container names use the label with prefixes `selenium-node-` and `selenium-video-`. If they share a network with the tests, access them by container name and internal port. Additional environment variables can configure exported ports (e.g., `PORTS=4444:4444`) or the user that runs the video recorder (e.g., `CONTAINER_USER=$UID`, root by default). The video controller runs as root by default, to access the docker socket.
 
-Instanciate the Selema manager as follows:
+Instantiate the Selema manager as follows:
 ```java
 SeleManager sm = new SeleManager().setDriverUrl("http://selenium-node-chrome:4444")
 		.add(new RemoteBrowserService()
