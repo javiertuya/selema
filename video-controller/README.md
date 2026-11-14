@@ -7,6 +7,7 @@
 - `setup-for-local-development.sh`: Scripts to build the required containers for development and testing
 - `wait-container-ready.sh`: Waits until a container logs a given message (used in CI to wait for the grid and the video controller)
 - `check-video-index.sh`: Checks that the videos listed in the selema video index exist and are complete MP4 files (used in CI after the tests)
+- `smoke-test.sh`: Smoke test of the image, run by the `publish-video-controller` workflow before publishing it to GHCR
 
 The CI workflow runs the video controller as a container built from `app/Dockerfile` in the `preload-remote` and `vcmock-remote` modes.
 Running the server without a container (`npm start`) is only an alternative for debugging.

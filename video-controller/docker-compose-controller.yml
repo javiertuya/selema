@@ -6,6 +6,13 @@
 # - PORTS: port mappings for the video controller container (optional, default is 4449:4449, format: [ip:]hostPort:containerPort)
 # - CONTAINER_USER: the user to run the video controller container as (optional, default is root, format: uid[:gid])
 
+# By default, the image is built from the source in ./app (run with up --build to rebuild it).
+# To use the image published in GHCR instead, change the node service:
+# - comment out the build key and its two lines (context and dockerfile)
+# - set the image: ghcr.io/javiertuya/selema-video-controller-dev:dev (development image),
+#   or ghcr.io/javiertuya/selema-video-controller:main (production image)
+# - run with up --pull always (instead of --build), so that the latest version of the tag is used
+
 name: selema-stack-controller
 services:
   node:
