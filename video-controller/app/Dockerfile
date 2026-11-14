@@ -1,8 +1,8 @@
-FROM node:24-slim@sha256:dc26ae92c9fb15cf6b1d63e20f0944b2efe0f115b20e00be48fb23fceb061c54
+FROM node:24-alpine@sha256:116b800c3754b440ee0aa3ed2f20f5bf3d99a554bfd9adeea09ea8017f6e85f5
 
 # Docker client to manage the recorder containers through the mounted docker socket.
-# The static binary is copied from the official image: the docker.io package of Debian is too old (API 1.41)
-# for current docker daemons, and the docker apt repository makes a bigger image.
+# The static binary is copied from the official image, so that it does not depend on the packages of the base image
+# (e.g. the docker.io package of Debian bookworm is too old for current docker daemons).
 COPY --from=docker:29-cli@sha256:5a7af0dcb0e46c803efe9b45371dd21cb500e5b4453250394ac6f06d49b6e6f1 /usr/local/bin/docker /usr/local/bin/docker
 
 WORKDIR /app
