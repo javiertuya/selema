@@ -188,15 +188,18 @@ jobs:
 #          chmod ug+rx ../video-controller/preload-start.sh         
 #          ../video-controller/preload-start.sh chrome grid $GITHUB_WORKSPACE/video-controller/app/videos "4444:4444" $UID
 
-      # spin up the video controller, do not use containres because of it needs access to the docker socket
+      # spin up the video controller container, that manages the recorder containers through the mounted docker socket.
+      # The compose file requires the grid network, that is not created in the vcmock-remote mode.
+      # USER is set explicitly because the runner defines it (runner), that is not a user of the image
       - name: launch services - remote video controller
         if: ${{ matrix.mode=='vcmock-remote' || matrix.mode=='preload-remote' }}
         run: |
           set -x
-          cd $GITHUB_WORKSPACE/video-controller/app
-          mkdir -p videos
-          npm install
-          npm start > $GITHUB_WORKSPACE/${{ matrix.platform}}/${{ env.REPORT_FOLDER }}/selema/video-controller.log 2>&1 &
+          docker network inspect grid > /dev/null 2>&1 || docker network create grid
+          mkdir -p $GITHUB_WORKSPACE/video-controller/app/videos
+          NETWORK=grid FOLDER=$GITHUB_WORKSPACE/video-controller/app/videos PORTS=4449:4449 USER=root \
+            docker compose -f ../video-controller/docker-compose-controller.yml up -d --build
+          bash ../video-controller/wait-container-ready.sh selema-video-controller "Listening on port"
 
       - name: JAVA - Build and test
         if: ${{ matrix.platform=='java' }}
@@ -218,6 +221,11 @@ jobs:
       - name: Save grid log
         if: ${{ always() && matrix.mode=='grid' }}
         run: docker logs selenium > ${{ env.REPORT_FOLDER }}/selema/grid.log 2>&1 || true
+      - name: Save video controller log
+        if: ${{ always() && (matrix.mode=='vcmock-remote' || matrix.mode=='preload-remote') }}
+        run: |
+          docker logs selema-video-controller > ${{ env.REPORT_FOLDER }}/selema/video-controller.log 2>&1 || true
+          docker inspect selema-video-controller > ${{ env.REPORT_FOLDER }}/selema/video-controller-inspect.json 2>&1 || true
 
       - name: NET - Generate junit html reports
         if: ${{ always() && matrix.platform=='net' }}
