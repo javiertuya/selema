@@ -11,14 +11,7 @@ on:
   pull_request:
     branches:
       - 'main'
-env:
-  # Docker-selenium images to use in this workflow. 
-  # These are the latest compatible versions with current version of Selema.
-  # See issue https://github.com/javiertuya/selema/issues/1061
-  NODE_IMAGE: "selenium/standalone-chrome:144.0-20260202"
-  VIDEO_IMAGE: "selenium/video:ffmpeg-8.0-20260202"
-  GRID_IMAGE: "selenium/standalone-docker:4.40.0-20260202"
-  # NOTE: The toml file to configure dynamic grid requires replace the image name strings
+# The docker-selenium images used in this workflow are set in video-controller/selenium-images.env
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -51,6 +44,10 @@ jobs:
     #if: ${{ false }}  # disable for now
     steps:
       - uses: actions/checkout@v7
+      # The compose files take the images from --env-file, these variables are also loaded
+      # to have the same images in the environment of all steps
+      - name: Load docker-selenium image versions
+        run: grep -E '^[A-Z_]+=' ../video-controller/selenium-images.env | tee -a $GITHUB_ENV
       - if: ${{ matrix.platform=='java' && matrix.version=='base' }}
         uses: actions/setup-java@v6
         with:
@@ -127,29 +124,24 @@ jobs:
             aerokube/selenoid:latest-release
           docker logs selenoid
 
-      #spin up a docker-selenium standalone based selenium dynamic grid with chrome (config in src/test/resources)
-      #note that the .toml file defines username and password, the url also includes them
+      #spin up a docker-selenium standalone based selenium dynamic grid with chrome (config embedded in the compose file)
+      #note that the grid config defines username and password, the url also includes them
       - name: launch services - selenium dynamic grid
         if: ${{ matrix.mode=='grid' }}
         run: |
           set -x
           sed -i "s|selema.test.remote.webdriver=none|selema.test.remote.webdriver=http://testuser:test@localhost:4444|g" selema.properties
 
-          sed -i 's|selenium/standalone-chrome:latest|${{ env.NODE_IMAGE }}|g' $GITHUB_WORKSPACE/java/src/test/resources/selenium-dynamic-grid.toml
-          sed -i 's|selenium/video:latest|${{ env.VIDEO_IMAGE }}|g' $GITHUB_WORKSPACE/java/src/test/resources/selenium-dynamic-grid.toml
-
           # Videos are stored at the selema report folder (that must be writable by the grid user 1200 and the tests),
           # under a folder per session, so that the links in the selema log can resolve
           mkdir -p ${{ env.REPORT_FOLDER }}/selema
           chmod 777 ${{ env.REPORT_FOLDER }}/selema
-          docker run -d --name selenium --shm-size="2g" -p 4444:4444 \
-            -v $GITHUB_WORKSPACE/java/src/test/resources/selenium-dynamic-grid.toml:/opt/selenium/docker.toml \
-            -v $GITHUB_WORKSPACE/${{ matrix.platform}}/${{ env.REPORT_FOLDER }}/selema:/opt/selenium/assets \
-            -v /var/run/docker.sock:/var/run/docker.sock \
-            ${{ env.GRID_IMAGE }}
+          docker network create grid
+          NETWORK=grid FOLDER=$GITHUB_WORKSPACE/${{ matrix.platform}}/${{ env.REPORT_FOLDER }}/selema PORTS=4444:4444 \
+            docker compose --env-file ../video-controller/selenium-images.env -f ../video-controller/docker-compose-grid.yml up -d
           # ensure that the selenium container is ready before running tests
           chmod ug+rx ../video-controller/wait-container-ready.sh
-          ../video-controller/wait-container-ready.sh selenium "Started Selenium Standalone"
+          ../video-controller/wait-container-ready.sh selenium-dynamic-grid "Started Selenium Standalone"
 
 
       # spin up a docker-selenium standalone selenium browser with a sidecar video recorder
@@ -164,8 +156,7 @@ jobs:
           docker network create grid
           mkdir -p $GITHUB_WORKSPACE/preload-local
           LABEL=chrome NETWORK=grid FOLDER=$GITHUB_WORKSPACE/preload-local PORTS=4444:4444 CONTAINER_USER=$UID \
-          NODE_IMAGE=${{ env.NODE_IMAGE }} VIDEO_IMAGE=${{ env.VIDEO_IMAGE }}  \
-            docker compose -f ../video-controller/docker-compose-preload.yml up -d 
+            docker compose --env-file ../video-controller/selenium-images.env -f ../video-controller/docker-compose-preload.yml up -d
 
 #          chmod ug+rx ../video-controller/preload-start.sh         
 #          ../video-controller/preload-start.sh chrome grid $GITHUB_WORKSPACE/preload-local "4444:4444" $UID
@@ -182,8 +173,7 @@ jobs:
           docker network create grid
           mkdir -p $GITHUB_WORKSPACE/video-controller/app/videos
           LABEL=chrome NETWORK=grid FOLDER=$GITHUB_WORKSPACE/video-controller/app/videos PORTS=4444:4444 CONTAINER_USER=$UID \
-          NODE_IMAGE=${{ env.NODE_IMAGE }} VIDEO_IMAGE=${{ env.VIDEO_IMAGE }}  \
-            docker compose -f ../video-controller/docker-compose-preload.yml up -d 
+            docker compose --env-file ../video-controller/selenium-images.env -f ../video-controller/docker-compose-preload.yml up -d
 
 #          chmod ug+rx ../video-controller/preload-start.sh         
 #          ../video-controller/preload-start.sh chrome grid $GITHUB_WORKSPACE/video-controller/app/videos "4444:4444" $UID
@@ -219,7 +209,7 @@ jobs:
         run: bash ../video-controller/check-video-index.sh ${{ env.REPORT_FOLDER }}/selema ${{ matrix.mode=='grid' && '30' || '0' }}
       - name: Save grid log
         if: ${{ always() && matrix.mode=='grid' }}
-        run: docker logs selenium > ${{ env.REPORT_FOLDER }}/selema/grid.log 2>&1 || true
+        run: docker logs selenium-dynamic-grid > ${{ env.REPORT_FOLDER }}/selema/grid.log 2>&1 || true
       - name: Save video controller log
         if: ${{ always() && (matrix.mode=='vcmock-remote' || matrix.mode=='preload-remote') }}
         run: |

@@ -289,7 +289,8 @@ SeleManager sm = new SeleManager().setDriverUrl("http://localhost:4444/wd/hub")
 
 <details><summary><strong>Selenium Dynamic Grid</strong></summary>
 
-Assume the selema report folder is `/selema` (e.g. `target/selema` on Java) and the required grid configuration file is `/grid.toml` (see [docker-selenium](https://github.com/SeleniumHQ/docker-selenium) for examples).
+Assuming the repository root is the current folder, a Docker network `grid` exists, and the selema report folder is `/selema` (e.g. `target/selema` on Java).
+The compose file `video-controller/docker-compose-grid.yml` embeds the grid configuration (see [docker-selenium](https://github.com/SeleniumHQ/docker-selenium) for other options), and `video-controller/selenium-images.env` sets the docker-selenium images compatible with Selema.
 
 The grid stores each recording in a folder named after the Selenium session id, under the folder mounted at `/opt/selenium/assets`. Mount the selema report folder there, so that the video links in the selema log resolve. This folder must be writable by both the tests and the grid container user (uid 1200).
 If the grid runs on a different machine than the tests, copy the session folders to the selema report folder.
@@ -298,16 +299,13 @@ Note that the grid writes each video after the session ends, so the video may no
 ```bash
 mkdir -p /selema
 chmod 777 /selema
-docker run -d --name selenium --shm-size="2g" -p 4444:4444 \
-  -v /grid.toml:/opt/selenium/docker.toml \
-  -v /selema:/opt/selenium/assets \
-  -v /var/run/docker.sock:/var/run/docker.sock \
-  selenium/standalone-docker:4.40.0-20260202
+NETWORK=grid FOLDER=/selema PORTS=4444:4444 docker compose --env-file ./video-controller/selenium-images.env -f ./video-controller/docker-compose-grid.yml up -d
 ```
 
+The grid is protected with username `testuser` and password `test`, that are included in the driver url.
 Instantiate the Selema manager as follows:
 ```java
-SeleManager sm = new SeleManager().setDriverUrl("http://localhost:4444")
+SeleManager sm = new SeleManager().setDriverUrl("http://testuser:test@localhost:4444")
 		.add(new DynamicGridBrowserService().setVideo());
 ```
 
@@ -320,10 +318,11 @@ Assuming the repository root is the current folder, a Docker network `grid` exis
 
 ```bash
 mkdir -p /tmp/videos
-LABEL=chrome NETWORK=grid FOLDER=/tmp/videos docker compose -f ./video-controller/docker-compose-preload.yml up -d 
+LABEL=chrome NETWORK=grid FOLDER=/tmp/videos docker compose --env-file ./video-controller/selenium-images.env -f ./video-controller/docker-compose-preload.yml up -d 
 ```
 
 Container names use the label with prefixes `selenium-node-` and `selenium-video-`. If they share a network with the tests, access them by container name and internal port. Additional environment variables can configure exported ports (e.g., `PORTS=4444:4444`) or the user that runs the video recorder (e.g., `CONTAINER_USER=$UID`, root by default).
+The file `selenium-images.env` sets the docker-selenium images compatible with Selema (without it, the latest images are used).
 
 Instantiate the Selema manager as follows:
 ```java
@@ -350,10 +349,11 @@ NETWORK=grid FOLDER=/tmp/videos PORTS=4449:4449 docker compose -f ./video-contro
 
 To start a pair of browser and recorder labeled `chrome`:
 ```bash
-LABEL=chrome NETWORK=grid FOLDER=/tmp/videos docker compose -f ./video-controller/docker-compose-preload.yml up -d 
+LABEL=chrome NETWORK=grid FOLDER=/tmp/videos docker compose --env-file ./video-controller/selenium-images.env -f ./video-controller/docker-compose-preload.yml up -d 
 ```
 
 Container names use the label with prefixes `selenium-node-` and `selenium-video-`. If they share a network with the tests, access them by container name and internal port. Additional environment variables can configure exported ports (e.g., `PORTS=4444:4444`) or the user that runs the video recorder (e.g., `CONTAINER_USER=$UID`, root by default). The video controller runs as root by default, to access the docker socket.
+The file `selenium-images.env` sets the docker-selenium images compatible with Selema (without it, the latest images are used).
 
 Instantiate the Selema manager as follows:
 ```java

@@ -1,0 +1,65 @@
+# Starts a selenium dynamic grid (standalone docker) that creates a browser container and a video recorder container per session.
+# The grid stores each recording in a folder named after the session id, under the assets folder.
+# The grid configuration (docker.toml) is embedded below; the router is protected with username testuser and password test
+# (credentials must be added when creating sessions, eg. in the url: http://testuser:test@host:port)
+
+# Environment variables:
+# - NETWORK: the name of the docker network to connect the grid container to (the browser and video containers are created in the same network)
+# - FOLDER: the folder to save the recorded videos to (mounted as the grid assets folder, must be writable by the grid user 1200)
+# - PORTS: port mappings for the grid container (optional, default a localhost ephemeral port, format: [ip:]hostPort:containerPort)
+# - GRID_IMAGE, NODE_IMAGE, VIDEO_IMAGE: the images of the grid, the browser node and the video recorder (optional, default are the latest).
+#   The versions compatible with Selema are in selenium-images.env: pass it with docker compose --env-file
+
+# To update a running grid, run up with --force-recreate:
+# compose does not recreate the container when only the embedded configuration changes (e.g. NODE_IMAGE or VIDEO_IMAGE).
+# The grid pulls the browser and video images at startup if they are not available locally.
+
+name: selenium-stack-grid
+services:
+  grid:
+    image: ${GRID_IMAGE:-selenium/standalone-docker:latest}
+    container_name: selenium-dynamic-grid
+    networks:
+      - selenium
+    ports:
+      - ${PORTS:-127.0.0.1::4444}
+    environment:
+      - SE_VNC_VIEW_ONLY=false
+      # Remove the vnc password, the grid is already protected by the username and password in the grid configuration
+      - SE_VNC_NO_PASSWORD=true
+      - SE_NODE_MAX_SESSIONS=8
+    shm_size: '2g'
+    restart: unless-stopped
+    volumes:
+      # To avoid permission problems, the folder must be writable by the grid user (uid 1200): sudo chown 1200:1200 <folder>
+      - ${FOLDER:?}:/opt/selenium/assets
+      # The grid creates the browser and video containers through the docker daemon of the host
+      - /var/run/docker.sock:/var/run/docker.sock
+    configs:
+      - source: docker_toml
+        target: /opt/selenium/docker.toml
+
+networks:
+  # The services refer to this static key, the actual network is set by the environment variable
+  selenium:
+    external: true
+    name: ${NETWORK:?}
+
+configs:
+  # Compose interpolates the variables in the content (a literal $ must be escaped as $$)
+  docker_toml:
+    content: |
+      [router]
+      username = "testuser"
+      password = "test"
+
+      [docker]
+      # Mapping between the docker image to use and the capabilities that must match to start a container with this image
+      configs = [
+          "${NODE_IMAGE:-selenium/standalone-chrome:latest}", '{"browserName": "chrome"}'
+      ]
+      host-config-keys = ["Dns", "DnsOptions", "DnsSearch", "ExtraHosts", "Binds"]
+      # URL of the docker daemon: 127.0.0.1 because the container uses socat when /var/run/docker.sock is mounted
+      url = "http://127.0.0.1:2375"
+      # Docker image used for video recording
+      video-image = "${VIDEO_IMAGE:-selenium/video:latest}"

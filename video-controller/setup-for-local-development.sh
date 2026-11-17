@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Scripts to run tests in local development environment for different values of selema.test.mode in selema.properties
+# The docker-selenium images are set in video-controller/selenium-images.env (export NODE_IMAGE, etc. to override them)
 
 # RUN FROM THE ROOT OF THE CLONED REPOSITORY
 
@@ -9,9 +10,8 @@
 # up:
 docker network create grid
 mkdir -p $PWD/java/target/preload-local
-NODE_IMAGE="selenium/standalone-chrome:144.0-20260202" VIDEO_IMAGE="selenium/video:ffmpeg-8.0-20260202" \
 LABEL=chrome NETWORK=grid FOLDER=/$PWD/java/target/preload-local PORTS=4444:4444 \
-  docker compose -f ./video-controller/docker-compose-preload.yml up -d
+  docker compose --env-file ./video-controller/selenium-images.env -f ./video-controller/docker-compose-preload.yml up -d
 # down:
 LABEL=chrome NETWORK=grid FOLDER=/$PWD/java/target/preload-local PORTS=4444:4444 \
   docker compose -f ./video-controller/docker-compose-preload.yml down
@@ -21,9 +21,8 @@ LABEL=chrome NETWORK=grid FOLDER=/$PWD/java/target/preload-local PORTS=4444:4444
 # up:
 docker network create grid
 mkdir -p $PWD/video-controller/app/videos
-NODE_IMAGE="selenium/standalone-chrome:144.0-20260202" VIDEO_IMAGE="selenium/video:ffmpeg-8.0-20260202" \
 LABEL=chrome NETWORK=grid FOLDER=/$PWD/video-controller/app/videos PORTS=4444:4444 \
-  docker compose -f ./video-controller/docker-compose-preload.yml up -d
+  docker compose --env-file ./video-controller/selenium-images.env -f ./video-controller/docker-compose-preload.yml up -d
 # down:
 LABEL=chrome NETWORK=grid FOLDER=/$PWD/video-controller/app/videos PORTS=4444:4444 \
   docker compose -f ./video-controller/docker-compose-preload.yml down
@@ -47,12 +46,11 @@ npm install && npm start
 
 ###### grid ###### 
 
-# From powershell in windows: don't need expose daemon on tcp://localhost:2375 without TLS
-docker stop selenium-dynamic-grid
-docker rm selenium-dynamic-grid
-docker run -d --name selenium-dynamic-grid -p 4444:4444 --shm-size="2g" `
-    -e SE_VNC_VIEW_ONLY=true -e SE_VNC_NO_PASSWORD=true -e SE_NODE_MAX_SESSIONS=8 `
-    -v ${PWD}/java/src/test/resources/selenium-dynamic-grid.toml:/opt/selenium/docker.toml `
-    -v ${PWD}/java/target/selema:/opt/selenium/assets `
-    -v /var/run/docker.sock:/var/run/docker.sock `
-    selenium/standalone-docker:4.40.0-20260202
+# up:
+docker network create grid
+mkdir -p $PWD/java/target/selema
+NETWORK=grid FOLDER=/$PWD/java/target/selema PORTS=4444:4444 \
+  docker compose --env-file ./video-controller/selenium-images.env -f ./video-controller/docker-compose-grid.yml up -d
+# down:
+NETWORK=grid FOLDER=/$PWD/java/target/selema PORTS=4444:4444 \
+  docker compose -f ./video-controller/docker-compose-grid.yml down

@@ -8,7 +8,8 @@
 # - FOLDER: the folder to save the recorded videos to
 # - PORTS: port mappings for the selenium node container (optional, default a localhost ephemeral port, format: [ip:]hostPort:containerPort)
 # - CONTAINER_USER: the user to run the video recorder container as (optional, default is root, format: uid[:gid])
-# - NODE_IMAGE, VIDEO_IMAGE: the images of the selenium node and video recorder (optional, default are the latest)
+# - NODE_IMAGE, VIDEO_IMAGE: the images of the selenium node and video recorder (optional, default are the latest).
+#   The versions compatible with Selema are in selenium-images.env: pass it with docker compose --env-file
 
 name: selenium-stack-${LABEL:?}
 services:
@@ -16,29 +17,29 @@ services:
     image: ${NODE_IMAGE:-selenium/standalone-chrome:latest}
     container_name: selenium-node-${LABEL:?}
     networks:
-      - ${NETWORK:?}
+      - selenium
     ports:
       - ${PORTS:-127.0.0.1::4444}
       # VNC from browser port (select set/unset password when run the container)
       # - 7900:7900
     environment:
-      SE_NODE_MAX_SESSIONS: 8
+      - SE_NODE_MAX_SESSIONS=8
     shm_size: '2g'
 
   video:
     image: ${VIDEO_IMAGE:-selenium/video:latest}
     container_name: selenium-video-${LABEL:?}
     networks:
-      - ${NETWORK:?}
+      - selenium
     user: ${CONTAINER_USER:-root}
     environment:
-      SE_VIDEO_FILE_NAME: ${LABEL}.mp4
-      DISPLAY_CONTAINER_NAME: selenium-node-${LABEL?}
+      - SE_VIDEO_FILE_NAME=${LABEL}.mp4
+      - DISPLAY_CONTAINER_NAME=selenium-node-${LABEL?}
     volumes:
       - ${FOLDER:?}:/videos
 
 networks:
-  # In addition to the environment variable, this key must be set to the network name
-  grid:
+  # The services refer to this static key, the actual network is set by the environment variable
+  selenium:
     external: true
     name: ${NETWORK:?}
