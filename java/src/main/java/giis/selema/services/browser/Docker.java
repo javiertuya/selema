@@ -21,18 +21,26 @@ public class Docker {
 	}
 
 	/**
-	 * Runs a docker command (start or stop) and waits until the container log contains the expected strings.
+	 * Waits until a line of the container log written since the container was started contains the expected strings.
+	 * The whole log since the start is checked (not only the last line) because other processes in the container
+	 * may write after the expected line (e.g. the uploader of the docker-selenium video recorder images).
+	 * The start time is taken from docker to exclude the log of previous runs of the same container.
 	 */
 	public static void waitDocker(String container, String expectedLog1, String expectedLog2, int timeoutSeconds) {
+		String startedAt = CommandLine.runCommand("docker inspect -f '{{.State.StartedAt}}' " + container).replace("'", "").trim();
 		// poll the docker log until expected string found
-		String logOut = "";
+		String lastLine = "";
 		for (int i = 0; i < timeoutSeconds * 10; i++) {
-			logOut = CommandLine.runCommand("docker logs --tail 1 " + container);
-			if (logOut.contains(expectedLog1) && logOut.contains(expectedLog2))
-				return;
+			String[] lines = JavaCs.splitByChar(CommandLine.runCommand("docker logs --since " + startedAt + " " + container), '\n');
+			for (String line : lines) {
+				if (line.contains(expectedLog1) && line.contains(expectedLog2))
+					return;
+				if (!"".equals(line.trim()))
+					lastLine = line;
+			}
 			JavaCs.sleep(100);
 		}
-		throw new VideoControllerException("Container did not become ready in time, last log message was: " + logOut);
+		throw new VideoControllerException("Container did not become ready in time, last log message was: " + lastLine);
 	}
 
 	/**

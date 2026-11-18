@@ -28,22 +28,32 @@ namespace Giis.Selema.Services.Browser
         }
 
         /// <summary>
-        /// Runs a docker command (start or stop) and waits until the container log contains the expected strings.
+        /// Waits until a line of the container log written since the container was started contains the expected strings.
+        /// The whole log since the start is checked (not only the last line) because other processes in the container
+        /// may write after the expected line (e.g. the uploader of the docker-selenium video recorder images).
+        /// The start time is taken from docker to exclude the log of previous runs of the same container.
         /// </summary>
         public static void WaitDocker(string container, string expectedLog1, string expectedLog2, int timeoutSeconds)
         {
+            string startedAt = CommandLine.RunCommand("docker inspect -f '{{.State.StartedAt}}' " + container).Replace("'", "").Trim();
 
             // poll the docker log until expected string found
-            string logOut = "";
+            string lastLine = "";
             for (int i = 0; i < timeoutSeconds * 10; i++)
             {
-                logOut = CommandLine.RunCommand("docker logs --tail 1 " + container);
-                if (logOut.Contains(expectedLog1) && logOut.Contains(expectedLog2))
-                    return;
+                string[] lines = JavaCs.SplitByChar(CommandLine.RunCommand("docker logs --since " + startedAt + " " + container), '\n');
+                foreach (string line in lines)
+                {
+                    if (line.Contains(expectedLog1) && line.Contains(expectedLog2))
+                        return;
+                    if (!"".Equals(line.Trim()))
+                        lastLine = line;
+                }
+
                 JavaCs.Sleep(100);
             }
 
-            throw new VideoControllerException("Container did not become ready in time, last log message was: " + logOut);
+            throw new VideoControllerException("Container did not become ready in time, last log message was: " + lastLine);
         }
 
         /// <summary>
