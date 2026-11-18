@@ -23,7 +23,10 @@ export class ContainerUtil {
   }
 
   /**
-   * Waits until the container log contains both expected strings.
+   * Waits until a line of the container log written since the container was started contains both expected strings.
+   * The whole log since the start is checked (not only the last line) because other processes in the container
+   * may write after the expected line (e.g. the uploader of the docker-selenium video recorder images).
+   * The start time is taken from docker to exclude the log of previous runs of the same container.
    * @param {string} container - Container name.
    * @param {string} expectedLog1 - First expected log string.
    * @param {string} expectedLog2 - Second expected log string.
@@ -31,18 +34,24 @@ export class ContainerUtil {
    * @returns {Promise<void>}
    */
   static async waitDocker(container, expectedLog1, expectedLog2, timeoutSeconds) {
-    let logOut = '';
+    const startedAt = (await CommandLine.runCommand(`docker inspect -f '{{.State.StartedAt}}' ${container}`)).replace(/'/g, '').trim();
+    let lastLine = '';
     const maxTries = timeoutSeconds * 10;
 
     for (let i = 0; i < maxTries; i++) {
-      logOut = await CommandLine.runCommand(`docker logs --tail 1 ${container}`);
-      if (logOut.includes(expectedLog1) && logOut.includes(expectedLog2)) {
-        return;
+      const lines = (await CommandLine.runCommand(`docker logs --since ${startedAt} ${container}`)).split('\n');
+      for (const line of lines) {
+        if (line.includes(expectedLog1) && line.includes(expectedLog2)) {
+          return;
+        }
+        if (line.trim() !== '') {
+          lastLine = line;
+        }
       }
       await new Promise(resolve => setTimeout(resolve, 100));
     }
 
-    throw new Error(`Container did not become ready in time, last log message was: ${logOut}`);
+    throw new Error(`Container did not become ready in time, last log message was: ${lastLine}`);
   }
 
   /**
