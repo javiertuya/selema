@@ -3,7 +3,7 @@ FROM node:24-alpine@sha256:116b800c3754b440ee0aa3ed2f20f5bf3d99a554bfd9adeea09ea
 # Docker client to manage the recorder containers through the mounted docker socket.
 # The static binary is copied from the official image, so that it does not depend on the packages of the base image
 # (e.g. the docker.io package of Debian bookworm is too old for current docker daemons).
-COPY --from=docker:29-cli@sha256:5a7af0dcb0e46c803efe9b45371dd21cb500e5b4453250394ac6f06d49b6e6f1 /usr/local/bin/docker /usr/local/bin/docker
+COPY --from=docker:29-cli@sha256:34507eb5069d8be82c95dd3b6987d4250fd5fee49b82e2509b7d7a7030740d6d /usr/local/bin/docker /usr/local/bin/docker
 
 WORKDIR /app
 
