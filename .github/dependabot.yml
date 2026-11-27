@@ -19,10 +19,13 @@ updates:
   # NOTE: When publish a new release, set back the Selema core dependencies to the lower versions, in v4.0.0.0 they are:
   # MSTest.TestFramework 4.0.0, NUnit 3.14.0, Selenium.WebDriver 4.37.0
   # The version of NUnit is set the latest major version (v3) that is compatible with netstandard2.0.
-  # Because of this, NUnit major updates (v4, v5...) are never proposed for SelemaTest (net10.0) and must be done manually:
-  # the nuget updater checks compatibility against the union of the target frameworks of all projects in the directory
-  # that use the package, including Selema (netstandard2.0), that is also discovered through the SelemaTest ProjectReference.
-  # https://github.com/dependabot/dependabot-core/issues/12274 (related)
+  # NUnit major updates (v4, v5...) must be done manually, and are ignored below:
+  # - Until Nov 2026 they were never proposed for SelemaTest (net10.0): the nuget updater checks compatibility against
+  #   the union of the target frameworks of all projects in the directory that use the package, including Selema
+  #   (netstandard2.0), that is also discovered through the SelemaTest ProjectReference.
+  #   https://github.com/dependabot/dependabot-core/issues/12274 (related)
+  # - Since Nov 2026 the compatibility check no longer detects that NUnit v5 does not support netstandard2.0,
+  #   and proposes it for Selema, breaking the build (likely after https://github.com/dependabot/dependabot-core/pull/16884)
   - package-ecosystem: nuget
     directories: 
       - "/net"
@@ -53,6 +56,10 @@ updates:
         patterns:
           - "Selenium.*"
         group-by: dependency-name
+    ignore:
+      # Selema must stay on NUnit v3 to be compatible with netstandard2.0
+      - dependency-name: "NUnit"
+        update-types: ["version-update:semver-major"]
     schedule:
       interval: weekly
       day: "friday"

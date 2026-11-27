@@ -59,6 +59,7 @@
     <PackageReference Include="MSTest.TestFramework" Version="4.5.3" >
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <!-- Selema must stay on NUnit v3 to be compatible with netstandard2.0 -->
     <PackageReference Include="NUnit" Version="3.14.0" >
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
